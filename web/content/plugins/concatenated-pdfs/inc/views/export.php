@@ -21,6 +21,23 @@
       </div>
       <div class="field-wrap">
         <div class="field">
+        
+          <div class="wd200 fl">
+            <label>
+              <?php _e( "Types" ); ?>
+            </label>
+            <?php echo $select_types; ?>
+            <input class="all-btn sept-mar" type="button" value="Select All">
+          </div>
+           <div class="wd200 fl">
+            <label>
+              <?php _e( "Tags" ); ?>
+            </label>
+            <?php echo $select_cats; ?>
+            <input class="all-btn sept-mar" type="button" value="Select All">
+          </div>       
+        
+        
           <div class="wd200 fl">
             <label>
               <?php _e( "Category" ); ?>

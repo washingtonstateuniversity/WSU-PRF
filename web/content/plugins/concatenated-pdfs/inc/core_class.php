@@ -28,6 +28,7 @@ class catpdf_core {
         }
         if (isset($_POST)) {
             $this->post = $_POST;
+		
             // Check if option save is performed
             if (isset($this->post['catpdf_save_option'])) {
                 // Add update option action hook
@@ -147,6 +148,12 @@ class catpdf_core {
             $this->view(CONCATENATEDPDF_PLUGIN_PATH . '/inc/views/template_manager.php', $data);
         }
     }
+	
+	
+	
+
+	
+	
     /*
      * Display "Download" page
      */
@@ -164,6 +171,18 @@ class catpdf_core {
             'echo' => 0,
             'hierarchical' => 1
         ));
+		
+		$post_types      = get_post_types(array(
+            'public'   => true,
+                     //'_builtin' => false
+        ),'names' , 'and' );
+		$select_types= '<select name="type[]" multiple="multiple" class="postform" >';
+		foreach ($post_types  as $post_type ) {
+			$select_types.='<option value="'. $post_type.'"  class="level-0" >'. $post_type. '</option>';
+		}
+		$select_types.='</select>';
+		
+		
         $select_cats           = str_replace("name='cat' id=", "name='cat[]' multiple='multiple' id=", $select_cats);
         $select_cats           = str_replace("<option", '<option selected="selected"', $select_cats);
         // Construct user dropdown
@@ -173,6 +192,8 @@ class catpdf_core {
         ));
         $select_author         = str_replace("name='user' ", "name='user[]' multiple='multiple' ", $select_author);
         $select_author         = str_replace("<option", '<option selected="selected"', $select_author);
+		
+		$data['select_types']  = $select_types;
         $data['select_cats']   = $select_cats;
         $data['select_author'] = $select_author;
         $data['select_sizes']  = array(
@@ -464,13 +485,7 @@ class catpdf_core {
 		$dompdf->load_html($content);
         $dompdf->set_paper($this->post['papersize'], $this->post['orientation']);
         $dompdf->render();
-/*		$canvas = $dompdf->get_canvas();
-		$font = Font_Metrics::get_font("helvetica", "bold");
-		$y = $canvas->get_height() - 24;
-        $x = $canvas->get_width() - 15 - Font_Metrics::get_text_width("1/1", $font, $size);
-		$canvas->page_text(0, 0, "{PAGE_NUM} of {PAGE_COUNT}",$font, 6, array(0,0,0));
-	*/	
-		
+
         $dompdf->stream(trim($this->title) . ".pdf");
     }
     /*
@@ -658,7 +673,9 @@ class catpdf_core {
 			$pdf->text($x, $y, $pageText, $font, $size);
 
 			// Draw a line along the bottom
-			$y = $h - 2 * $text_height - 24;
+			$line_height=1;
+			$color = array(125,125,125);
+			$y = $h - 2 * $line_height - 24;
 			$pdf->line(16, $y, $w - 16, $y, $color, 1);
 		// Close the object (stop capture)
 		$pdf->close_object();
@@ -760,11 +777,13 @@ class catpdf_core {
     /*
      * Get post data
      * @id - int
+	 * It's worth noting that any out put here will print into the pdf.  If the PDF can't be 
+	 * read then look at it in a text editor like Notepad, where you will see the php errors
      */
     public function _get_data($id = NULL) {
-        $post = $this->post;
+ 		$post = $this->post;
         $args = array(
-            'post_type' => 'post',
+            'post_type' => $post['type'],
             'posts_per_page' => -1,
             'order' => 'DESC'
         );
@@ -797,7 +816,9 @@ class catpdf_core {
             'filter_where'
         ));
         $result = new WP_Query($args);
+		
         return $result->posts;
+
     }
     /*
      * Return query filter

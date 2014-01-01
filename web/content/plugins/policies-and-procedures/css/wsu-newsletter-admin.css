@@ -1,0 +1,125 @@
+#newsletter-container {
+	width: 600px;
+	background: #fff;
+	border: 1px solid #777;
+	margin: 10px;
+}
+
+#newsletter-build {
+	position: relative;
+	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, sans-serif;
+	font-size: 100%;
+	max-width: 580px;
+	background: #fff;
+	margin: 0 auto;
+	padding-top: 45px;
+}
+
+.newsletter-image img {
+	width: 100%;
+	height: auto;
+}
+
+.newsletter-head {
+	margin-top: 10px;
+}
+
+.newsletter-build-tip {
+	font-style: italic;
+	font-size: 15px;
+	margin: 50px;
+}
+
+.newsletter-item {
+	position: relative;
+	margin: 10px 0 15px 0;
+	cursor: move;
+	float: left;
+}
+
+.newsletter-item:hover {
+	border: 1px dashed #ccc;
+	padding: 5px;
+	margin: 4px -4px 9px -6px;
+}
+
+.newsletter-item .newsletter-item-remove {
+	display: none;
+}
+
+.newsletter-item:hover .newsletter-item-remove {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	display: block;
+	width: 100px;
+	border: 1px solid #ccc;
+	color: #333;
+	background: #e2f4f8;
+	text-align: center;
+	font-size: 13px;
+	line-height: 18px;
+	cursor: pointer;
+}
+
+.newsletter-item:hover .newsletter-item-remove:hover {
+	color: #ececec;
+	background: #981e32;
+}
+
+#newsletter-build .newsletter-item h3 {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: #981e32;
+	cursor: auto;
+	font-family: 'Open Sans Condensed', 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
+	font-weight: 700;
+}
+
+#newsletter-build .newsletter-item h3 a {
+	color: #981e32;
+	text-decoration: none;
+}
+
+#newsletter-build .newsletter-item h3 a:hover {
+	color: #981e32;
+}
+
+#newsletter-build .newsletter-item p {
+	color: #262b2d;
+	margin: 10px 0 0 0;
+}
+
+#newsletter-build .newsletter-item p a {
+	color: #981e32;
+	text-decoration: underline;
+}
+
+.newsletter-date {
+	font-family: "Lucide Grande", Helvetica, arial, sans-serif;
+	font-size: 18px;
+	font-weight: 200;
+	position: absolute;
+	top: 30px;
+	right: 12px;
+	color: #5e6a71;
+}
+
+.newsletter-footer {
+	clear: left;
+	padding-top: 10px;
+}
+
+.newsletter-footer p {
+	color: #5e6a71;
+	font-style: italic;
+	margin: 10px 0;
+}
+
+.newsletter-head p {
+	color: #5e6a71;
+	font-style: italic;
+	margin: 20px 0 10px 0;
+}
