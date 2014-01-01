@@ -146,6 +146,15 @@
 #catpdf-wrap .wd600 {
 	width: 600px;
 }
+#catpdf-wrap .wd700 {width: 700px;}
+#catpdf-wrap .wd750 {width: 750px;}
+#catpdf-wrap .wd800 {width: 800px;}
+#catpdf-wrap .wd850 {width: 850px;}
+#catpdf-wrap .wd900 {width: 900px;}
+#catpdf-wrap .wd950 {width: 950px;}
+
+
+
 #catpdf-wrap .fl {
 	float: left;
 }

@@ -138,6 +138,57 @@ class catpdf_core {
         $data['message'] = $this->get_message();
         $this->view(CONCATENATEDPDF_PLUGIN_PATH . '/inc/views/template.php', $data);
     }
+	
+	
+	
+	
+	public function get_shortcodes($type='body'){
+		switch($type){
+			case 'body':
+				return array(
+					'loop'=> __('Loop'),
+					'site_title'=> __('Site Title'),
+					'site_tagline'=> __('Site Tagline'),
+					'site_url'=> __('Site URL'),
+					'date_today'=> __('Date Today'),
+					'from_date'=> __('Date(From)'),
+					'to_date'=> __('Date(To)'),
+					'categories'=> __('Categories'),
+					'post_count'=> __('Post Count')
+				);
+				break;	
+			case 'loop':
+				return array(
+					'title'=> __('Title'),
+					'excerpt'=> __('Excerpt'),
+					'content'=> __('Content'),
+					'permalink'=> __('Permalink'),
+					'date'=> __('Date'),
+					'author'=> __('Author'),
+					'author_photo'=> __('Author Photo'),
+					'author_description'=> __('Author Description'),
+					'status'=> __('Status'),
+					'featured_image'=> __('Featured Image'),
+					'category'=> __('Category'),
+					'tags'=> __('Tags'),
+					'comments_count'=> __('Comments Count')
+				);
+				break;	
+			
+		}
+	
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
     /*
      * Display "Template Manager" page
      */
@@ -146,6 +197,13 @@ class catpdf_core {
         include(CONCATENATEDPDF_PLUGIN_PATH . '/inc/list_class.php');
         $wp_list_table = new template_list();
         $wp_list_table->prepare_items();
+		
+		$body_templateShortCodes= $this->get_shortcodes('body');
+		$data['body_templateShortCodes']=$body_templateShortCodes;
+		$loop_templateShortCodes= $this->get_shortcodes('loop');
+		$data['loop_templateShortCodes']=$loop_templateShortCodes;
+		
+		
         // Check if edit action is performed
         if (isset($_GET['catpdf_action']) && $_GET['catpdf_action'] == 'edit') {
             $data['on_edit'] = $this->get_template($_GET['template']);
@@ -255,6 +313,7 @@ class catpdf_core {
 		template_description text,
 	    template_loop text,
 	    template_body text,
+		template_pageheader text,
 		create_by mediumint(9) NOT NULL,
 		create_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 	    UNIQUE KEY id (template_id)
@@ -285,7 +344,8 @@ class catpdf_core {
             $data             = array(
                 'template_name' => 'Sample Template',
                 'template_loop' => $default_template['loop'],
-                'template_body' => $default_template['body']
+                'template_body' => $default_template['body'],
+				'template_pageheader' => $default_template['pageheader'],
             );
             // Insert template
             $this->add_this($data);
@@ -297,28 +357,36 @@ class catpdf_core {
     private function custruct_default_template($type = 'all') {
         $temp         = array();
         $temp['name'] = 'Default';
+		
+		
+		
+		// Construct template loop
+		$pageheadertemplate = '[site_title],[site_tagline]';
+		
+		
+		
         if ($type == 'single') {
             // Construct template loop
-            $looptemplate = '<biv class="post single">';
+            $looptemplate = '<div class="post single">';
             $looptemplate .= '<h2>[title]</h2>';
             $looptemplate .= '<div class="meta"><p>Posted on <strong>[date]</strong> by <strong>[author]</strong></p></div>';
             $looptemplate .= '<p>[content]</p>';
             $looptemplate .= '<div class="taxonomy">[category label="Posted in:"] | [tags label="Tagged:"] | With [comments_count] comments</div>';
-            $looptemplate .= '</biv>';
+            $looptemplate .= '</div>';
             // Construct template body
             $bodytemplate = '<div class="content-wrapper">';
             $bodytemplate .= '[loop]';
             $bodytemplate .= '</div>';
         } else {
             // Construct template loop
-            $looptemplate = '<biv class="post">';
+            $looptemplate = '<div class="content-wrapper"><div class="post">';
             $looptemplate .= '<h2>[title]</h2>';
             $looptemplate .= '<div class="meta"><p>Posted on <strong>[date]</strong> by <strong>[author]</strong></p></div>';
             $looptemplate .= '<p>[content]</p>';
             $looptemplate .= '<div class="taxonomy">[category label="Posted in:"] | [tags label="Tagged:"] | With [comments_count] comments</div>';
-            $looptemplate .= '</biv>';
+            $looptemplate .= '</div></div>';
             // Construct template body
-            $bodytemplate = '<div class="content-wrapper">';
+            $bodytemplate = '';
             $bodytemplate .= '<div class="pdf-header">';
             $bodytemplate .= '<h1>Post List</h1>';
             $bodytemplate .= '<h2>[site_title]</h2>';
@@ -326,10 +394,11 @@ class catpdf_core {
             $bodytemplate .= '[from_date label="From:"] [to_date label="To:"]';
             $bodytemplate .= '</div>';
             $bodytemplate .= '<div>[loop]</div>';
-            $bodytemplate .= '</div>';
+            $bodytemplate .= '';
         }
         $temp['loop'] = $looptemplate;
         $temp['body'] = $bodytemplate;
+		$temp['pageheader'] = $pageheadertemplate;
         return $temp;
     }
     /*
@@ -358,7 +427,8 @@ class catpdf_core {
         $arr = array(
             'template_name' => 'Default',
             'template_loop' => $default_template['loop'],
-            'template_body' => $default_template['body']
+            'template_body' => $default_template['body'],
+			'template_pageheader' => $default_template['pageheader'],
         );
         return (object) $arr;
     }
@@ -428,6 +498,7 @@ class catpdf_core {
                 'template_name' => $this->post['templatename'],
                 'template_loop' => $this->post['looptemplate'],
                 'template_body' => $this->post['bodytemplate'],
+				'template_pageheader' => $this->post['pageheadertemplate'],
                 'template_description' => $this->post['description']
             );
             // Insert template
@@ -452,6 +523,7 @@ class catpdf_core {
                 'template_name' => $this->post['templatename'],
                 'template_description' => $this->post['description'],
                 'template_body' => $this->post['bodytemplate'],
+				'template_pageheader' => $this->post['pageheadertemplate'],
                 'template_loop' => $this->post['looptemplate']
             );
             $this->update_this($data);
@@ -593,6 +665,7 @@ class catpdf_core {
         $head_html .= '<html>';
         $head_html .= '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
         $title = 'Post PDF Download';
+		$pageheader="";
         if (!empty($this->template) && isset($options['title']) && $options['title'] !== '') {
             $template    = $this->template;
             $title       = $options['title'];
@@ -601,6 +674,7 @@ class catpdf_core {
             $title       = str_replace('%yyyy', date('Y'), $title);
             $title       = str_replace('%template', $template->template_name, $title);
             $this->title = $title;
+            $pageheader  = $this->filter_shortcodes('pageheader');
         } else {
             $title       = CONCATENATEDPDF_BASE_NAME . '-' . date('m-d-Y');
             $this->title = $title;
@@ -701,7 +775,7 @@ class catpdf_core {
 		$pdf->add_object($footerImg, "all");
 		
 		//Header
-		$pageHeaderText =  "This is the header." ;
+		$pageHeaderText =  "This is the header. '.$pageheader.'" ;
 		$t_y = 0 + '.($headerHeight/3).';
 		$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
 		$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
@@ -724,43 +798,23 @@ class catpdf_core {
     /*
      * Return html with filtered shortcodes
      * @tmp_type - string
+	 * this is awakward it needs to be reworked
      */
     public function filter_shortcodes($tmp_type = '') {
         $items         = array();
-        $items['body'] = array(
-            'loop',
-            'site_title',
-            'site_tagline',
-            'site url',
-            'date_today',
-            'from date',
-            'to date',
-            'categories',
-            'post_count'
-        );
-        $items['loop'] = array(
-            'title',
-            'excerpt',
-            'content',
-            'permalink',
-            'date',
-            'author',
-            'author_photo',
-            'author_description',
-            'status',
-            'featured_image',
-            'category',
-            'tags',
-            'comments_count'
-        );
+        $items['body'] = array_keys($this->get_shortcodes('body'));
+        $items['loop'] = array_keys($this->get_shortcodes('loop'));
         $template      = $this->template;
         $pattern       = get_shortcode_regex();
         if ($tmp_type == 'body') {
             $arr = $items['body'];
             $tmp = $template->template_body;
-        } else {
+        } elseif ($tmp_type == 'loop') {
             $arr = $items['loop'];
             $tmp = $template->template_loop;
+        } elseif ($tmp_type == 'pageheader') {
+            $arr = $items['body'];
+            $tmp = $template->template_pageheader;
         }
         preg_match_all('/' . $pattern . '/s', $tmp, $matches);
         $html = $tmp;
