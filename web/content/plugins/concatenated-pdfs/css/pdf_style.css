@@ -1,0 +1,39 @@
+/* PDF CSS style */
+
+body {
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif !important;
+}
+p {
+	font-size: 12px !important;
+}
+h1, h2, h3 {
+	font-weight: bold;
+}
+h1, h2, h3, h4, h5, h6, p {
+	margin-bottom: 10px;
+	display: block;
+}
+.content-wrapper {
+	padding: 20px;
+	background: #FFF;
+	border: 1px solid #c5c5c5;
+	margin: 15px;
+}
+.pdf-header {
+	padding: 20px;
+	text-align: center;
+	border-bottom: 1px solid #c5c5c5;
+	margin-bottom: 10px;
+}
+.post {
+	padding: 15px 0px;
+	border-bottom: 1px solid #c5c5c5;
+	display: block !important;
+	clear: both !important;
+}
+.content-wrapper .meta, .content-wrapper .taxonomy {
+	font-size: 12px !important;
+	color: #666666;
+	font-style: italic;
+}
