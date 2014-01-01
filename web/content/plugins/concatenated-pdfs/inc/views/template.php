@@ -44,11 +44,13 @@
             <div class="wd500 fl">
               <?php
 
-                                    $args = array( "textarea_name" => "looptemplate" );
+				$args = array( "textarea_name" => "looptemplate",
+					'tinymce' => array( 
+						'content_css' => CONCATENATEDPDF_PLUGIN_URL . 'css/pdf_style.css' 
+				));
 
-                                    wp_editor( ( isset( $on_edit )?$on_edit->template_loop:'' ) , "looptemplate", $args );
-
-                                ?>
+				wp_editor( ( isset( $on_edit )?$on_edit->template_loop:'' ) , "looptemplate", $args );
+				?>
               <div class="clr"></div>
             </div>
             <div class="code-list wd300 fl">
@@ -93,9 +95,13 @@
             <div class="wd500 fl">
               <?php
 
-                                    $args = array( "textarea_name" => "bodytemplate" );
-
-                                    wp_editor( ( isset( $on_edit )?$on_edit->template_body:'' ) , "bodytemplate", $args );
+				$args = array( 
+					"textarea_name" => "bodytemplate",
+					'tinymce' => array( 
+						'content_css' => CONCATENATEDPDF_PLUGIN_URL . 'css/pdf_style.css' 
+				   ) 
+				 );
+				wp_editor( ( isset( $on_edit )?$on_edit->template_body:'' ) , "bodytemplate", $args );
 
                                 ?>
               <div class="clr"></div>

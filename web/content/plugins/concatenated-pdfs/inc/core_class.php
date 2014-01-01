@@ -1,4 +1,17 @@
 <?php
+
+/* things still to do
+-remove the use themes templates inlue of per template css path link
+-must beable to sort on optional items like tax/type etc
+-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
+-provide more areas to controll
+-make the index
+-create ruls for the bookmarking
+
+
+*/
+
+
 class catpdf_core {
     public $dompdf = NULL;
     public $message = array();
@@ -606,40 +619,26 @@ class catpdf_core {
 		
 		
 		$topPad="{$headerHeight}px";
-		$bottomPad="50px";
-		$leftPad="50px";
-		$rightPad="50px";
+		$bottomPad="25px";
+		$leftPad="0px";
+		$rightPad="0px";
 		
 		$padding="{$topPad} {$rightPad} {$bottomPad} {$leftPad}";
 		
 		
 		
 		
-		
+		//replace this with a linked path to a selected css file
         $head_html .= '<style>' . strip_tags($options['customcss']) . '
-						html,body {
-							font-family: sans-serif;
-							text-align: justify;
-							background-color:'.$bodycolor.';
-						}
-						body {padding:'.$padding.';}
-						
-						i.page-break {
-						  page-break-after: always;
-						  border: 0;
-						}
-						
-						h1.CoverTitle {
-							left: 0;
-							line-height: 200px;
-							margin: auto;
-							margin-top: -100px;
-							position: absolute;
-							top: 50%;
-							width: 100%;
-							text-align: center;
-						}
-					</style>';
+		html,body {
+			font-family: sans-serif;
+			text-align: justify;
+			background-color:'.$bodycolor.';
+		}
+		body {padding:'.$padding.';}
+		
+		
+		</style>';
         $head_html .= '<body>
 
     <script type="text/php">
