@@ -106,9 +106,14 @@ class catpdf_pages {
     /*
      * Display "Add" page
      */
-    public function add_page() {
+    public function add_page() { // short forward
+		global $catpdf_templates,$shortcode;
         $data            = array();
         $data['message'] = $this->get_message();
+		$body_templateShortCodes= $shortcode->get_template_shortcodes('body');
+		$data['body_templateShortCodes']=$body_templateShortCodes;
+		$loop_templateShortCodes= $shortcode->get_template_shortcodes('loop');
+		$data['loop_templateShortCodes']=$loop_templateShortCodes;
         $this->view(CATPDF_PLUGIN_PATH . '/includes/views/template.php', $data);
     }
 
@@ -117,18 +122,19 @@ class catpdf_pages {
      * Display "Template Manager" page
      */
     public function template_manager_page() {
+		global $catpdf_templates,$shortcode;
         // Include list class
         include(CATPDF_PLUGIN_PATH . '/includes/list_class.php');
         $wp_list_table = new template_list();
         $wp_list_table->prepare_items();
 		
-		$body_templateShortCodes= shortcode::get_template_shortcodes('body');
+		$body_templateShortCodes= $shortcode->get_template_shortcodes('body');
 		$data['body_templateShortCodes']=$body_templateShortCodes;
-		$loop_templateShortCodes= shortcode::get_template_shortcodes('loop');
+		$loop_templateShortCodes= $shortcode->get_template_shortcodes('loop');
 		$data['loop_templateShortCodes']=$loop_templateShortCodes;
         // Check if edit action is performed
         if (isset($_GET['catpdf_action']) && $_GET['catpdf_action'] == 'edit') {
-            $data['on_edit'] = $this->get_template($_GET['template']);
+            $data['on_edit'] = $catpdf_templates->get_template($_GET['template']);
             $data['message'] = $this->get_message();
             // Display template form
             $this->view(CATPDF_PLUGIN_PATH . '/includes/views/template.php', $data);
@@ -141,12 +147,6 @@ class catpdf_pages {
             $this->view(CATPDF_PLUGIN_PATH . '/includes/views/template_manager.php', $data);
         }
     }
-	
-	
-	
-
-	
-	
     /*
      * Display "Download" page
      */
