@@ -108,7 +108,7 @@ class catpdf_pages {
     public function template_manager_page() {
 		global $catpdf_templates,$shortcode;
         // Include list class
-        include(CATPDF_PATH . '/includes/list_class.php');
+        include(CATPDF_PATH . '/includes/class.list.php');
         $wp_list_table = new template_list();
         $wp_list_table->prepare_items();
 		
