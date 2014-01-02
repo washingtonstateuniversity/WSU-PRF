@@ -17,20 +17,12 @@ define('CATPDF_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('CATPDF_STYLE', CATPDF_PLUGIN_PATH . '/css/style.css');
 define('PDF_STYLE', CATPDF_PLUGIN_URL . 'css/pdf_style.css');
 
-// Include dompdf //make sure to get back to pulling this in to the settings
-include(CATPDF_PLUGIN_PATH . '/dompdf/dompdf_config.inc.php');
-$dompdf = new DOMPDF(); // Instantiate dompdf library
 
-// Include shortcode class
-include(CATPDF_PLUGIN_PATH . '/inc/shortcode_class.php');
-$shortcode = new shortcode();// Instantiate shortcode class
 
 // Include core
-include(CATPDF_PLUGIN_PATH . '/inc/core_class.php');
+include(CATPDF_PLUGIN_PATH . '/includes/class.core.php');
 $catpdf_core = new catpdf_core();// Instantiate core class
 
-// Include functions
-include(CATPDF_PLUGIN_PATH . '/inc/functions.php');
 
 // Set option values
 function catpdf_initializer() {

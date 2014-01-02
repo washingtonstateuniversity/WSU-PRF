@@ -1,9 +1,13 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 class shortcode {
     public $single;
     function __construct() {
         if (is_admin() || isset($_GET['catpdf_dl']) || isset($_GET['catpdf_post_dl'])) {
-            $this->register_tempalte_shortcodes();
+            $this->register_template_shortcodes();
         } else {
             add_shortcode('catpdf', array( $this, 'apply_download_button' ));
         }
@@ -44,7 +48,7 @@ class shortcode {
     /*
     * Register template shortcodes
     */
-    public function register_tempalte_shortcodes() {
+    public function register_template_shortcodes() {
         $shortcodes = shortcode::build_shortcodes();
 		foreach($shortcodes as $code=>$props){
 			add_shortcode($code, array( $this, $props['function'] ));
