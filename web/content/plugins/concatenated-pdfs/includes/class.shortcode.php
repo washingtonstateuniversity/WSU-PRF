@@ -285,12 +285,12 @@ class shortcode {
     * Return loop html
     */
     public function loop_func() {
-        global $catpdf_core;
+        global $catpdf_output,$posts;
         $item = '';
-        if (count($catpdf_core->posts) > 0) {
-            foreach ($catpdf_core->posts as $post) {
+        if (count($posts) > 0) {
+            foreach ($posts as $post) {
                 $this->single = $post;
-                $item .= $catpdf_core->filter_shortcodes('loop');
+                $item .= $catpdf_output->filter_shortcodes('loop');
             }
         }
         return $item;

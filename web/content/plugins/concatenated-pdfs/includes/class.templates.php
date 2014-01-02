@@ -1,32 +1,13 @@
 <?php
 
-/* things still to do
--remove the use themes templates inlue of per template css path link
--must beable to sort on optional items like tax/type etc
--cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
--provide more areas to controll
--make the index
--create ruls for the bookmarking
-
-
-*/
-
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class catpdf_templates {
-    public $dompdf = NULL;
-    public $message = array();
-    public $post = array();
     public $title = '';
-    public $posts;
     function __construct() {
         
     }
-
-	
-	
-
 
     /*
      * Return default template structure
@@ -214,29 +195,6 @@ class catpdf_templates {
         $table_name = $wpdb->prefix . "catpdf_template";
         $wpdb->query("DELETE FROM " . $table_name . " WHERE template_id = " . $id);
     }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }
 ?>

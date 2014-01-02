@@ -1,46 +1,37 @@
 <?php
 
-/* things still to do
--remove the use themes templates inlue of per template css path link
--must beable to sort on optional items like tax/type etc
--cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
--provide more areas to controll
--make the index
--create ruls for the bookmarking
-
-
-*/
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class catpdf_pages {
     public $dompdf = NULL;
     public $message = array();
-    public $post = array();
+    //public $post = array();
     public $title = '';
-    public $posts;
+    //public $posts;
     function __construct() {
+		global $catpdf_params;
         if (is_admin()) {
             // Initailize admin
             add_action('admin_init', array( $this, 'admin_init' ));
             add_action('admin_menu', array( $this, 'admin_menu' ));
         }
         if (isset($_POST)) {
-            $this->post = $_POST;
+            $catpdf_params = $_POST;
 		
             // Check if option save is performed
-            if (isset($this->post['catpdf_save_option'])) {
+            if (isset($catpdf_params['catpdf_save_option'])) {
                 // Add update option action hook
                 add_action('init', array( $this, 'update_options' ));
             }
             // Check if pdf export is performed
-            if (isset($this->post['catpdf_export'])) {
+            if (isset($catpdf_params['catpdf_export'])) {
                 // Add export hook
                 add_action('init', array( $this, 'export' ));
             }
             // Check if template save is performed
-            if (isset($this->post['catpdf_save'])) {
-                if ($this->post['templateid'] == '') {
+            if (isset($catpdf_params['catpdf_save'])) {
+                if ($catpdf_params['templateid'] == '') {
                     // Add save template action hook
                     add_action('init', array( $this, 'add_template' ));
                 } else {
@@ -202,6 +193,18 @@ class catpdf_pages {
         // Display export form
         $this->view(CATPDF_PLUGIN_PATH . '/includes/views/export.php', $data);
     }
+	
+    /*-------------------------------------------------------------------------*/
+    /* -Option- 															   */
+    /*-------------------------------------------------------------------------*/
+    /*
+     * Update plugin option
+     */
+    public function update_options() {
+		global $post;
+        $options = $post;
+        update_option('catpdf_options', $options);
+    }
     /*
      * Display "Option" page
      */
@@ -215,7 +218,57 @@ class catpdf_pages {
         // Display option form
         $this->view(CATPDF_PLUGIN_PATH . '/includes/views/options.php', $data);
     }
+    /*-------------------------------------------------------------------------*/
+    /* -Export- 															   */
+    /*-------------------------------------------------------------------------*/
+    /*
+     * Perform export pdf
+     */
+    public function export() {
+        global $dompdf, $catpdf_output, $catpdf_params;
+        
+        $content     = $catpdf_output->custruct_template();
+		$dompdf->load_html($content);
+        $dompdf->set_paper($catpdf_params['papersize'], $catpdf_params['orientation']);
+        $dompdf->render();
 
+        $dompdf->stream(trim($catpdf_output->title) . ".pdf");
+    }
+    /*
+     * Download post pdf
+     */
+    public function download_posts() {
+        global $dompdf, $catpdf_output,$post;
+        $param_arr   = array(
+            'from' => (isset($_GET['from'])) ? urldecode($_GET['from']) : '',
+            'to' => (isset($_GET['to'])) ? urldecode($_GET['to']) : '',
+            'cat' => (isset($_GET['cat']) && $_GET['cat'] != '') ? explode(',', $_GET['cat']) : array(),
+            'user' => (isset($_GET['author']) && $_GET['author'] != '') ? explode(',', $_GET['author']) : array(),
+            'template' => (isset($_GET['template'])) ? urldecode($_GET['template']) : 'def'
+        );
+        $post  = $param_arr;
+        $content     = $catpdf_output->custruct_template();
+        $dompdf->load_html($content);
+        $dompdf->set_paper((isset($_GET['paper_size'])) ? urldecode($_GET['paper_size']) : 'letter', (isset($_GET['paper_orientation'])) ? urldecode($_GET['paper_orientation']) : 'portrait');
+        $dompdf->render();
+        $dompdf->stream(trim($catpdf_output->title) . ".pdf");
+    }
+    /*
+     * Download single post pdf
+     */
+    public function download_post() {
+        global $dompdf, $catpdf_output,$post;
+        $id          = $_GET['catpdf_dl'];
+        $post        = $catpdf_output->_get_data($id);
+
+        $single      = $post[0];
+        $filenmae    = preg_replace('/[^a-z0-9]/i', '_', $single->post_title);
+        $content     = $catpdf_output->custruct_template('single');
+        $dompdf->load_html($content);
+        $dompdf->set_paper('letter', 'portrait');
+        $dompdf->render();
+        $dompdf->stream(trim($filenmae) . ".pdf");
+    }
 
 
 
