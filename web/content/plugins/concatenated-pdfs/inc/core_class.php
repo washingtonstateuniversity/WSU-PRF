@@ -96,12 +96,29 @@ class catpdf_core {
      * Initailize plugin admin part
      */
     public function admin_init() {
+		global $wp_scripts;
         // Enque style and script		
         wp_enqueue_script('jquery-ui-core');
         wp_enqueue_script('jquery-ui-datepicker', CONCATENATEDPDF_PLUGIN_URL . 'js/ui/jquery.ui.datepicker.js', array(
             'jquery'
         ), '1.9.0', 'all');
-        wp_enqueue_style('jquery-ui-datepicker', CONCATENATEDPDF_PLUGIN_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+		wp_enqueue_style('jquery-ui-datepicker', CONCATENATEDPDF_PLUGIN_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+		
+        wp_enqueue_script('jquery-ui-tabs', CONCATENATEDPDF_PLUGIN_URL . 'js/ui/jquery.ui.tabs.js', array(
+            'jquery'
+        ), '1.9.0', 'all');		
+		wp_enqueue_style('jquery-ui-tabs', CONCATENATEDPDF_PLUGIN_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+		// get registered script object for jquery-ui
+		$ui = $wp_scripts->query('jquery-ui-core');
+	 
+		// tell WordPress to load the Smoothness theme from Google CDN
+		$protocol = is_ssl() ? 'https' : 'http';
+		$url = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
+		wp_enqueue_style('jquery-ui-smoothness', $url, false, null);
+
+		
+		
+        
         wp_enqueue_script('catpdf-js', CONCATENATEDPDF_PLUGIN_URL . 'js/catpdf.custom.js', array(
             'jquery'
         ), '', 'all');
@@ -688,11 +705,11 @@ class catpdf_core {
 		
 		
 		$bodycolor="#f5f3e9";
-		$opHeaderHeight="125 px";
+		$opHeaderHeight="125px";
 		$headerHeight=(int)(trim(str_replace('px','',$opHeaderHeight)))*0.75;//point convertion
 		
 		
-		$topPad="{$headerHeight}px";
+		$topPad="{$opHeaderHeight}";
 		$bottomPad="25px";
 		$leftPad="0px";
 		$rightPad="0px";
