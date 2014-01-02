@@ -128,11 +128,11 @@ class template_list extends WP_List_Table {
     
     */
     function process_bulk_action() {
-        global $catpdf_core;
+        global $catpdf_templates;
         if ('delete' === $this->current_action()) {
             if (count($_POST['template']) > 0) {
                 foreach ($_POST['template'] as $template) {
-                    $catpdf_core->delete_template($template);
+                    $catpdf_templates->delete_template($template);
                 }
             }
         }
@@ -143,9 +143,9 @@ class template_list extends WP_List_Table {
     
     */
     function process_link_action() {
-        global $catpdf_core;
+        global $catpdf_templates;
         if (isset($_GET['catpdf_action']) && $_GET['catpdf_action'] == 'delete') {
-            $catpdf_core->delete_template($_GET['template']);
+            $catpdf_templates->delete_template($_GET['template']);
         }
     }
     /*

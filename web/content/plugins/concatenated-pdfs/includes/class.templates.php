@@ -5,9 +5,50 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class catpdf_templates {
     public $title = '';
+	public $current_template = NULL;
     function __construct() {
-        
+		global $_params;
+        if (is_admin()) {
+			if (isset($_params)) {
+				// Check if template save is performed
+				if (isset($_params['catpdf_save'])) {
+					if ($_params['templateid'] == '') {
+						// Add save template action hook
+						add_action('init', array($this, 'add_template' ));
+					} else {
+						// Add update template action hook
+						add_action('init', array( $this, 'update_template' ));
+					}
+				}
+			}
+		}  
     }
+	/*
+	* return template object
+	*/
+	public function get_current_tempate($type=NULL){
+		if($this->current_template==NULL)$this->set_current_tempate($type);
+		return $this->current_template;
+	}
+	/*
+	* set template object
+	*/
+	public function set_current_tempate($type=NULL){
+		global $_params,$catpdf_templates;
+		$curr_temp = $_params['template'];
+        if ($type == 'single') {
+            $options   = get_option('catpdf_options');
+            $curr_temp = $options['dltemplate'];
+        }
+        if ($curr_temp == 'def') {
+            $template = $catpdf_templates->get_default_template();
+        } else {
+            $template = $catpdf_templates->get_template($curr_temp);
+        }
+		$this->current_template = $template;
+	}
+
+
 
     /*
      * Return default template structure
@@ -99,9 +140,9 @@ class catpdf_templates {
      * @data - array
      */
     public function update_this($data = array()) {
-        global $wpdb;
+        global $wpdb,$catpdf_core,$_params;
         $where         = array(
-            'template_id' => $this->post['templateid']
+            'template_id' => $_params['templateid']
         );
         $table_name    = $wpdb->prefix . "catpdf_template";
         $rows_affected = $wpdb->update($table_name, $data, $where);
@@ -126,23 +167,24 @@ class catpdf_templates {
      * Add template
      */
     public function add_template() {
-        if ($this->post['templatename'] != '') {
+		global $catpdf_core,$_params;
+        if ($_params['templatename'] != '') {
             $data = array(
-                'template_name' => $this->post['templatename'],
-                'template_loop' => $this->post['looptemplate'],
-                'template_body' => $this->post['bodytemplate'],
-				'template_pageheader' => $this->post['pageheadertemplate'],
-				'template_pagefooter' => $this->post['pagefootertemplate'],
-                'template_description' => $this->post['description']
+                'template_name' => $_params['templatename'],
+                'template_loop' => $_params['looptemplate'],
+                'template_body' => $_params['bodytemplate'],
+				'template_pageheader' => $_params['pageheadertemplate'],
+				'template_pagefooter' => $_params['pagefootertemplate'],
+                'template_description' => $_params['description']
             );
             // Insert template
             $this->add_this($data);
-            $this->message = array(
+            $catpdf_core->message = array(
                 'type' => 'updated',
                 'message' => __('Template saved.')
             );
         } else {
-            $this->message = array(
+            $catpdf_core->message = array(
                 'type' => 'error',
                 'message' => __('Please provide template name.')
             );
@@ -152,22 +194,23 @@ class catpdf_templates {
      * Update template database entry
      */
     public function update_template() {
-        if ($this->post['templatename'] != '') {
+		global $catpdf_core,$_params;
+        if ($_params['templatename'] != '') {
             $data = array(
-                'template_name' => $this->post['templatename'],
-                'template_description' => $this->post['description'],
-                'template_body' => $this->post['bodytemplate'],
-				'template_pageheader' => $this->post['pageheadertemplate'],
-				'template_pagefooter' => $this->post['pagefootertemplate'],
-                'template_loop' => $this->post['looptemplate']
+                'template_name' => $_params['templatename'],
+                'template_description' => $_params['description'],
+                'template_body' => $_params['bodytemplate'],
+				'template_pageheader' => $_params['pageheadertemplate'],
+				'template_pagefooter' => $_params['pagefootertemplate'],
+                'template_loop' => $_params['looptemplate']
             );
             $this->update_this($data);
-            $this->message = array(
+            $catpdf_core->message = array(
                 'type' => 'updated',
                 'message' => __('Template updated.')
             );
         } else {
-            $this->message = array(
+            $catpdf_core->message = array(
                 'type' => 'error',
                 'message' => __('Please provide template name.')
             );

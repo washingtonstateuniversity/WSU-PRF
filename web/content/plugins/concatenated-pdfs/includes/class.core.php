@@ -22,32 +22,30 @@ class catpdf_core {
 		$_params = $_POST;
 		// Include dompdf //make sure to get back to pulling this in to the settings
 		include(CATPDF_PATH . '/dompdf/dompdf_config.inc.php');
-		$dompdf = new DOMPDF(); // Instantiate dompdf library
+		$dompdf = new DOMPDF();
 		
 		// Include shortcode class
 		include(CATPDF_PATH . '/includes/class.shortcode.php');
-		$shortcode = new shortcode();// Instantiate shortcode class
+		$shortcode = new shortcode();
 		
 		// Include functions
 		include(CATPDF_PATH . '/includes/functions.php');
 
 		// Include page
 		include(CATPDF_PATH . '/includes/class.pages.php');
-		$catpdf_pages = new catpdf_pages();// Instantiate pages class
+		$catpdf_pages = new catpdf_pages();
 
 		// Include templates
 		include(CATPDF_PATH . '/includes/class.templates.php');
-		$catpdf_templates = new catpdf_templates();// Instantiate pages class
+		$catpdf_templates = new catpdf_templates();
 		
 		// Include output
 		include(CATPDF_PATH . '/includes/class.output.php');
-		$catpdf_output = new catpdf_output();// Instantiate output class
+		$catpdf_output = new catpdf_output();
 
-		// Include output
+		// Include data
 		include(CATPDF_PATH . '/includes/class.data.php');
-		$catpdf_data = new catpdf_data();// Instantiate output class
-		
-		
+		$catpdf_data = new catpdf_data();
 
         if (!is_admin()) {
             if ($catpdf_data->get_options() == 'on') {

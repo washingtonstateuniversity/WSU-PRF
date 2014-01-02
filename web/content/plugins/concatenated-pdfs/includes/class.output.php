@@ -32,23 +32,12 @@ class catpdf_output {
      * Return pdf content
      * @type - string
      */
-    public function custruct_template($type = 'all') {
+    public function custruct_template($type = NULL) {
         global $catpdf_templates,$_params,$catpdf_data,$posts;
-		$id          = isset($_GET['catpdf_dl'])?$_GET['catpdf_dl']:null;
-		$posts = $catpdf_data->query_posts($id);
-		
-        if ($type == 'all') {
-            $curr_temp = $_params['template'];
-        } else {
-            $options   = get_option('catpdf_options');
-            $curr_temp = $options['dltemplate'];
-        }
-        if ($curr_temp == 'def') {
-            $template = $catpdf_templates->get_default_template();
-        } else {
-            $template = $catpdf_templates->get_template($curr_temp);
-        }
-        $this->template = $template;
+		$id		= isset($_GET['catpdf_dl'])?$_GET['catpdf_dl']:NULL;
+		$posts 	= $catpdf_data->query_posts($id);
+
+        $this->template = $catpdf_templates->get_current_tempate($type);
         $this->_html_structure();
         $html = $this->filter_shortcodes('body');
 

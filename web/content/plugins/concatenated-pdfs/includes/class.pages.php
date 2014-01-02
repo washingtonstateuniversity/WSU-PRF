@@ -21,16 +21,6 @@ class catpdf_pages {
 					// Add export hook
 					add_action('init', array( $this, 'export' ));
 				}
-				// Check if template save is performed
-				if (isset($_params['catpdf_save'])) {
-					if ($_params['templateid'] == '') {
-						// Add save template action hook
-						add_action('init', array( $this, 'add_template' ));
-					} else {
-						// Add update template action hook
-						add_action('init', array( $this, 'update_template' ));
-					}
-				}
 			}
 		}
         // Check if post download is performed
@@ -271,9 +261,12 @@ class catpdf_pages {
      * Return falsh message
      */
     public function get_message() {
-        if (!empty($this->message)) {
-            $arr = $this->message;
-            return '<div id="message" class="' . $arr['type'] . '"><p>' . $arr['message'] . '</p></div>';
+		global $catpdf_core;
+        if (!empty($catpdf_core->message)) {
+            $arr = $catpdf_core->message;
+			$message = "<div id='message' class='{$arr['type']}'><p>{$arr['message']}</p></div>";
+			$catpdf_core->message=NULL;
+            return $message;
         }
     }
     /*
@@ -296,10 +289,5 @@ class catpdf_pages {
     }
 	
 
-	
-	
-	
-	
-	
 }
 ?>
