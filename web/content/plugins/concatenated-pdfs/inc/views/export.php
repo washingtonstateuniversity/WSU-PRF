@@ -1,7 +1,7 @@
 <div id="catpdf-wrap" class="wrap">
   <div class="icon32" id="icon-tools"><br>
   </div>
-  <h2><?php echo CONCATENATEDPDF_NAME; ?></h2>
+  <h2><?php echo CATPDF_NAME; ?></h2>
   <?php if( isset($message) && $message!='' ) echo $message; ?>
   <p class="desc-text">
     <?php _e( "Concatenated PDFs plugin allows you to instantly download post from your site. Use this form to set parameters for the download. You can also use the shortcode '<span class='code'>[catpdf]</span>' <br /> for frontend implementation. This shortcode display a download link. You can also add 

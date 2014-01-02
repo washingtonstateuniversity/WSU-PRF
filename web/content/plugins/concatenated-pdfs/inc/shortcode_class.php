@@ -5,111 +5,92 @@ class shortcode {
         if (is_admin() || isset($_GET['catpdf_dl']) || isset($_GET['catpdf_post_dl'])) {
             $this->register_tempalte_shortcodes();
         } else {
-            add_shortcode('catpdf', array(
-                &$this,
-                'apply_download_button'
-            ));
+            add_shortcode('catpdf', array( $this, 'apply_download_button' ));
         }
     }
+	
+	/*
+    * Return array
+	* @attr
+	*/
+	public static function build_shortcodes(){
+		$shortcodes = array(
+			'loop'=> array('dis'=>__('Loop'),'function'=>'loop_func'),
+			'site_title'=> array('dis'=>__('Site Title'),'function'=>'site_title_func'),
+			'site_tagline'=>array('dis'=> __('Site Tagline'),'function'=>'site_tagline_func'),
+			'site_url'=> array('dis'=>__('Site URL'),'function'=>'site_url_func'),
+			'date_today'=> array('dis'=>__('Date Today'),'function'=>'date_today_func'),
+			'from_date'=> array('dis'=>__('Date(From)'),'function'=>'from_date_func'),
+			'to_date'=> array('dis'=>__('Date(To)'),'function'=>'to_date_func'),
+			'categories'=> array('dis'=>__('Categories'),'function'=>'categories_func'),
+			'post_count'=>array('dis'=> __('Post Count'),'function'=>'post_count_func'),
+			'title'=> array('dis'=>__('Title'),'function'=>'title_func'),
+			'excerpt'=> array('dis'=>__('Excerpt'),'function'=>'excerpt_func'),
+			'content'=> array('dis'=>__('Content'),'function'=>'content_func'),
+			'permalink'=> array('dis'=>__('Permalink'),'function'=>'permalink_func'),
+			'date'=> array('dis'=>__('Date'),'function'=>'date_func'),
+			'author'=> array('dis'=>__('Author'),'function'=>'author_func'),
+			'author_photo'=> array('dis'=>__('Author Photo'),'function'=>'author_photo_func'),
+			'author_description'=> array('dis'=>__('Author Description'),'function'=>'author_description_func'),
+			'status'=> array('dis'=>__('Status'),'function'=>'status_func'),
+			'featured_image'=> array('dis'=>__('Featured Image'),'function'=>'featured_image_func'),
+			'category'=> array('dis'=>__('Category'),'function'=>'category_func'),
+			'tags'=> array('dis'=>__('Tags'),'function'=>'tags_func'),
+			'comments_count'=> array('dis'=>__('Comments Count'),'function'=>'comments_count_func')
+		);
+		return $shortcodes;
+	}
+
     /*
-    
     * Register template shortcodes
-    
     */
     public function register_tempalte_shortcodes() {
-        add_shortcode('site_title', array(
-            &$this,
-            'site_title_func'
-        ));
-        add_shortcode('site_tagline', array(
-            &$this,
-            'site_tagline_func'
-        ));
-        add_shortcode('site_url', array(
-            &$this,
-            'site_url_func'
-        ));
-        add_shortcode('date_today', array(
-            &$this,
-            'date_today_func'
-        ));
-        add_shortcode('from_date', array(
-            &$this,
-            'from_date_func'
-        ));
-        add_shortcode('to_date', array(
-            &$this,
-            'to_date_func'
-        ));
-        add_shortcode('categories', array(
-            &$this,
-            'categories_func'
-        ));
-        add_shortcode('post_count', array(
-            &$this,
-            'post_count_func'
-        ));
-        add_shortcode('loop', array(
-            &$this,
-            'loop_func'
-        ));
-        add_shortcode('title', array(
-            &$this,
-            'title_func'
-        ));
-        add_shortcode('excerpt', array(
-            &$this,
-            'excerpt_func'
-        ));
-        add_shortcode('content', array(
-            &$this,
-            'content_func'
-        ));
-        add_shortcode('permalink', array(
-            &$this,
-            'permalink_func'
-        ));
-        add_shortcode('date', array(
-            &$this,
-            'date_func'
-        ));
-        add_shortcode('author', array(
-            &$this,
-            'author_func'
-        ));
-        add_shortcode('author_photo', array(
-            &$this,
-            'author_photo_func'
-        ));
-        add_shortcode('author_description', array(
-            &$this,
-            'author_description_func'
-        ));
-        add_shortcode('status', array(
-            &$this,
-            'status_func'
-        ));
-        add_shortcode('featured_image', array(
-            &$this,
-            'featured_image_func'
-        ));
-        add_shortcode('category', array(
-            &$this,
-            'category_func'
-        ));
-        add_shortcode('tags', array(
-            &$this,
-            'tags_func'
-        ));
-        add_shortcode('comments_count', array(
-            &$this,
-            'comments_count_func'
-        ));
+        $shortcodes = shortcode::build_shortcodes();
+		foreach($shortcodes as $code=>$props){
+			add_shortcode($code, array( $this, $props['function'] ));
+		}
     }
+	
+	public static function get_template_shortcodes($template='body'){
+		switch($template){
+			case 'body':
+				$shortcodes = shortcode::build_shortcodes();
+				$usingCodes = array(
+					'loop','site_title','site_tagline','site_url','date_today',
+					'from_date','to_date','categories','post_count'
+				);
+				$returning = array();
+				foreach($shortcodes as $code=>$props){
+					if(in_array($code,$usingCodes)){
+						$returning[$code]= $props['dis'];
+					}
+				}
+				return $returning;
+				break;
+			case 'loop':
+				$shortcodes = shortcode::build_shortcodes();
+				$usingCodes = array(
+					'title','excerpt','content','permalink',
+					'date','author','author_photo','author_description',
+					'status','featured_image','category','tags','comments_count'
+				);
+				$returning = array();
+				foreach($shortcodes as $code=>$props){
+					if(in_array($code,$usingCodes)){
+						$returning[$code]= $props['dis'];
+					}
+				}
+				return $returning;
+				break;
+		}
+	}
+	
+	
+	
+	
+	
     /*
-    
     * Display download button
-    
     */
     public function apply_download_button($atts) {
         $link                  = '';
@@ -128,9 +109,7 @@ class shortcode {
         return $link;
     }
     /*
-    
     * Return post content
-    
     */
     public function content_func() {
         global $post;
@@ -141,9 +120,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post excerpt
-    
     */
     public function excerpt_func() {
         global $post;
@@ -154,11 +131,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post tags list
-    
     * @atts - array
-    
     */
     public function tags_func($atts) {
         global $post;
@@ -180,11 +154,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post category list
-    
     * @atts - array
-    
     */
     public function category_func($atts) {
         global $post;
@@ -206,11 +177,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post featured image
-    
     * @atts - array
-    
     */
     public function featured_image_func($atts) {
         global $post;
@@ -224,9 +192,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post status
-    
     */
     public function status_func() {
         global $post;
@@ -236,9 +202,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post author description
-    
     */
     public function author_description_func() {
         global $post;
@@ -248,11 +212,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post author photo
-    
     * @atts - array
-    
     */
     public function author_photo_func($atts) {
         global $post;
@@ -265,10 +226,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post author
-    
-    */
+	*/
     public function author_func() {
         global $post;
         $post = $this->single;
@@ -277,11 +236,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post date
-    
     * @atts - array
-    
     */
     public function date_func($atts) {
         global $post;
@@ -294,9 +250,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post permalink
-    
     */
     public function permalink_func() {
         $post = $this->single;
@@ -304,9 +258,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return post title
-    
     */
     public function title_func() {
         global $post;
@@ -316,9 +268,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return comment count
-    
     */
     public function comments_count_func() {
         global $post, $structure;
@@ -328,9 +278,7 @@ class shortcode {
         return $num;
     }
     /*
-    
     * Return loop html
-    
     */
     public function loop_func() {
         global $catpdf_core;
@@ -344,9 +292,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return found post count
-    
     */
     public function post_count_func() {
         global $catpdf_core;
@@ -354,11 +300,8 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return active categories
-    
     * @atts - array
-    
     */
     public function categories_func($atts) {
         global $structure;
@@ -375,36 +318,28 @@ class shortcode {
         return substr($item, 0, -strlen($delimiter));
     }
     /*
-    
     * Return site title
-    
     */
     public function site_title_func() {
         $item = get_bloginfo('name');
         return $item;
     }
     /*
-    
     * Return site tagline
-    
     */
     public function site_tagline_func() {
         $item = get_bloginfo('description');
         return $item;
     }
     /*
-    
     * Return site url
-    
     */
     public function site_url_func() {
         $item = get_bloginfo('url');
         return $item;
     }
     /*
-    
     * Return today's date
-    
     */
     public function date_today_func($atts) {
         extract(shortcode_atts(array(
@@ -414,9 +349,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return filter from date
-    
     */
     public function from_date_func($atts) {
         global $structure;
@@ -431,9 +364,7 @@ class shortcode {
         return $item;
     }
     /*
-    
     * Return filter to date
-    
     */
     public function to_date_func($atts) {
         global $structure;

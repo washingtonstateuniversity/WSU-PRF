@@ -1,7 +1,7 @@
 <div id="catpdf-wrap" class="wrap">
   <div class="icon32" id="icon-options-general"><br>
   </div>
-  <h2><?php echo CONCATENATEDPDF_NAME.' '.__('Options'); ?></h2>
+  <h2><?php echo CATPDF_NAME.' '.__('Options'); ?></h2>
   <?php if( isset($message) && $message!='' ) echo $message; ?>
   <div id="form-wrap">
     <form id="catpdf_form" method="post">
