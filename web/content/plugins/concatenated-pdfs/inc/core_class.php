@@ -290,7 +290,7 @@ class catpdf_core {
         $data['select_ors']    = array(
             'portrait', 'landscape'
         );
-        $data['option_url']    = $tool_url;
+        $data['option_url']    = "";//$tool_url;
         $data['templates']     = $this->get_template();
         $data['message']       = $this->get_message();
         // Display export form
@@ -710,7 +710,7 @@ class catpdf_core {
             $head_html .= '<link type="text/css" rel="stylesheet" href="' . get_stylesheet_uri() . '">';
         }
         $head_html .= '<link type="text/css" rel="stylesheet" href="' . PDF_STYLE . '">';
-        $head_html .= '</head>';
+        $head_html_tag = '</head>';
 		
 		
 		$bodycolor="#f5f3e9";
@@ -725,99 +725,87 @@ class catpdf_core {
 		
 		$padding="{$topPad} {$rightPad} {$bottomPad} {$leftPad}";
 		
+
+        $body = '<body>';
+
+        $script = '<script type="text/php">
+			if ( isset($pdf) ) {
+				$header = "'.addslashes($pageheader).'";
+				$footer = "'.addslashes($pagefooter).'";
+				$w = $pdf->get_width();
+				$h = $pdf->get_height();
+				$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
+				$size = 12;
+				$pnum=$pdf->get_page_number()-1;
+				$pcount=$pdf->get_page_count()-1;	
+					
+				$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
+				
+				
+				// Open the object: all drawing commands will
+				// go to the object instead of the current page
+				$footer = $pdf->open_object();
+					$pageText1 =  " {$footer} " ;
+					$y1 = $h - 34;
+					$x1 = $w - 15 - Font_Metrics::get_text_width($pageText1, $font, $size);
+					$pdf->text($x1, $y1, $pageText1, $font, $size);
+					
+					
 		
+					$pageText = $pnum . " of " . $pcount;
+					$y = $h - 20;
+					$x = $w - 15 - Font_Metrics::get_text_width($pageText, $font, $size);
+					$pdf->text($x, $y, $pageText, $font, $size);
 		
-		
+					// Draw a line along the bottom
+					$line_height=1;
+					$color = array(125,125,125);
+					$y = $h - 2 * $line_height - 24;
+					$pdf->line(16, $y, $w - 16, $y, $color, 1);
+
+					//image
+					$w = $pdf->get_width();
+					$h = $pdf->get_height();
+					// Add a logo
+					$img_w = 25; 
+					$img_h = 25; 		
+					$pdf->image("../../content/themes/cbn/img/wsuaa-logo.png", "png", $h-$img_h, 75, $img_w, $img_h);
+					
+				// Close the object (stop capture)
+				$pdf->close_object();
+				
+				// Add the object to every page. You can
+				// also specify "odd" or "even"
+				$pdf->add_object($footer, "all");	
+
+				
+				
+				//Header
+				$pageHeaderText =  "This is the header. {$header}" ;
+				$t_y = 0 + '.($headerHeight/3).';
+				$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
+				$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
+				
+				/*if($pagenum>1){	}*/
+			
+			} 
+		/**/
+			</script>';//http://stackoverflow.com/a/14089936/746758 look to this		
+
 		//replace this with a linked path to a selected css file
-        $head_html .= '<style>' . strip_tags($options['customcss']) . '
-		html,body {
-			font-family: sans-serif;
-			text-align: justify;
-			background-color:'.$bodycolor.';
-		}
-		body {padding:'.$padding.';}
-		
-		
+        $head_style = '
+		<style>
+			' . strip_tags($options['customcss']) . '
+			html,body {
+				font-family: sans-serif;
+				text-align: justify;
+				background-color:'.$bodycolor.';
+			}
+			body {padding:'.$padding.';}
 		</style>';
-        $head_html .= '<body>
-
-    <script type="text/php">
-	if ( isset($pdf) ) {
-		$header = "'.$pageheader.'";
-		$footer = "'.$pagefooter.'";
-		$w = $pdf->get_width();
-		$h = $pdf->get_height();
-		$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
-		$size = 12;
-		$pnum=$pdf->get_page_number()-1;
-		$pcount=$pdf->get_page_count()-1;	
-			
-		$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
-		
-		
-		// Open the object: all drawing commands will
-		// go to the object instead of the current page
-		$footer = $pdf->open_object();
-		
-
-			$pageText1 =  " {$footer} " ;
-			$y1 = $h - 34;
-			$x1 = $w - 15 - Font_Metrics::get_text_width($pageText1, $font, $size);
-			$pdf->text($x1, $y1, $pageText1, $font, $size);
-			
-			
-
-			$pageText = $pnum . " of " . $pcount;
-			$y = $h - 20;
-			$x = $w - 15 - Font_Metrics::get_text_width($pageText, $font, $size);
-			$pdf->text($x, $y, $pageText, $font, $size);
-
-			// Draw a line along the bottom
-			$line_height=1;
-			$color = array(125,125,125);
-			$y = $h - 2 * $line_height - 24;
-			$pdf->line(16, $y, $w - 16, $y, $color, 1);
-		// Close the object (stop capture)
-		$pdf->close_object();
-		
-		// Add the object to every page. You can
-		// also specify "odd" or "even"
-		$pdf->add_object($footer, "all");
-			
-		// Open the object: all drawing commands will
-		// go to the object instead of the current page
-		$footerImg = $pdf->open_object();	
-			$w = $pdf->get_width();
-			$h = $pdf->get_height();
-			// Add a logo
-			$img_w = 25; 
-			$img_h = 25; 		
-			$pdf->image("../../content/themes/cbn/img/wsuaa-logo.png", "png", $h-$img_h, 75, $img_w, $img_h); 
-		
-		// Close the object (stop capture)
-		$pdf->close_object();
-		
-		// Add the object to every page. You can
-		// also specify "odd" or "even"
-		$pdf->add_object($footerImg, "all");
-		
-		//Header
-		$pageHeaderText =  "This is the header. {$header}" ;
-		$t_y = 0 + '.($headerHeight/3).';
-		$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
-		$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
-		
-		/*if($pagenum>1){	}*/
-	
-	} 
-/**/
-    </script>';
-//http://stackoverflow.com/a/14089936/746758 look to this		
-
-
 
 		
-        $this->head  = $head_html;
+        $this->head  = $head_html.$head_style.$head_html_tag.$body.$script;
         $footer_html = '</body>';
         $footer_html .= '</html>';
         $this->foot = $footer_html;
