@@ -331,6 +331,7 @@ class catpdf_core {
 	    template_loop text,
 	    template_body text,
 		template_pageheader text,
+		template_pagefooter text,
 		create_by mediumint(9) NOT NULL,
 		create_date datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 	    UNIQUE KEY id (template_id)
@@ -363,6 +364,8 @@ class catpdf_core {
                 'template_loop' => $default_template['loop'],
                 'template_body' => $default_template['body'],
 				'template_pageheader' => $default_template['pageheader'],
+				'template_pagefooter' => $default_template['pagefooter'],
+				
             );
             // Insert template
             $this->add_this($data);
@@ -379,7 +382,7 @@ class catpdf_core {
 		
 		// Construct template loop
 		$pageheadertemplate = '[site_title],[site_tagline]';
-		
+		$pagefootertemplate = '[page numbers]';
 		
 		
         if ($type == 'single') {
@@ -416,6 +419,7 @@ class catpdf_core {
         $temp['loop'] = $looptemplate;
         $temp['body'] = $bodytemplate;
 		$temp['pageheader'] = $pageheadertemplate;
+		$temp['pagefooter'] = $pagefootertemplate;
         return $temp;
     }
     /*
@@ -446,6 +450,7 @@ class catpdf_core {
             'template_loop' => $default_template['loop'],
             'template_body' => $default_template['body'],
 			'template_pageheader' => $default_template['pageheader'],
+			'template_pagefooter' => $default_template['pagefooter']
         );
         return (object) $arr;
     }
@@ -516,6 +521,7 @@ class catpdf_core {
                 'template_loop' => $this->post['looptemplate'],
                 'template_body' => $this->post['bodytemplate'],
 				'template_pageheader' => $this->post['pageheadertemplate'],
+				'template_pagefooter' => $this->post['pagefootertemplate'],
                 'template_description' => $this->post['description']
             );
             // Insert template
@@ -541,6 +547,7 @@ class catpdf_core {
                 'template_description' => $this->post['description'],
                 'template_body' => $this->post['bodytemplate'],
 				'template_pageheader' => $this->post['pageheadertemplate'],
+				'template_pagefooter' => $this->post['pagefootertemplate'],
                 'template_loop' => $this->post['looptemplate']
             );
             $this->update_this($data);
@@ -683,6 +690,7 @@ class catpdf_core {
         $head_html .= '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
         $title = 'Post PDF Download';
 		$pageheader="";
+		$pagefooter="";
         if (!empty($this->template) && isset($options['title']) && $options['title'] !== '') {
             $template    = $this->template;
             $title       = $options['title'];
@@ -692,6 +700,7 @@ class catpdf_core {
             $title       = str_replace('%template', $template->template_name, $title);
             $this->title = $title;
             $pageheader  = $this->filter_shortcodes('pageheader');
+			$pagefooter  = $this->filter_shortcodes('pagefooter');
         } else {
             $title       = CONCATENATEDPDF_BASE_NAME . '-' . date('m-d-Y');
             $this->title = $title;
@@ -734,7 +743,8 @@ class catpdf_core {
 
     <script type="text/php">
 	if ( isset($pdf) ) {
-
+		$header = "'.$pageheader.'";
+		$footer = "'.$pagefooter.'";
 		$w = $pdf->get_width();
 		$h = $pdf->get_height();
 		$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
@@ -750,7 +760,7 @@ class catpdf_core {
 		$footer = $pdf->open_object();
 		
 
-			$pageText1 =  " Page " ;
+			$pageText1 =  " {$footer} " ;
 			$y1 = $h - 34;
 			$x1 = $w - 15 - Font_Metrics::get_text_width($pageText1, $font, $size);
 			$pdf->text($x1, $y1, $pageText1, $font, $size);
@@ -792,7 +802,7 @@ class catpdf_core {
 		$pdf->add_object($footerImg, "all");
 		
 		//Header
-		$pageHeaderText =  "This is the header. '.$pageheader.'" ;
+		$pageHeaderText =  "This is the header. {$header}" ;
 		$t_y = 0 + '.($headerHeight/3).';
 		$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
 		$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
@@ -832,6 +842,9 @@ class catpdf_core {
         } elseif ($tmp_type == 'pageheader') {
             $arr = $items['body'];
             $tmp = $template->template_pageheader;
+        } elseif ($tmp_type == 'pagefooter') {
+            $arr = $items['body'];
+            $tmp = $template->template_pagefooter;
         }
         preg_match_all('/' . $pattern . '/s', $tmp, $matches);
         $html = $tmp;
