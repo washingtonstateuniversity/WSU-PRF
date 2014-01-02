@@ -6,40 +6,33 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class catpdf_pages {
     public $dompdf = NULL;
     public $message = array();
-    //public $post = array();
     public $title = '';
-    //public $posts;
     function __construct() {
-		global $catpdf_params;
+		global $_params;
         if (is_admin()) {
-            // Initailize admin
-            add_action('admin_init', array( $this, 'admin_init' ));
-            add_action('admin_menu', array( $this, 'admin_menu' ));
-        }
-        if (isset($_POST)) {
-            $catpdf_params = $_POST;
-		
-            // Check if option save is performed
-            if (isset($catpdf_params['catpdf_save_option'])) {
-                // Add update option action hook
-                add_action('init', array( $this, 'update_options' ));
-            }
-            // Check if pdf export is performed
-            if (isset($catpdf_params['catpdf_export'])) {
-                // Add export hook
-                add_action('init', array( $this, 'export' ));
-            }
-            // Check if template save is performed
-            if (isset($catpdf_params['catpdf_save'])) {
-                if ($catpdf_params['templateid'] == '') {
-                    // Add save template action hook
-                    add_action('init', array( $this, 'add_template' ));
-                } else {
-                    // Add update template action hook
-                    add_action('init', array( $this, 'update_template' ));
-                }
-            }
-        }
+			if (isset($_params)) {
+				// Check if option save is performed
+				if (isset($_params['catpdf_save_option'])) {
+					// Add update option action hook
+					add_action('init', array( $this, 'update_options' ));
+				}
+				// Check if pdf export is performed
+				if (isset($_params['catpdf_export'])) {
+					// Add export hook
+					add_action('init', array( $this, 'export' ));
+				}
+				// Check if template save is performed
+				if (isset($_params['catpdf_save'])) {
+					if ($_params['templateid'] == '') {
+						// Add save template action hook
+						add_action('init', array( $this, 'add_template' ));
+					} else {
+						// Add update template action hook
+						add_action('init', array( $this, 'update_template' ));
+					}
+				}
+			}
+		}
         // Check if post download is performed
         if (isset($_GET['catpdf_dl'])) {
             // Add download action hook
@@ -50,6 +43,9 @@ class catpdf_pages {
             // Add download action hook
             add_action('init', array( $this, 'download_posts' ));
         }
+		
+		add_action('admin_init', array( $this, 'admin_init' ));
+		add_action('admin_menu', array( $this, 'admin_menu' ));
     }
     /*
      * Initailize plugin admin part
@@ -58,15 +54,15 @@ class catpdf_pages {
 		global $wp_scripts;
         // Enque style and script		
         wp_enqueue_script('jquery-ui-core');
-        wp_enqueue_script('jquery-ui-datepicker', CATPDF_PLUGIN_URL . 'js/ui/jquery.ui.datepicker.js', array(
+        wp_enqueue_script('jquery-ui-datepicker', CATPDF_URL . 'js/ui/jquery.ui.datepicker.js', array(
             'jquery'
         ), '1.9.0', 'all');
-		wp_enqueue_style('jquery-ui-datepicker', CATPDF_PLUGIN_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+		wp_enqueue_style('jquery-ui-datepicker', CATPDF_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
 		
-        wp_enqueue_script('jquery-ui-tabs', CATPDF_PLUGIN_URL . 'js/ui/jquery.ui.tabs.js', array(
+        wp_enqueue_script('jquery-ui-tabs', CATPDF_URL . 'js/ui/jquery.ui.tabs.js', array(
             'jquery'
         ), '1.9.0', 'all');		
-		wp_enqueue_style('jquery-ui-tabs', CATPDF_PLUGIN_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+		wp_enqueue_style('jquery-ui-tabs', CATPDF_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
 		// get registered script object for jquery-ui
 		$ui = $wp_scripts->query('jquery-ui-core');
 	 
@@ -75,20 +71,17 @@ class catpdf_pages {
 		$url = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
 		wp_enqueue_style('jquery-ui-smoothness', $url, false, null);
 
-		
-		
-        
-        wp_enqueue_script('catpdf-js', CATPDF_PLUGIN_URL . 'js/catpdf.custom.js', array(
+        wp_enqueue_script('catpdf-js', CATPDF_URL . 'js/catpdf.custom.js', array(
             'jquery'
         ), '', 'all');
-        wp_enqueue_style('catpdfport-style', CATPDF_PLUGIN_URL . 'css/style.css', false, '1.9.0', 'all');
+        wp_enqueue_style('catpdfport-style', CATPDF_URL . 'css/style.css', false, '1.9.0', 'all');
     }
     /*
      * Add plugin menu
      */
     public function admin_menu() {
         // Register menu
-        add_menu_page(CATPDF_NAME, CATPDF_NAME, 'manage_options', CATPDF_BASE_NAME, array( &$this, 'option_page' ), CATPDF_PLUGIN_URL . 'images/nav-icon.png');
+        add_menu_page(CATPDF_NAME, CATPDF_NAME, 'manage_options', CATPDF_BASE_NAME, array( &$this, 'option_page' ), CATPDF_URL . 'images/nav-icon.png');
         // Register sub-menu
         add_submenu_page(CATPDF_BASE_NAME, _('Download PDF'), _('Download PDF'), 'manage_options', 'catpdf-download-pdf', array( $this, 'download_page' ));
         add_submenu_page(CATPDF_BASE_NAME, _('Template Manager'), _('Template Manager'), 'manage_options', 'catpdf-template-manager', array( $this, 'template_manager_page' ));
@@ -105,7 +98,7 @@ class catpdf_pages {
 		$data['body_templateShortCodes']=$body_templateShortCodes;
 		$loop_templateShortCodes= $shortcode->get_template_shortcodes('loop');
 		$data['loop_templateShortCodes']=$loop_templateShortCodes;
-        $this->view(CATPDF_PLUGIN_PATH . '/includes/views/template.php', $data);
+        $this->view(CATPDF_PATH . '/includes/views/template.php', $data);
     }
 
 	
@@ -115,7 +108,7 @@ class catpdf_pages {
     public function template_manager_page() {
 		global $catpdf_templates,$shortcode;
         // Include list class
-        include(CATPDF_PLUGIN_PATH . '/includes/list_class.php');
+        include(CATPDF_PATH . '/includes/list_class.php');
         $wp_list_table = new template_list();
         $wp_list_table->prepare_items();
 		
@@ -128,14 +121,14 @@ class catpdf_pages {
             $data['on_edit'] = $catpdf_templates->get_template($_GET['template']);
             $data['message'] = $this->get_message();
             // Display template form
-            $this->view(CATPDF_PLUGIN_PATH . '/includes/views/template.php', $data);
+            $this->view(CATPDF_PATH . '/includes/views/template.php', $data);
         } else {
             ob_start();
             $wp_list_table->display();
             $data['table']   = ob_get_clean();
             $data['message'] = $this->get_message();
             // Display template list
-            $this->view(CATPDF_PLUGIN_PATH . '/includes/views/template_manager.php', $data);
+            $this->view(CATPDF_PATH . '/includes/views/template_manager.php', $data);
         }
     }
     /*
@@ -191,7 +184,7 @@ class catpdf_pages {
         $data['templates']     = $catpdf_templates->get_template();
         $data['message']       = $this->get_message();
         // Display export form
-        $this->view(CATPDF_PLUGIN_PATH . '/includes/views/export.php', $data);
+        $this->view(CATPDF_PATH . '/includes/views/export.php', $data);
     }
 	
     /*-------------------------------------------------------------------------*/
@@ -201,22 +194,21 @@ class catpdf_pages {
      * Update plugin option
      */
     public function update_options() {
-		global $post;
-        $options = $post;
+		global $_params;
+        $options = $_params;
         update_option('catpdf_options', $options);
     }
     /*
      * Display "Option" page
      */
     public function option_page() {
-		global $catpdf_templates;
-        // Get options
-        $options           = get_option('catpdf_options');
-        $data['options']   = $options;
+		global $catpdf_templates,$catpdf_data;
+        // Set options
+        $data['options']   = $catpdf_data->get_options();
         // Get templates
         $data['templates'] = $catpdf_templates->get_template();
         // Display option form
-        $this->view(CATPDF_PLUGIN_PATH . '/includes/views/options.php', $data);
+        $this->view(CATPDF_PATH . '/includes/views/options.php', $data);
     }
     /*-------------------------------------------------------------------------*/
     /* -Export- 															   */
@@ -225,11 +217,11 @@ class catpdf_pages {
      * Perform export pdf
      */
     public function export() {
-        global $dompdf, $catpdf_output, $catpdf_params;
+        global $dompdf, $catpdf_output, $_params;
         
         $content     = $catpdf_output->custruct_template();
 		$dompdf->load_html($content);
-        $dompdf->set_paper($catpdf_params['papersize'], $catpdf_params['orientation']);
+        $dompdf->set_paper($_params['papersize'], $_params['orientation']);
         $dompdf->render();
 
         $dompdf->stream(trim($catpdf_output->title) . ".pdf");
@@ -259,7 +251,7 @@ class catpdf_pages {
     public function download_post() {
         global $dompdf, $catpdf_output,$post;
         $id          = $_GET['catpdf_dl'];
-        $post        = $catpdf_output->_get_data($id);
+        $post        = $catpdf_output->query_posts($id);
 
         $single      = $post[0];
         $filenmae    = preg_replace('/[^a-z0-9]/i', '_', $single->post_title);

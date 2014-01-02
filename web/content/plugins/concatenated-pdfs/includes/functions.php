@@ -9,7 +9,7 @@ function catpdf_post_download() {
     $link      = '';
     if ($post_type == 'post') {
         $url  = add_query_arg('catpdf_dl', get_the_ID());
-        $link = '<a href="' . $url . '"><img src="' . CATPDF_PLUGIN_URL . 'images/download-icon.png"></a>';
+        $link = '<a href="' . $url . '"><img src="' . CATPDF_URL . 'images/download-icon.png"></a>';
     }
     return $link;
 }

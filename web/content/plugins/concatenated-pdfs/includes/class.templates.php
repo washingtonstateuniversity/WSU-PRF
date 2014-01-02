@@ -106,21 +106,7 @@ class catpdf_templates {
         $table_name    = $wpdb->prefix . "catpdf_template";
         $rows_affected = $wpdb->update($table_name, $data, $where);
     }
-    /*
-     * Check if entry already exist
-     * @column - string
-     * @value - string
-     */
-    private function _is_exist($column = '', $value = '') {
-        global $wpdb;
-        $table_name = $wpdb->prefix . "catpdf_template";
-        $result     = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE " . $column . " = '" . $value . "'");
-        if (count($result) > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+
     /*
      * Return template data
      * @id - string

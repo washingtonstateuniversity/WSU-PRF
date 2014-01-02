@@ -12,31 +12,51 @@ ini_set('memory_limit', '-1');
 define('CATPDF_NAME', 'Concatenated PDFs');
 define('CATPDF_BASE_NAME', 'concatenated-pdfs');
 define('CATPDF_VERSION', '0.1');
-define('CATPDF_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('CATPDF_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('CATPDF_STYLE', CATPDF_PLUGIN_PATH . '/css/style.css');
-define('PDF_STYLE', CATPDF_PLUGIN_URL . 'css/pdf_style.css');
+define('CATPDF_URL', plugin_dir_url(__FILE__));
+define('CATPDF_PATH', plugin_dir_path(__FILE__));
+define('CATPDF_STYLE', CATPDF_PATH . '/css/style.css');
+define('PDF_STYLE', CATPDF_URL . 'css/pdf_style.css');
 
 
+/* things still to do
+-remove the use themes templates inlue of per template css path link
+-must beable to sort on optional items like tax/type etc
+-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
+-provide more areas to controll
+-make the index
+-create ruls for the bookmarking
 
-// Include core
-include(CATPDF_PLUGIN_PATH . '/includes/class.core.php');
-$catpdf_core = new catpdf_core();// Instantiate core class
 
+*/
+if ( ! class_exists( 'concatenatedPDFsLoad' ) ) {
 
-// Set option values
-function catpdf_initializer() {
-    // Instantiate core class
-    $catpdf_core = new catpdf_core();
-    // Call plugin initializer
-    $catpdf_core->install_init();
+	class concatenatedPDFsLoad {
+		public $catpdf_core = NULL;
+		public function __construct() {
+			global $catpdf_core;
+			// Include core
+			include(CATPDF_PATH . '/includes/class.core.php');
+			$catpdf_core = new catpdf_core();// Instantiate core class
+
+			register_activation_hook(__CLASS__, 'catpdf_initializer');
+			register_deactivation_hook(__CLASS__, 'catpdf_remove');
+		}
+		// Set option values
+		function catpdf_initializer() {
+			global $catpdf_core;
+			$catpdf_core->install_init();		// Call plugin initializer
+		}
+		// Unset option values
+		function catpdf_remove() {
+			delete_option('catpdf_options');	// Delete plugin options
+		}
+		
+	}
+	/*
+	 * Initiate the plug-in.
+	 */
+	global $concatenatedPDFs;
+	$concatenatedPDFs = new concatenatedPDFsLoad();
 }
-register_activation_hook(__FILE__, 'catpdf_initializer');
 
-// Unset option values
-function catpdf_remove() {
-    // Delete plugin options
-    delete_option('catpdf_options');
-}
-register_deactivation_hook(__FILE__, 'catpdf_remove');
 ?>

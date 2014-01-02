@@ -59,7 +59,7 @@
                 <?php
                     $args = array( "textarea_name" => "pageheadertemplate",
                         'tinymce' => array( 
-                            'content_css' => CATPDF_PLUGIN_URL . 'css/pdf_style.css' 
+                            'content_css' => CATPDF_URL . 'css/pdf_style.css' 
                     ));
                     wp_editor( ( isset( $on_edit )?$on_edit->template_pageheader:'' ) , "pageheadertemplate", $args );
                     ?>
@@ -103,7 +103,7 @@
                 <?php
                     $args = array( "textarea_name" => "pagefootertemplate",
                         'tinymce' => array( 
-                            'content_css' => CATPDF_PLUGIN_URL . 'css/pdf_style.css' 
+                            'content_css' => CATPDF_URL . 'css/pdf_style.css' 
                     ));
                     wp_editor( ( isset( $on_edit )?$on_edit->template_pagefooter:'' ) , "pagefootertemplate", $args );
                     ?>
@@ -154,7 +154,7 @@
                     $args = array( 
                         "textarea_name" => "bodytemplate",
                         'tinymce' => array( 
-                            'content_css' => CATPDF_PLUGIN_URL . 'css/pdf_style.css' 
+                            'content_css' => CATPDF_URL . 'css/pdf_style.css' 
                        ));
                     wp_editor( ( isset( $on_edit )?$on_edit->template_body:'' ) , "bodytemplate", $args );
             
@@ -197,7 +197,7 @@
                     <?php
                     $args = array( "textarea_name" => "looptemplate",
                         'tinymce' => array( 
-                            'content_css' => CATPDF_PLUGIN_URL . 'css/pdf_style.css' 
+                            'content_css' => CATPDF_URL . 'css/pdf_style.css' 
                     ));
                     wp_editor( ( isset( $on_edit )?$on_edit->template_loop:'' ) , "looptemplate", $args );
                     ?>
