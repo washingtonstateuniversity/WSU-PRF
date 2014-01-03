@@ -88,5 +88,9 @@ h1.CoverTitle {
 
 
 #page_numbers{position:absolute; width:150px; top:12.5px; right:0px; text-align: center;}
+#page_numbers #pn_text{display:inline-block;position:absolute; width:150px; top:0px; right:0px; text-align: center;}
+#page_numbers #pn_number{display:inline-block;position:absolute; width:150px; top:15px; right:0px; text-align: center;}
+
+
 #logo{position:absolute; height:50px; top:1px; left:12.5px; }
 

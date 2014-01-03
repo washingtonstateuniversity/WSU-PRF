@@ -41,7 +41,8 @@ class shortcode {
 			'category'=> array('dis'=>__('Category'),'function'=>'category_func'),
 			'tags'=> array('dis'=>__('Tags'),'function'=>'tags_func'),
 			'comments_count'=> array('dis'=>__('Comments Count'),'function'=>'comments_count_func'),
-			'version_count'=> array('dis'=>__('Number of versions'),'function'=>'version_count_func')
+			'version_count'=> array('dis'=>__('Number of versions'),'function'=>'version_count_func'),
+			'page_numbers'=> array('dis'=>__('Page Numbering block'),'function'=>'page_numbers_func')
 		);
 		return $shortcodes;
 	}
@@ -64,7 +65,7 @@ class shortcode {
 				$shortcodes = shortcode::build_shortcodes();
 				$usingCodes = array(
 					'loop','site_title','site_tagline','site_url','date_today',
-					'from_date','to_date','categories','post_count'
+					'from_date','to_date','categories','post_count','page_numbers'
 				);
 				$returning = array();
 				foreach($shortcodes as $code=>$props){
@@ -115,6 +116,22 @@ class shortcode {
         $link   = sprintf('<a href="%1$s">%2$s</a>', $dllink, $text);
         return $link;
     }
+	
+	
+	
+	
+    /*
+    * Return page numbering block
+    */
+    public function page_numbers_func($atts) {
+		extract(shortcode_atts(array(
+			'label' => '{PTx}',
+			'separator' => '{P#S}'
+		), $atts));
+		$block='<div id="page_numbers"><span id="pn_text">'.$label.'</span><span id="pn_number">{P#}'.$separator.'{PT#}</span></div>';
+        return $block;
+    }	
+	
     /*
     * Return post content
     */

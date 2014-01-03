@@ -119,7 +119,7 @@ public function getTitle($post){
 		$template    = $this->template;
 		$this->title       = $this->buildFileName($template,$options);
 		$pageheader  = $this->filter_shortcodes('pageheader').$pagew."::".$pageh;
-		$pagefooter  = '<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /><div id="page_numbers">{pg#} of {pgT}</div>';//$this->filter_shortcodes('pagefooter');
+		$pagefooter  = '<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" />'.$this->filter_shortcodes('pagefooter');//$this->filter_shortcodes('pagefooter');
 
 		
 		/* there should be a base html template? */
@@ -197,9 +197,15 @@ $script="";
 					$content = str_replace( \'{page\'.$chapter.\'}\' , $pagenumber_str, $content );
 					$content = str_replace( \'{text\'.$chapter.\'}\' , $text_str, $content );
 				}
-				if(strpos($content,\'{pg#}\') !== false){
-					$content = str_replace( \'{pg#}\' , $p."", $content );
-					$content = str_replace( \'{pgT}\' , $count."", $content );
+				// using short var names as the dompdf will understand the 
+				// plachole length which is a problem when trying to format
+				if(strpos($content,\'{P#}\') !== false){
+					$pn_text_str="PAGE";
+					$pn_sep_str="/";
+					if(strpos($content,\'{PTx}\') !== false){$content = str_replace( \'{PTx}\', $pn_text_str, $content );}
+					if(strpos($content,\'{P#}\') !== false){$content = str_replace( \'{P#}\', $p."", $content );}
+					if(strpos($content,\'{PT#}\') !== false){$content = str_replace( \'{PT#}\', $count."", $content );}
+					if(strpos($content,\'{P#S}\') !== false){$content = str_replace( \'{P#S}\', $pn_sep_str, $content );}
 					$p++;
 				}
 				$pdf->get_cpdf()->objects[$o]["c"]=$content;

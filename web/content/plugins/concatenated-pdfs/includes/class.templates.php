@@ -125,7 +125,7 @@ class catpdf_templates {
 		
 		// Construct template loop
 		$pageheadertemplate = '[site_title],[site_tagline]';
-		$pagefootertemplate = '[page numbers]';
+		$pagefootertemplate = '[page_numbers label="PAGE" separator="/"]';
 		
 		
         if ($type == 'single') {

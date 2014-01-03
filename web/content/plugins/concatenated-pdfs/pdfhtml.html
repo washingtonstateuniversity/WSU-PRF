@@ -10,7 +10,7 @@
 			body {padding:185px 75px 150px 55px;}/*note that the body is used as our sudo "page" it is our saffal base*/
 			i.page-break {page-break-after: always;border: 0;}
 			
-		</style></head><body><div id="head_area"><div class="wrap">prf,Just another WordPress site816::1056</div></div><div id="foot_area"><div class="wrap"><img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /><div id="page_numbers">{pg#} of {pgT}</div></div></div><script type="text/php">
+		</style></head><body><div id="head_area"><div class="wrap">prf,Just another WordPress site816::1056</div></div><div id="foot_area"><div class="wrap"><img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /><div id="page_numbers"><span id="pn_text">PAGE</span><span id="pn_number">{P#}/{PT#}</span></div></div></div><script type="text/php">
 			$GLOBALS["i"]=1;
 			$GLOBALS["indexpage"]=0;
 			$GLOBALS["chapters"] = array();
@@ -357,9 +357,15 @@ Complete and/or print as needed.</p></div></div><i class="page-break">%nbsp;</i>
 					$content = str_replace( '{page'.$chapter.'}' , $pagenumber_str, $content );
 					$content = str_replace( '{text'.$chapter.'}' , $text_str, $content );
 				}
-				if(strpos($content,'{pg#}') !== false){
-					$content = str_replace( '{pg#}' , $p."", $content );
-					$content = str_replace( '{pgT}' , $count."", $content );
+				// using short var names as the dompdf will understand the 
+				// plachole length which is a problem when trying to format
+				if(strpos($content,'{P#}') !== false){
+					$pn_text_str="PAGE";
+					$pn_sep_str="/";
+					if(strpos($content,'{PTx}') !== false){$content = str_replace( '{PTx}', $pn_text_str, $content );}
+					if(strpos($content,'{P#}') !== false){$content = str_replace( '{P#}', $p."", $content );}
+					if(strpos($content,'{PT#}') !== false){$content = str_replace( '{PT#}', $count."", $content );}
+					if(strpos($content,'{P#S}') !== false){$content = str_replace( '{P#S}', $pn_sep_str, $content );}
 					$p++;
 				}
 				$pdf->get_cpdf()->objects[$o]["c"]=$content;
