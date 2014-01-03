@@ -89,7 +89,7 @@ public function getTitle($post){
      * Return html structure
      */
     public function _html_structure() {
-		global $_params;
+		global $_params, $dompdf;
         $options   = get_option('catpdf_options');
         $head_html = '<!DOCTYPE html>';
         $head_html .= '<html>';
@@ -97,12 +97,14 @@ public function getTitle($post){
         $title = 'Post PDF Download';
 		$pageheader="";
 		$pagefooter="";
+		$pagew=$this->pointtopixelConvertion(CPDF_Adapter::$PAPER_SIZES[$_params['papersize']][2]);
+		$pageh=$this->pointtopixelConvertion(CPDF_Adapter::$PAPER_SIZES[$_params['papersize']][3]);
         if (!empty($this->template) && isset($options['title']) && $options['title'] !== '') {
             $template    = $this->template;
             $title       = $this->buildFileName($template,$options);
             $this->title = $title;
-            $pageheader  = $this->filter_shortcodes('pageheader');
-			$pagefooter  = $this->filter_shortcodes('pagefooter');
+            $pageheader  = $this->filter_shortcodes('pageheader').$pagew."::".$pageh;
+			$pagefooter  = '<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /><div id="page_numbers">{pg#} of {pgT}</div>';//$this->filter_shortcodes('pagefooter');
         } else {
             $title       = CATPDF_BASE_NAME . '-' . date('m-d-Y');
             $this->title = $title;
@@ -111,98 +113,43 @@ public function getTitle($post){
         if (isset($options['enablecss']) && $options['enablecss'] == 'on') {
             $head_html .= '<link type="text/css" rel="stylesheet" href="' . get_stylesheet_uri() . '">';
         }
+		
+		
+		
+		
         $head_html .= '<link type="text/css" rel="stylesheet" href="' . PDF_STYLE . '">';
         $head_html_tag = '</head>';
 		
+		$unit="px";
+		$bodycolor="#F0F0F0";		//@@!!OPTION REPLACE
 		
-		$bodycolor="#f5f3e9";
-		$opHeaderHeight="75px";
-		$headerHeight=(int)(trim(str_replace('px','',$opHeaderHeight)))*0.75;//point convertion
+		$topMargin="15";			//@@!!OPTION REPLACE
+		$headHeight="55";			//@@!!OPTION REPLACE
+		$headSep="15";				//@@!!OPTION REPLACE
+
+		$bottomMargin="15";			//@@!!OPTION REPLACE
+		$footHeight="25";			//@@!!OPTION REPLACE
+		$footSep="10";				//@@!!OPTION REPLACE
+		$footSkip=($footHeight+$footSep);//equal to bottom:{VAL}px
+
+		$pageHeadMargin= ($topMargin+$headHeight+$headSep);
+		$pageFootMargin=($bottomMargin+$footSkip);
+		$pagerightMargin="15";	//@@!!OPTION REPLACE
+		$pageleftMargin="15";		//@@!!OPTION REPLACE
 		
-		$opFooterHeight="50px";
+		$textBoxingWidth=$pagew-$pagerightMargin-$pageleftMargin;
 		
 		
-		$body_topPad="{$opHeaderHeight}";//should be building this
-		$body_bottomPad="{$opFooterHeight}";
-		$body_leftPad="0px";
-		$body_rightPad="0px";
-		
-		$body_vertpad=((int)(trim(str_replace('px','',$body_topPad))) + (int)(trim(str_replace('px','',$body_bottomPad))));
-		$body_horpad=((int)(trim(str_replace('px','',$body_leftPad))) + (int)(trim(str_replace('px','',$body_rightPad))));
-		
-		$body_padding="{$body_topPad} {$body_rightPad} {$body_bottomPad} {$body_leftPad}";
+		$page_padding="{$pageHeadMargin}{$unit} {$pagerightMargin}{$unit} {$pageFootMargin}{$unit} {$pageleftMargin}{$unit}";
 		
 
-        $body = '<body><div id="head_area">'.$pageheader.'</div><div id="foot_area">'.$pagefooter.'<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /></div>';
+        $body = '<body><div id="head_area"><div class="wrap">'.$pageheader.'</div></div><div id="foot_area"><div class="wrap">'.$pagefooter.'</div></div>';
 		$indexscriptglobals='<script type="text/php">
-			$font = Font_Metrics::get_font("helvetica", "bold");
 			$GLOBALS["i"]=1;
 			$GLOBALS["indexpage"]=0;
 			$GLOBALS["chapters"] = array();
 		</script>';
-        $script = '<script type="text/php">
-			if ( isset($pdf) ) {
-				$header = "'.addslashes($pageheader).'";
-				$footertext = "'.addslashes($pagefooter).'";
-				$w = $pdf->get_width();
-				$h = $pdf->get_height();
-				$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
-				$size = 12;
-				
-					/*
-					$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
-					
-					
-					// Open the object: all drawing commands will
-					// go to the object instead of the current page
-					$footer = $pdf->open_object();
-						$pnum=$pdf->get_page_number();
-						$pcount=$pdf->get_page_count();	
-					
-						$pageText1 =  " {$footertext} " ;
-						$y1 = $h - 34;
-						$x1 = $w - 15 - Font_Metrics::get_text_width($pageText1, $font, $size);
-						$pdf->text($x1, $y1, $pageText1, $font, $size);
-						
-						$pageText =  $PAGE_NUM." of ". $PAGE_COUNT;
-						$y = $h - 20;
-						$x = $w - 15 - Font_Metrics::get_text_width($pageText, $font, $size);
-						$pdf->text($x, $y, $pageText, $font, $size);
-			
-						// Draw a line along the bottom
-						$line_height=1;
-						$color = array(125,125,125);
-						$y = $h - 2 * $line_height - 24;
-						$pdf->line(16, $y, $w - 16, $y, $color, 1);
-	
-						//image
-						$w = $pdf->get_width();
-						$h = $pdf->get_height();
-						// Add a logo
-						$img_w = 25; 
-						$img_h = 25; 		
-						$pdf->image("../../content/themes/cbn/img/wsuaa-logo.png", "png", $h-$img_h, 75, $img_w, $img_h);
-						
-					// Close the object (stop capture)
-					$pdf->close_object();
-					
-					// Add the object to every page. You can
-					// also specify "odd" or "even"
-					$pdf->add_object($footer, "all");	
-	*/
-					
-					
-					//Header
-					/*$pageHeaderText =  "This is the header. {$header}" ;
-					$t_y = 0 + '.($headerHeight/3).';
-					$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
-					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);*/
-				/*if($pagenum>1){}	
-					*/
-			
-			} 
-			</script>';//http://stackoverflow.com/a/14089936/746758 look to this		
-
+$script="";
 		//replace this with a linked path to a selected css file
         $head_style = '
 		<style>
@@ -214,35 +161,26 @@ public function getTitle($post){
 				position: relative;
 			}
 			@page{}
-			#head_area{ position:fixed; top:0px;height:'.$opHeaderHeight.'; border:1px solid #494949;}
-			#foot_area{ position:fixed; bottom:0px;height:'.$opFooterHeight.'; border:1px solid #494949;}
-			body {padding:'.$body_padding.';}
-			i.page-break {
-			  page-break-after: always;
-			  border: 0;
-			}
-			#logo{ height:50px; top:12.5px; left:12.5px;  }
+			#head_area{ position:fixed;left:'.$pageleftMargin.$unit.';top:'.$topMargin.$unit.';height:'.$headHeight.$unit.'; width:'.$textBoxingWidth.$unit.'; }
+			#head_area .wrap{position:relative; width:100%; height:'.$headHeight.$unit.';}
+			#foot_area{ position:fixed;left:'.$pageleftMargin.$unit.';bottom:'.$footSkip.$unit.';height:'.$footHeight.$unit.';width:'.$textBoxingWidth.$unit.';}
+			#foot_area .wrap{position:relative; width:100%; height:'.$footHeight.$unit.';}
+			body {padding:'.$page_padding.';}/*note that the body is used as our sudo "page" it is our saffal base*/
+			i.page-break {page-break-after: always;border: 0;}
 		</style>';
 
-		
         $this->head  = $head_html.$head_style.$head_html_tag.$body.$indexscriptglobals.$script;
-		
-		
-		
-		
+
 		$indexer = '
 <script type="text/php">
 	$bs = $GLOBALS["backside"];
-	//var_dump($bs);
-	
-	$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
-	$size = 12;
 
-	
+	$count=$pdf->get_page_number();
 	$chapters=$GLOBALS["chapters"];
 	//var_dump($pdf->get_cpdf());
 	
 	$o=1;
+	$p=1;
 	foreach($pdf->get_cpdf()->objects as $obj){
 		foreach ($chapters as $chapter => $page) {
 			if(isset($pdf->get_cpdf()->objects[$o]["c"])){
@@ -252,26 +190,24 @@ public function getTitle($post){
 				$chapter_str	= "Chapter ".$chapter." ";
 				$pagenumber_str	= " p: ".$page["page"];
 				$text_str		= $page["text"]." ";
-
-				$content = str_replace( \'{%%chapter\'.$chapter.\'%%}\' , $chapter_str , $content );
-				$content = str_replace( \'{%%page\'.$chapter.\'%%}\' , $pagenumber_str , $content );
-				$content = str_replace( \'{%%text\'.$chapter.\'%%}\' , $text_str , $content );
-
+				if(strpos($content,\'{chapter\') !== false){
+					$content = str_replace( \'{chapter\'.$chapter.\'}\' , $chapter_str, $content );
+					$content = str_replace( \'{page\'.$chapter.\'}\' , $pagenumber_str, $content );
+					$content = str_replace( \'{text\'.$chapter.\'}\' , $text_str, $content );
+				}
+				if(strpos($content,\'{pg#}\') !== false){
+					$content = str_replace( \'{pg#}\' , $p."", $content );
+					$content = str_replace( \'{pgT}\' , $count."", $content );
+					$p++;
+				}
 				$pdf->get_cpdf()->objects[$o]["c"]=$content;
-
-
-
-				
 				
 			}
 		} 
 		$o++;
 	}
-	
-	
-	
 	$pdf->page_script(\'$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }\');
-</script> ';
+</script>';
 		
 		
         $footer_html = $indexer.'

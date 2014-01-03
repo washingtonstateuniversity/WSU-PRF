@@ -1,3 +1,24 @@
+/*style roots
+Note: the box is set for you, try not to get to wild
+unless you are a css ninja
+
+#head_area{}
+#head_area .wrap{}
+#foot_area{}
+#foot_area .wrap{}
+
+*/
+
+#head_area .wrap{border:1px solid #494949;}
+#foot_area .wrap{border:1px solid #494949;}
+/*fun note on the head/foot warp is that doing height=100% goes the whole page 
+ there is room to play just note that there are defaults*/
+
+
+
+
+
+
 table {
     border-collapse: collapse;
     border-spacing: 0;
@@ -21,8 +42,8 @@ p{font-size:12pt;}
 .content-wrapper {
 	padding: 20px;
 	background: #FFF;
-	border: 1px solid #c5c5c5;
-	margin: 15px;
+	/*border: 1px solid #c5c5c5;
+	margin: 15px;*/
 }
 .pdf-header {
 	padding: 20px;
@@ -65,3 +86,8 @@ h1.CoverTitle {
 #catpdf_index .indexed_chapter .pagenumber{width:3%; text-align:left;}
 
 #catpdf_index h2{font-size:20px !important;font-weight:bold !important; border-bottom:1px solid #585755;}
+
+
+#page_numbers{position:absolute; width:150px; top:12.5px; right:0px; text-align: center;}
+#logo{position:absolute; height:50px; top:1px; left:12.5px; }
+

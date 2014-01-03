@@ -152,14 +152,14 @@ class catpdf_pages {
 		
 		
         $select_cats           = str_replace("name='cat' id=", "name='cat[]' multiple='multiple' id=", $select_cats);
-        $select_cats           = str_replace("<option", '<option selected="selected"', $select_cats);
+        $select_cats           = str_replace("<option", '<option ', $select_cats);
         // Construct user dropdown
         $select_author         = wp_dropdown_users(array(
             'id' => 'author',
             'echo' => false
         ));
         $select_author         = str_replace("name='user' ", "name='user[]' multiple='multiple' ", $select_author);
-        $select_author         = str_replace("<option", '<option selected="selected"', $select_author);
+        $select_author         = str_replace("<option", '<option ', $select_author);
 		
 		$data['select_types']  = $select_types;
         $data['select_cats']   = $select_cats;
@@ -209,9 +209,10 @@ class catpdf_pages {
     public function export() {
         global $dompdf, $catpdf_output, $_params;
         
-        $content     = $catpdf_output->custruct_template();
+        
+		$dompdf->set_paper($_params['papersize'], $_params['orientation']);
+		$content     = $catpdf_output->custruct_template();
 		$dompdf->load_html($content);
-        $dompdf->set_paper($_params['papersize'], $_params['orientation']);
         $dompdf->render();
 
         $dompdf->stream(trim($catpdf_output->title) . ".pdf");
@@ -229,9 +230,12 @@ class catpdf_pages {
             'template' => (isset($_GET['template'])) ? urldecode($_GET['template']) : 'def'
         );
         $post  = $param_arr;
-        $content     = $catpdf_output->custruct_template();
+        
+		$dompdf->set_paper((isset($_GET['paper_size'])) ? urldecode($_GET['paper_size']) : 'letter', (isset($_GET['paper_orientation'])) ? urldecode($_GET['paper_orientation']) : 'portrait');
+		$content     = $catpdf_output->custruct_template();
+		
         $dompdf->load_html($content);
-        $dompdf->set_paper((isset($_GET['paper_size'])) ? urldecode($_GET['paper_size']) : 'letter', (isset($_GET['paper_orientation'])) ? urldecode($_GET['paper_orientation']) : 'portrait');
+        
         $dompdf->render();
         $dompdf->stream(trim($catpdf_output->title) . ".pdf");
     }
@@ -246,8 +250,9 @@ class catpdf_pages {
         $single      = $post[0];
         $filenmae    = preg_replace('/[^a-z0-9]/i', '_', $single->post_title);
         $content     = $catpdf_output->custruct_template('single');
+		$dompdf->set_paper('letter', 'portrait');
         $dompdf->load_html($content);
-        $dompdf->set_paper('letter', 'portrait');
+        
         $dompdf->render();
         $dompdf->stream(trim($filenmae) . ".pdf");
     }

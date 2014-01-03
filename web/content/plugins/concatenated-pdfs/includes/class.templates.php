@@ -65,10 +65,10 @@ class catpdf_templates {
 			$index.="<table class='indexed_chapter'>
   <tbody>
     <tr>
-      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{%%chapter{$c}%%}</td>
-      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{%%text{$c}%%}</td>
+      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{chapter{$c}}</td>
+      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{text{$c}}</td>
       <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
-      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{%%page{$c}%%}</td>
+      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{page{$c}}</td>
     </tr>
   </tbody>
 </table>

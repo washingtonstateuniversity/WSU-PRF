@@ -4,110 +4,46 @@
 			html,body {
 				font-family: sans-serif;
 				text-align: justify;
-				background-color:#f5f3e9;
+				background-color:#F0F0F0;
 				position: relative;
 			}
 			@page{}
-			#head_area{ position:fixed; top:0px;height:75px; border:1px solid #494949;}
-			#foot_area{ position:fixed; bottom:0px;height:50px; border:1px solid #494949;}
-			body {padding:75px 0px 50px 0px;}
-			i.page-break {
-			  page-break-after: always;
-			  border: 0;
-			}
-			#logo{ height:50px; top:12.5px; left:12.5px;  }
-		</style></head><body><div id="head_area">prf,Just another WordPress site</div><div id="foot_area">[page numbers]<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /></div><script type="text/php">
-			$font = Font_Metrics::get_font("helvetica", "bold");
+			#head_area{ position:fixed;left:15px;top:15px;height:55px; width:786px; }
+			#head_area .wrap{position:relative; width:100%; height:55px;}
+			#foot_area{ position:fixed;left:15px;bottom:35px;height:25px;width:786px;}
+			#foot_area .wrap{position:relative; width:100%; height:25px;}
+			body {padding:85px 15px 50px 15px;}/*note that the body is used as our sudo "page" it is our saffal base*/
+			i.page-break {page-break-after: always;border: 0;}
+		</style></head><body><div id="head_area"><div class="wrap">prf,Just another WordPress site816::1056</div></div><div id="foot_area"><div class="wrap"><img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /><div id="page_numbers">{pg#} of {pgT}</div></div></div><script type="text/php">
 			$GLOBALS["i"]=1;
 			$GLOBALS["indexpage"]=0;
 			$GLOBALS["chapters"] = array();
-		</script><script type="text/php">
-			if ( isset($pdf) ) {
-				$header = "prf,Just another WordPress site";
-				$footertext = "[page numbers]";
-				$w = $pdf->get_width();
-				$h = $pdf->get_height();
-				$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
-				$size = 12;
-				
-					/*
-					$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
-					
-					
-					// Open the object: all drawing commands will
-					// go to the object instead of the current page
-					$footer = $pdf->open_object();
-						$pnum=$pdf->get_page_number();
-						$pcount=$pdf->get_page_count();	
-					
-						$pageText1 =  " {$footertext} " ;
-						$y1 = $h - 34;
-						$x1 = $w - 15 - Font_Metrics::get_text_width($pageText1, $font, $size);
-						$pdf->text($x1, $y1, $pageText1, $font, $size);
-						
-						$pageText =  $PAGE_NUM." of ". $PAGE_COUNT;
-						$y = $h - 20;
-						$x = $w - 15 - Font_Metrics::get_text_width($pageText, $font, $size);
-						$pdf->text($x, $y, $pageText, $font, $size);
-			
-						// Draw a line along the bottom
-						$line_height=1;
-						$color = array(125,125,125);
-						$y = $h - 2 * $line_height - 24;
-						$pdf->line(16, $y, $w - 16, $y, $color, 1);
-	
-						//image
-						$w = $pdf->get_width();
-						$h = $pdf->get_height();
-						// Add a logo
-						$img_w = 25; 
-						$img_h = 25; 		
-						$pdf->image("../../content/themes/cbn/img/wsuaa-logo.png", "png", $h-$img_h, 75, $img_w, $img_h);
-						
-					// Close the object (stop capture)
-					$pdf->close_object();
-					
-					// Add the object to every page. You can
-					// also specify "odd" or "even"
-					$pdf->add_object($footer, "all");	
-	*/
-					
-					
-					//Header
-					/*$pageHeaderText =  "This is the header. {$header}" ;
-					$t_y = 0 + 18.75;
-					$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
-					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);*/
-				/*if($pagenum>1){}	
-					*/
-			
-			} 
-			</script><div id='catpdf_cover'><h1 class='CoverTitle'>Cover Letter</h1></div><i class='page-break'></i><div id='catpdf_index'><script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script><h2>Table of Contents</h2><table class='indexed_chapter'>
+		</script><div id='catpdf_cover'><h1 class='CoverTitle'>Cover Letter</h1></div><i class='page-break'></i><div id='catpdf_index'><script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script><h2>Table of Contents</h2><table class='indexed_chapter'>
   <tbody>
     <tr>
-      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{%%chapter1%%}</td>
-      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{%%text1%%}</td>
+      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{chapter1}</td>
+      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{text1}</td>
       <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
-      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{%%page1%%}</td>
+      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{page1}</td>
     </tr>
   </tbody>
 </table>
 <table class='indexed_chapter'>
   <tbody>
     <tr>
-      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{%%chapter2%%}</td>
-      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{%%text2%%}</td>
+      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{chapter2}</td>
+      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{text2}</td>
       <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
-      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{%%page2%%}</td>
+      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{page2}</td>
     </tr>
   </tbody>
 </table>
 </div><script type="text/php"> $pdf->close_object(); </script></div><i class='page-break'></i><!--<div class="pdf-header"><h1>Post List</h1><h2>prf</h2><h3>Just another WordPress site</h3> </div>--><div><div class="content-wrapper"><div class="post"><h1>Reasonable Accommodation</h1><h2>Posted in:Personnel</h2><h3></h3><h4>version 0 <span>([revision_count] revisions)<span></h4><div class="meta"><p>Posted on <strong>January 01,2014</strong> by <strong>jeremy.bass</strong></p></div>
 <script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "Reasonable Accommodation"; $GLOBALS["i"]=$i+1; } </script>
 <strong>POLICY</strong>
-<blockquote>Washington State University is committed to providing equal opportunity in its services, programs, and employment for individuals with disabilities. The University complies with federal and state laws (e.g., <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a>) and regulations (e.g., <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26</span></span></a>) regarding reasonable accommodation for persons with disabilities.
+<blockquote>Washington State University is committed to providing equal opportunity in its services, programs, and employment for individuals with disabilities. The University complies with federal and state laws (e.g., <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60">RCW 49.60</a>) and regulations (e.g., <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26">WAC 357-26</a>) regarding reasonable accommodation for persons with disabilities.
 
-This policy sets forth guidelines for meeting reasonable accommodation requirements of state and federal laws. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#statutes"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>. The reasonable accommodation process is subject to flexibility within governing law.</blockquote>
+This policy sets forth guidelines for meeting reasonable accommodation requirements of state and federal laws. See <a href="#statutes">below</a>. The reasonable accommodation process is subject to flexibility within governing law.</blockquote>
 <strong>Purpose</strong>
 <blockquote>The University's reasonable accommodation process is designed to:
 <ul>
@@ -125,13 +61,13 @@ This policy sets forth guidelines for meeting reasonable accommodation requireme
 </ul>
 </blockquote>
 <strong>Applicability</strong>
-<blockquote>This policy is applicable to all employees, appointees, candidates, and applicants for employment with Washington State University. It provides reasonable accommodations to persons with disabilities in accordance with <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040</span></span></a> and other applicable state and federal laws. See also "Definitions" <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#definitions"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.
+<blockquote>This policy is applicable to all employees, appointees, candidates, and applicants for employment with Washington State University. It provides reasonable accommodations to persons with disabilities in accordance with <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040">RCW 49.60.040</a> and other applicable state and federal laws. See also "Definitions" <a href="#definitions">below</a>.
 
 Persons with disabilities have the right to request and receive reasonable accommodation in all aspects of employment procedures with the University, including but not limited to application, recruitment, selection/hiring, promotion, testing, medical examinations, layoff/recall, assignments, termination, evaluation, compensation, disciplinary processes, leave, training, employee benefits including insurance, and employer-supported activities.</blockquote>
 <strong>Reasonable Accommodation </strong>
 <blockquote>Reasonable accommodation means modification or adjustment to a job, work environment, policy, practice, or procedure that enables an individual with a disability to enjoy equal employment opportunity and that does not impose an undue hardship on the employer.
 
-In accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-015"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26-015</span></span></a>, reasonable accommodation may include, but is not limited to:
+In accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-015">WAC 357-26-015</a>, reasonable accommodation may include, but is not limited to:
 <ul>
 <ul>
 	<li>Accommodation in application procedures, testing, and interview processes; or</li>
@@ -151,7 +87,7 @@ Enjoy the benefits and privileges of employment equal to employees without disab
 <strong>ACCOMMODATION PROCESS</strong>
 
 <strong>Notification</strong>
-<blockquote>The University must provide each employee who requests reasonable accommodation with access to the University's reasonable accommodation procedure in a format that is accessible to that employee in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-020"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26-020</span></span></a>.
+<blockquote>The University must provide each employee who requests reasonable accommodation with access to the University's reasonable accommodation procedure in a format that is accessible to that employee in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-020">WAC 357-26-020</a>.
 
 The University must include notification of the right to make a reasonable accommodation request and information on how to initiate such a request with all recruitment efforts.
 
@@ -185,7 +121,7 @@ Department Responsibilities
 </ul>
 Since impairments may change over time, a single inquiry does not relieve the employer or the employee from the potential for ongoing discussion or engagement in an interactive process.
 
-NOTE: The supervisor must be careful to avoid an improper inquiry about the employee's possible impairment and to protect the employee's right to privacy. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.08_Preemployment_Inquiry_Guidelines.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.08</span></span></a> regarding applicants. <strong>The supervisor should contact HRS for assistance with this process. </strong>Supervisors are not to request medical documentation regarding the impairment or discuss the specifics of the medical diagnosis with the employee. HRS is responsible for maintaining medical documentation needed in the reasonable accommodation process.</blockquote>
+NOTE: The supervisor must be careful to avoid an improper inquiry about the employee's possible impairment and to protect the employee's right to privacy. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.08_Preemployment_Inquiry_Guidelines.htm">60.08</a> regarding applicants. <strong>The supervisor should contact HRS for assistance with this process. </strong>Supervisors are not to request medical documentation regarding the impairment or discuss the specifics of the medical diagnosis with the employee. HRS is responsible for maintaining medical documentation needed in the reasonable accommodation process.</blockquote>
 <strong>Qualifying for Reasonable Accommodation in Employment</strong>
 <blockquote>For the purposes of qualifying for reasonable accommodation in employment, the employee and the employer must participate in an interactive process.
 <ul>
@@ -202,9 +138,9 @@ Ability to be considered for a job, or
 Access to equal benefits, privileges, or terms and conditions of employment; <strong>and</strong></blockquote>
 </blockquote>
 <ul>
-	<li>The existence of the impairment and the medical documentation must establish a reasonable likelihood that engaging in job functions without an accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect. (All medical documentation is to be provided to HRS. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#medical"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.)</li>
+	<li>The existence of the impairment and the medical documentation must establish a reasonable likelihood that engaging in job functions without an accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect. (All medical documentation is to be provided to HRS. See <a href="#medical">below</a>.)</li>
 </ul>
-<blockquote>NOTE: A limitation is not substantial if it has only a trivial effect. (<a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)(d)(e)</span></span></a>)</blockquote>
+<blockquote>NOTE: A limitation is not substantial if it has only a trivial effect. (<a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040">RCW 49.60.040(25)(d)(e)</a>)</blockquote>
 The obligation to provide a reasonable accommodation applies to all aspects of employment. This duty is ongoing and may arise any time that a person's disability/impairment or job changes.
 
 Behavior related to a disability must be examined in the context of possible eligibility for reasonable accommodation before an employee may be subject to discipline or other adverse employment action as a result.</blockquote>
@@ -213,7 +149,7 @@ Timely Response
 Documentation
 
 <em>Request Form </em>
-<blockquote>To make a written reasonable accommodation request, the employee or applicant completes and submits an Accommodation Request for Disability or Serious Medical Condition form to HRS. Obtain copies of the form by completing and/or printing the blank master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-18.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.21.18</span></span></a>.
+<blockquote>To make a written reasonable accommodation request, the employee or applicant completes and submits an Accommodation Request for Disability or Serious Medical Condition form to HRS. Obtain copies of the form by completing and/or printing the blank master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-18.pdf">60.21.18</a>.
 
 NOTE: Completion of a request form may not always be necessary. However, completion is recommended to assist HRS and the department with maintaining an accurate record of the request and action taken. If the employee fails to complete an Accommodation Request for Disability or Serious Medical Condition form, HRS may request the employee to do so. An employee who makes a verbal request may be asked to complete written documents. HRS provides assistance with completing the written documents if reasonable accommodation for such completion is required.</blockquote>
 <em><a name="medical"></a>Medical Documentation </em>
@@ -222,11 +158,11 @@ NOTE: Completion of a request form may not always be necessary. However, complet
 Use the following forms, as needed, to request and obtain written documentation from a health care provider:
 <ul>
 <ul>
-	<li>Medical Release Statement for Reasonable Accommodation Requests on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-19.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.21.19</span></span></a>, and</li>
+	<li>Medical Release Statement for Reasonable Accommodation Requests on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-19.pdf">60.21.19</a>, and</li>
 </ul>
 </ul>
 <ul>
-	<li>Health Care Provider Statement for Reasonable Accommodation Requests on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-20-24.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.21.20-24</span></span></a>. The health care provider statement includes a work assessment section.</li>
+	<li>Health Care Provider Statement for Reasonable Accommodation Requests on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-20-24.pdf">60.21.20-24</a>. The health care provider statement includes a work assessment section.</li>
 </ul>
 Refusal by the employee to provide adequate medical documentation may result in denial of reasonable accommodation or separation from employment.</blockquote>
 <strong>Review of Request</strong>
@@ -257,7 +193,7 @@ HRS contacts the department and employee once the completed request is received.
 </ul>
 </blockquote>
 <em>With Department </em>
-<blockquote>The department, in consultation with HRS, may consider a reasonable accommodation for job functions or elimination or adjustment of certain functions. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#determine"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> regarding determination of functions.</blockquote>
+<blockquote>The department, in consultation with HRS, may consider a reasonable accommodation for job functions or elimination or adjustment of certain functions. See <a href="#determine">below</a> regarding determination of functions.</blockquote>
 Verification
 <blockquote>The University through HRS may request that an applicant or employee provide verification from a health care professional (HCP) when he or she requests an accommodation and:
 <ul>
@@ -433,7 +369,7 @@ The department's ability to conduct business.</blockquote>
 <em>Undue Hardship Limitation </em>
 <blockquote>The University must provide reasonable accommodation to qualified individuals with disabilities who are employees or applicants for employment, unless doing so imposes an undue hardship. However, before concluding that a particular accommodation would impose an undue hardship, the University must consider whether or not there are alternative reasonable accommodations that would not impose such a hardship.
 
-NOTE: Determinations of "undue hardship" may be made only by the appropriate dean or vice president after consultation with HRS. Such determinations must be documented in writing with the appropriate signatures. See also <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#hardship"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.</blockquote>
+NOTE: Determinations of "undue hardship" may be made only by the appropriate dean or vice president after consultation with HRS. Such determinations must be documented in writing with the appropriate signatures. See also <a href="#hardship">below</a>.</blockquote>
 <strong>Accommodation Options</strong>
 <blockquote>The supervisor and HRS review any selected reasonable accommodation options with the employee, as necessary. Dialogue concerning reasonable accommodation may be ongoing and may involve members of the employee and supervisor's supervisory hierarchy, as well as other relevant University officials.</blockquote>
 Accommodation to Position
@@ -451,7 +387,7 @@ Placement in Alternate Position
 </ul>
 </ul>
 <ul>
-	<li>Accommodation in the present position would cause an undue hardship (see <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#hardship"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>).</li>
+	<li>Accommodation in the present position would cause an undue hardship (see <a href="#hardship">below</a>).</li>
 </ul>
 Generally, placement under this policy is without competition. However, an employee covered by this policy may compete with other similarly-situated candidates for the same nonpromotional position. The employee must meet the minimum qualifications and specific position requirements for any vacant position offered as a reasonable accommodation. The employee must meet those position requirements with or without a reasonable accommodation.
 
@@ -482,7 +418,7 @@ Individuals should consult with HRS in those situations where the employee or hi
 No Accommodation Selected
 
 <em>By Department </em>
-<blockquote>The department should discuss with HRS any suggested accommodations that appear to be unacceptable. This determination includes an evaluation of undue hardship. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#hardship"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.
+<blockquote>The department should discuss with HRS any suggested accommodations that appear to be unacceptable. This determination includes an evaluation of undue hardship. See <a href="#hardship">below</a>.
 
 A reasonable accommodation identified or adopted by the parties as acceptable may not be rejected or ceased by a department as an undue hardship without involving HRS.
 
@@ -490,13 +426,13 @@ The department should consult with HRS prior to ceasing any previously approved 
 <em>Written Justification </em>
 <blockquote>The University provides written justification, signed by the appropriate dean or vice president, to the individual for any decision not to provide a reasonable accommodation because of undue hardship.</blockquote>
 <em>By Employee </em>
-<blockquote>A qualified individual with a disability has the right to refuse a reasonable accommodation. (See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#qualified"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for the definition of a qualified individual with a disability.)
+<blockquote>A qualified individual with a disability has the right to refuse a reasonable accommodation. (See <a href="#qualified">below</a> for the definition of a qualified individual with a disability.)
 
 However, if the individual refuses the reasonable accommodation and is unable to perform the job functions without the accommodation, he or she is not then considered to be a qualified individual with a disability. In this case, the employee may be separated from employment.</blockquote>
 Disability Separation
-<blockquote>A disability separation is an action taken to separate an employee from service when the employer determines that the employee is unable to perform the essential functions of his or her position or class with or without reasonable accommodation due to mental, sensory, or physical incapacity. Disability separation is not a disciplinary action. (<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-46-160"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-46-160</span></span></a>)
+<blockquote>A disability separation is an action taken to separate an employee from service when the employer determines that the employee is unable to perform the essential functions of his or her position or class with or without reasonable accommodation due to mental, sensory, or physical incapacity. Disability separation is not a disciplinary action. (<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-46-160">WAC 357-46-160</a>)
 
-If no applicable position is available (through an alternative vacant position), and after the employee has exhausted his or her family medical leave entitlement, the employee may be separated from the University and accorded reemployment assistance for a period of two years. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.56_Faculty_and_Administrative_Professional_Personnel_Leave.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.56</span></span></a> and <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.57_Civil_Service_Employee_Leave.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.57</span></span></a> regarding family medical leave.</blockquote>
+If no applicable position is available (through an alternative vacant position), and after the employee has exhausted his or her family medical leave entitlement, the employee may be separated from the University and accorded reemployment assistance for a period of two years. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.56_Faculty_and_Administrative_Professional_Personnel_Leave.htm">60.56</a> and <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.57_Civil_Service_Employee_Leave.htm">60.57</a> regarding family medical leave.</blockquote>
 <em>Requested by Employer </em>
 <blockquote>The University notifies the employee in writing that WSU may initiate a disability separation if:
 <ul>
@@ -519,12 +455,12 @@ If no applicable position is available (through an alternative vacant position),
 </ul>
 </blockquote>
 <em>Requested by Employee </em>
-<blockquote>An employee who is unable to perform his or her job due to mental, sensory, or physical incapacity may choose not to pursue reasonable accommodation and may request to be separated from employment by notifying his or her employer. (<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-025"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26-025</span></span></a>) In this case, WSU is not required to consider a reasonable accommodation and may initiate a disability separation in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-46-160"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-46-160</span></span></a>, the <a href="http://hrs.wsu.edu/APHandbook"><span style="text-decoration: underline;"><span style="color: #0066cc;">Administrative Professional Handbook</span></span></a>, and the <a href="http://facsen.wsu.edu/faculty_manual/"><span style="text-decoration: underline;"><span style="color: #0066cc;">Faculty Manual</span></span></a>.</blockquote>
+<blockquote>An employee who is unable to perform his or her job due to mental, sensory, or physical incapacity may choose not to pursue reasonable accommodation and may request to be separated from employment by notifying his or her employer. (<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-025">WAC 357-26-025</a>) In this case, WSU is not required to consider a reasonable accommodation and may initiate a disability separation in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-46-160">WAC 357-46-160</a>, the <a href="http://hrs.wsu.edu/APHandbook">Administrative Professional Handbook</a>, and the <a href="http://facsen.wsu.edu/faculty_manual/">Faculty Manual</a>.</blockquote>
 <em>Reemployment Assistance </em>
-<blockquote>Employees who are separated due to disability from WSU employment are eligible for reemployment assistance for up to two years following separation. See <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-19-470"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-19-470</span></span></a> for information regarding reemployment services.
+<blockquote>Employees who are separated due to disability from WSU employment are eligible for reemployment assistance for up to two years following separation. See <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-19-470">WAC 357-19-470</a> for information regarding reemployment services.
 
 Former employees who are able to work at least 50 percent FTE (full-time equivalent) and are interested in seeking reemployment assistance contact Human Resource Services; telephone 509-335-4521; Text/TTY 509-335-0155; or e-mail to:
-<blockquote><a href="mailto:hrs@wsu.edu"><span style="text-decoration: underline;"><span style="color: #0066cc;">hrs@wsu.edu</span></span></a></blockquote>
+<blockquote><a href="mailto:hrs@wsu.edu">hrs@wsu.edu</a></blockquote>
 Reemployment rights of an appointee depend on the terms of her or his appointment.</blockquote>
 <strong>CONFIDENTIALITY </strong>
 <blockquote>By law, medical information received by the University is confidential (subject to certain limited exceptions). Such information is maintained separate from the personnel records.
@@ -533,7 +469,7 @@ Reasonable accommodation medical records for all University employees and affect
 
 Each department, including HRS, must treat all information regarding the presence or nature of an employee's or applicant's disability as confidential medical records. The department must forward such records to HRS.
 
-See also <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.01_University_Records--Retention_and_Disposition.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.01</span></span></a>, <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.05_Release_of_Public_Records.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.05</span></span></a>, and <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.07_Release_of_Personnel_Records.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.07</span></span></a> regarding confidential records.</blockquote>
+See also <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.01_University_Records--Retention_and_Disposition.htm">90.01</a>, <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.05_Release_of_Public_Records.htm">90.05</a>, and <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.07_Release_of_Personnel_Records.htm">90.07</a> regarding confidential records.</blockquote>
 <strong>Employee Disclosure </strong>
 <blockquote>Individuals are not required to reveal diagnoses or the details of medical treatments to immediate supervisors or to coworkers. However, some persons voluntarily choose to share this information with others. While someone may voluntarily choose to share some information about his/her condition, supervisors must understand that:
 <ul>
@@ -551,14 +487,14 @@ Employees may be expected to provide medical information to HRS or other Univers
 <blockquote>The University has developed a review procedure for addressing disputes related to requests for reasonable accommodations and other concerns.
 
 Advisory guidelines regarding workplace concern resolution are available from the Human Resource Services (HRS) website, at:
-<blockquote><a href="http://www.hrs.wsu.edu/"><span style="text-decoration: underline;"><span style="color: #0066cc;">http://www.hrs.wsu.edu</span></span></a></blockquote>
+<blockquote><a href="http://www.hrs.wsu.edu/">http://www.hrs.wsu.edu</a></blockquote>
 </blockquote>
 <strong>Collective Bargaining Unit Employees</strong>
 <blockquote>Employees covered by collective bargaining unit agreements follow the procedures outlined in the applicable agreements regarding disputes. Bargaining unit agreements may be viewed from the HRS website at:
-<blockquote><a href="http://www.hrs.wsu.edu/"><span style="text-decoration: underline;"><span style="color: #0066cc;">http://www.hrs.wsu.edu</span></span></a></blockquote>
+<blockquote><a href="http://www.hrs.wsu.edu/">http://www.hrs.wsu.edu</a></blockquote>
 </blockquote>
 <strong>TRAINING</strong>
-<blockquote>Information concerning reasonable accommodation, the University's policy and procedures, and applicable forms are available through various training sessions, as well as in this section (60.21). See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.71_Training_and_Development.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.71</span></span></a> regarding training.</blockquote>
+<blockquote>Information concerning reasonable accommodation, the University's policy and procedures, and applicable forms are available through various training sessions, as well as in this section (60.21). See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.71_Training_and_Development.htm">60.71</a> regarding training.</blockquote>
 <strong><a name="definitions"></a>DEFINITIONS</strong>
 
 <strong>Appointees</strong>
@@ -624,7 +560,7 @@ Determining Job Functions of a Position
 <strong>Health Care Professional or Health Care Provider </strong>
 <blockquote>Health care professional means a person who has completed a course of study and is licensed to practice in a field of health care which includes the diagnoses and assessment of the particular disability or disabilities in question.</blockquote>
 <strong>Disability</strong>
-<blockquote>According to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)</span></span></a>, the term "disability" means the presence of a sensory, mental, or physical impairment that:
+<blockquote>According to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040">RCW 49.60.040(25)</a>, the term "disability" means the presence of a sensory, mental, or physical impairment that:
 <ul>
 <ul>
 	<li>Is medically cognizable or diagnosable; or</li>
@@ -660,11 +596,11 @@ A disability exists whether or not it:
 </ul>
 </ul>
 <ul>
-	<li>Limits any other activity within the scope of <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a>.</li>
+	<li>Limits any other activity within the scope of <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60">RCW 49.60</a>.</li>
 </ul>
 </blockquote>
 <strong>Impairment</strong>
-<blockquote>According to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)</span></span></a>, impairment includes, but is not limited to:
+<blockquote>According to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040">RCW 49.60.040(25)</a>, impairment includes, but is not limited to:
 <ul>
 <ul>
 	<li>Any physiological disorder or condition, cosmetic disfigurement, or anatomical loss affecting one or more of the following body systems: neurological; musculoskeletal; special sense organs; respiratory, including speech organs; cardiovascular; reproductive; digestive; genitor-urinary; hemic and lymphatic; skin; and endocrine; <strong>or</strong></li>
@@ -675,7 +611,7 @@ A disability exists whether or not it:
 </ul>
 </blockquote>
 Impairment for Purposes of Reasonable Accommodation for Employment
-<blockquote>For the purposes of qualifying for reasonable accommodation in employment according to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)</span></span></a>, an impairment must be known or shown through an interactive process to exist in fact and:
+<blockquote>For the purposes of qualifying for reasonable accommodation in employment according to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040">RCW 49.60.040(25)</a>, an impairment must be known or shown through an interactive process to exist in fact and:
 <ul>
 	<li>The impairment must have a substantially limiting effect upon the individual's:</li>
 </ul>
@@ -687,7 +623,7 @@ Access to equal benefits, privileges, or terms and conditions of employment; <st
 <ul>
 	<li>The employee must give the employer notice of the existence of an impairment and medical documentation must establish a reasonable likelihood that engaging in job functions without an accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect.</li>
 </ul>
-<blockquote>NOTE: A limitation is not substantial if it has only a trivial effect. (<a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)(d)(e)</span></span></a>)</blockquote>
+<blockquote>NOTE: A limitation is not substantial if it has only a trivial effect. (<a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040">RCW 49.60.040(25)(d)(e)</a>)</blockquote>
 </blockquote>
 <strong><a name="qualified"></a>Qualified Individual With a Disability</strong>
 <blockquote>Qualified individual with a disability means an individual with a disability who meets the skill, experience, education, and other job-related requirements of the position held or desired, and who, with or without reasonable accommodation, is able to perform the functions of the job.</blockquote>
@@ -738,34 +674,34 @@ An individual may also file a discrimination complaint with the following office
 Retaliation
 <blockquote>It is against Washington State University policy and state and federal laws to retaliate against an individual who files a complaint of discrimination, participates in an investigation, or opposes illegal discrimination.</blockquote>
 <strong><a name="statutes"></a>APPLICABLE STATUTES, REGULATIONS, AND ORDERS</strong>
-<blockquote>This policy and procedures are in accordance with the Washington Law Against Discrimination, <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a>, and its definitional and reasonable accommodation provisions. It is in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26"><span style="text-decoration: underline;"><span style="color: #0066cc;">Washington Administrative Code 357-26</span></span></a>.
+<blockquote>This policy and procedures are in accordance with the Washington Law Against Discrimination, <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60">RCW 49.60</a>, and its definitional and reasonable accommodation provisions. It is in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26">Washington Administrative Code 357-26</a>.
 
 This policy and procedures complement relevant personnel policies and collective bargaining agreements and should be read in conjunction with those provisions.
 
-The policy is based on the "State Policy Guidelines on Reasonable Accommodation of Persons with Disabilities Related to State Employment" issued November 1, 1994 by the Washington State Office of Financial Management, which exists under the authority of <a href="http://www.governor.wa.gov/execorders/eoarchive/eo96-04.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">Executive Order 96-04</span></span></a> and with reference to the following provisions, as amended subsequent to the issuance of the guidelines:
+The policy is based on the "State Policy Guidelines on Reasonable Accommodation of Persons with Disabilities Related to State Employment" issued November 1, 1994 by the Washington State Office of Financial Management, which exists under the authority of <a href="http://www.governor.wa.gov/execorders/eoarchive/eo96-04.htm">Executive Order 96-04</a> and with reference to the following provisions, as amended subsequent to the issuance of the guidelines:
 <ul>
 	<li>Americans With Disabilities Act, Title I of 1990 (P.L. 101-336)</li>
 	<li>29 CFR Part 1630</li>
 	<li>28 CFR Part 35</li>
 	<li>Rehabilitation Act of 1973 (P.L. 93-11)</li>
 	<li>45 CFR 84</li>
-	<li><a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a></li>
-	<li><a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=162-22"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 162-22</span></span></a></li>
-	<li><a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26</span></span></a></li>
+	<li><a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60">RCW 49.60</a></li>
+	<li><a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=162-22">WAC 162-22</a></li>
+	<li><a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26">WAC 357-26</a></li>
 </ul>
 </blockquote>
 <strong>ASSISTANCE </strong>
 <blockquote>Questions regarding the application of these procedures may be directed to Human Resource Services; telephone 509-335-4521; Text TTY 509-335-0155: or email to:
-<blockquote><a href="mailto:hrs@wsu.edu"><span style="text-decoration: underline;"><span style="color: #0066cc;">hrs@wsu.edu</span></span></a></blockquote>
+<blockquote><a href="mailto:hrs@wsu.edu">hrs@wsu.edu</a></blockquote>
 For further information and resources regarding University accessibility for individuals with disabilities, go to the University's Accessibility website at:
-<blockquote><a href="http://access.wsu.edu/"><span style="text-decoration: underline;"><span style="color: #0066cc;">http://access.wsu.edu/</span></span></a></blockquote>
+<blockquote><a href="http://access.wsu.edu/">http://access.wsu.edu/</a></blockquote>
 To request this information in an alternate format, contact the Access Center; telephone 509-335-1566.</blockquote></div></div><i class="page-break">%nbsp;</i><div class="content-wrapper"><div class="post"><h1>Gift Accounting</h1><h2>Posted in:Finance</h2><h3></h3><h4>version 0 <span>([revision_count] revisions)<span></h4><div class="meta"><p>Posted on <strong>January 01,2014</strong> by <strong>jeremy.bass</strong></p></div>
 <script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "Gift Accounting"; $GLOBALS["i"]=$i+1; } </script>
 <h2>Gift Transmittals</h2>
 <strong>ROUTING GIFTS</strong>
 <blockquote>University departments route all gifts from private sources to the Gift Accounting division of the WSU Foundation for acceptance, deposit, receipting, and acknowledgment. If the responsible college or area has a development office, the department submits all gifts to the development office. The development office then routes gifts to Gift Accounting.
 
-Gift Accounting processes monetary gifts and noncash gifts (tangible items, e.g., equipment). Each gift category is processed on a different form. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#gifttrans"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for procedures and forms for submitting monetary or noncash gifts.
+Gift Accounting processes monetary gifts and noncash gifts (tangible items, e.g., equipment). Each gift category is processed on a different form. See <a href="#gifttrans">below</a> for procedures and forms for submitting monetary or noncash gifts.
 
 The department or the development office must route the applicable forms with the gifts to Gift Accounting.</blockquote>
 <strong>Exception (Planned Gifts)</strong>
@@ -839,9 +775,9 @@ If a contribution is determined not to be a gift, submit it to the Office of Gra
 <strong>QUESTIONS</strong>
 <blockquote>Address questions regarding acceptance and management of gifts to the college development officer, Gift Accounting, or the WSU Foundation.</blockquote>
 <strong>TRANSMITTING GIFTS</strong>
-<blockquote>Departments or development offices must complete and attach an appropriate gift transmittal form with each gift transmitted to Gift Accounting. NOTE: There are separate forms for cash and noncash gifts. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#gifttrans"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.
+<blockquote>Departments or development offices must complete and attach an appropriate gift transmittal form with each gift transmitted to Gift Accounting. NOTE: There are separate forms for cash and noncash gifts. See <a href="#gifttrans">below</a>.
 
-See <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#gifttrans"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for form instructions and <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#routing"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for routing instructions.</blockquote>
+See <a href="#gifttrans">below</a> for form instructions and <a href="#routing">below</a> for routing instructions.</blockquote>
 <strong>Cash and Checks</strong>
 <blockquote>Donors should be encouraged to make checks payable to the WSU Foundation. If a check is made payable to the University, a department, or college, the check must be endorsed by the recipient office before it is transmitted to Gift Accounting.
 
@@ -864,13 +800,13 @@ French Administration 422</li>
 	<li>Athletics Development Office
 Bohler Gym 140-A</li>
 </ul>
-Non-Pullman departments or development offices must <strong>hand-carry</strong> all deposits to Gift Accounting in Pullman or to one of the courier pickup locations at the WSU Spokane, WSU Tri-Cities, WSU Vancouver, or ICN Spokane campuses. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/80_Services/80.18_Courier_Services.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">80.18</span></span></a> for a list of courier pickup locations.</blockquote>
+Non-Pullman departments or development offices must <strong>hand-carry</strong> all deposits to Gift Accounting in Pullman or to one of the courier pickup locations at the WSU Spokane, WSU Tri-Cities, WSU Vancouver, or ICN Spokane campuses. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/80_Services/80.18_Courier_Services.htm">80.18</a> for a list of courier pickup locations.</blockquote>
 Courier Service Process
 <blockquote>To ensure proper accountability, departments or development offices dropping off deposits to any of the courier services locations, including those at the regional campuses, <strong>must</strong> follow the procedures below.</blockquote>
 <em>Envelope and Insert</em>
 <blockquote>Place donated checks, cash, and accompanying gift transmittal forms <strong>with</strong> a completed Courier Service Insert slip into an envelope and <strong>seal</strong> the envelope. The envelope may include multiple gifts. Enter the total of all gifts in the envelope in <strong>Overall Total Enclosed</strong> on the Courier Service Insert.
 
-Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-18.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.18</span></span></a> to obtain copies of the Courier Service Insert slips. See the PDF version of page <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.3</span></span></a> for an example of the Courier Service Insert slip.</blockquote>
+Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-18.pdf">30.70.18</a> to obtain copies of the Courier Service Insert slips. See the PDF version of page <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70.pdf">30.70.3</a> for an example of the Courier Service Insert slip.</blockquote>
 <em>Drop-Off Site</em>
 <blockquote>Upon arrival at one of the courier drop-off sites, the department representative enters the following information on the log sheet:
 <ul>
@@ -878,9 +814,9 @@ Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-18
 	<li>Signature, and</li>
 	<li>Date and time the deposit envelope is dropped off.</li>
 </ul>
-Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-19.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.19</span></span></a> to obtain log sheet. See the PDF version of page <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.4</span></span></a> for an example of the drop-off site log sheet.
+Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-19.pdf">30.70.19</a> to obtain log sheet. See the PDF version of page <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70.pdf">30.70.4</a> for an example of the drop-off site log sheet.
 
-The drop-off site representative gives a signed receipt to the department representative acknowledging the acceptance of the deposit envelope. (See the PDF version of page <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.4</span></span></a> for an example of the drop-off receipt.)
+The drop-off site representative gives a signed receipt to the department representative acknowledging the acceptance of the deposit envelope. (See the PDF version of page <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70.pdf">30.70.4</a> for an example of the drop-off receipt.)
 
 The receipt verifies the following information:
 <ul>
@@ -891,37 +827,37 @@ The receipt verifies the following information:
 </ul>
 The department retains the signed drop-off receipt with the department's gift transmittal and courier service insert copies.
 
-Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-20.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.20</span></span></a> to obtain copies of the Drop-Off Receipts.</blockquote>
+Print the form master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-20.pdf">30.70.20</a> to obtain copies of the Drop-Off Receipts.</blockquote>
 <em>Courier Pickup</em>
 <blockquote>Upon arrival, the courier completes the bottom of the log sheet with his or her name, signature, and the date and time the deposits are picked up. The courier brings the log sheet and the sealed gift envelopes directly to Gift Accounting for processing.</blockquote>
 <em>Records Retention</em>
-<blockquote>Retain a copy of the courier process documentation with the department's gift transmittal copies. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#retain"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.</blockquote>
+<blockquote>Retain a copy of the courier process documentation with the department's gift transmittal copies. See <a href="#retain">below</a>.</blockquote>
 <strong>Electronic Funds Transfer</strong>
 <blockquote>Donors may arrange to send gifts by authorizing an electronic funds transfer directly from the donor's bank to the WSU Foundation.
 
-Donors complete a Gift Electronic Funds Transfer Authorization form and submit it to the WSU Foundation to authorize electronic payment. Obtain copies of the form by completing and/or printing the PDF master form on <a href="http://public.wsu.edu/~forms/PUBPDF/30-70-17.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.17</span></span></a>.</blockquote>
+Donors complete a Gift Electronic Funds Transfer Authorization form and submit it to the WSU Foundation to authorize electronic payment. Obtain copies of the form by completing and/or printing the PDF master form on <a href="http://public.wsu.edu/~forms/PUBPDF/30-70-17.pdf">30.70.17</a>.</blockquote>
 <strong>Payroll Deduction</strong>
-<blockquote>A University employee may submit a Gift Payroll Deduction to Gift Accounting to authorize a one-time or ongoing gift. Complete and/or print the PDF master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-16.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.16</span></span></a> to obtain copies of the form.</blockquote>
+<blockquote>A University employee may submit a Gift Payroll Deduction to Gift Accounting to authorize a one-time or ongoing gift. Complete and/or print the PDF master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-16.pdf">30.70.16</a> to obtain copies of the form.</blockquote>
 <strong>Noncash Gifts</strong>
 <blockquote>Contact the college development officer or Gift Accounting for further information concerning acceptance and transmittal of noncash gifts. Noncash gifts are defined as donated items of personal property which may either further the mission of the University or may be converted to cash. The most common forms of noncash gifts include, but are not limited to, works of art, books, equipment, software, furniture, and real estate.</blockquote>
 <strong><a name="gifttrans"></a>GIFT TRANSMITTAL AND ACKNOWLEDGMENT FORMS</strong>
 <blockquote>Departments are to complete and submit the appropriate gift transmittal form based on the category of the gift being donated:</blockquote>
 <strong>Monetary Gifts</strong>
-<blockquote><strong>For monetary gifts</strong>, departments are to submit a completed Gift Transmittal and Acknowledgement form. Complete and/or print the PDF master form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-10.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.10</span></span></a> as needed. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#cash"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for instructions.
+<blockquote><strong>For monetary gifts</strong>, departments are to submit a completed Gift Transmittal and Acknowledgement form. Complete and/or print the PDF master form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-10.pdf">30.70.10</a> as needed. See <a href="#cash">below</a> for instructions.
 
-NOTE: To process cash <strong>gifts</strong>, departments use the Gift Transmittal and Acknowledgment form and procedures. For cash deposits which are not gifts, see <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.53_Cash_Handling.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.53</span></span></a>.</blockquote>
+NOTE: To process cash <strong>gifts</strong>, departments use the Gift Transmittal and Acknowledgment form and procedures. For cash deposits which are not gifts, see <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.53_Cash_Handling.htm">30.53</a>.</blockquote>
 Multiple Gifts
-<blockquote>To process multiple monetary gifts accepted at golf tournaments or auctions, departments may complete and submit the Golf Tournament Gift Transmittal on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-12.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.12</span></span></a> or the Auction Bid Gift Transmittal on<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-13.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;"> 30.70.13</span></span></a>.</blockquote>
+<blockquote>To process multiple monetary gifts accepted at golf tournaments or auctions, departments may complete and submit the Golf Tournament Gift Transmittal on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-12.pdf">30.70.12</a> or the Auction Bid Gift Transmittal on<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-13.pdf"> 30.70.13</a>.</blockquote>
 <strong>Noncash Gifts</strong>
-<blockquote><strong>For noncash gifts</strong>, departments are to submit a completed Noncash Gift Transmittal and Acknowledgement form. Complete and/or print the PDF master form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-11.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.11</span></span></a> as needed. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.70_Gift_Transmittal.htm#noncash"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for instructions.</blockquote>
+<blockquote><strong>For noncash gifts</strong>, departments are to submit a completed Noncash Gift Transmittal and Acknowledgement form. Complete and/or print the PDF master form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-11.pdf">30.70.11</a> as needed. See <a href="#noncash">below</a> for instructions.</blockquote>
 Multiple Gifts
-<blockquote>To process multiple noncash gifts accepted at auctions or other fundraising events, departments may complete and submit the Auction Item Gift Transmittal on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-14.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.14</span></span></a> or the Noncash Multiple Gift Transmittal on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-15.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.15</span></span></a>.</blockquote>
+<blockquote>To process multiple noncash gifts accepted at auctions or other fundraising events, departments may complete and submit the Auction Item Gift Transmittal on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-14.pdf">30.70.14</a> or the Noncash Multiple Gift Transmittal on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-15.pdf">30.70.15</a>.</blockquote>
 <strong>Planned Giving</strong>
 <blockquote><strong>For planned giving (e.g., estates, trusts)</strong>, departments are to work directly with the Gift Planning division of the WSU Foundation.</blockquote>
 <strong>Questions</strong>
 <blockquote>Address questions about the gift transmittal and acknowledgment forms to the college development office or Gift Accounting.</blockquote>
 <strong><a name="cash"></a>Gift Transmittal Completion Instructions</strong>
-<blockquote>Follow the guidelines below for completing the Gift Transmittal and Acknowledgment form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-10.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.10</span></span></a>. Self-explanatory sections are not described.</blockquote>
+<blockquote>Follow the guidelines below for completing the Gift Transmittal and Acknowledgment form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-10.pdf">30.70.10</a>. Self-explanatory sections are not described.</blockquote>
 Donor ID Number
 <blockquote>Enter the WSU-assigned donor identification number if it is available.</blockquote>
 Donor Name
@@ -947,7 +883,7 @@ Account
 <em>Account Not Established</em>
 <blockquote>If an account has not yet been established to receive the gift, enter "new" in the account field.
 
-Follow the procedures in <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.75_Gift_Accounts.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.75</span></span></a> for establishing gift accounts.</blockquote>
+Follow the procedures in <a href="http://public.wsu.edu/~forms/HTML/BPPM/30_Finance/30.75_Gift_Accounts.htm">30.75</a> for establishing gift accounts.</blockquote>
 Gift Amount
 <blockquote>Enter the donation amount next to the designated recipient account.</blockquote>
 Solicitation Type
@@ -969,7 +905,7 @@ Bankcard Information
 Special Instructions for Cash Gifts
 <blockquote>Enter any special instructions.</blockquote>
 <strong><a name="noncash"></a>Noncash Gift Transmittal Completion Instructions</strong>
-<blockquote>Follow the guidelines below for completing the Noncash Gift Transmittal and Acknowledgment form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-11.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.11</span></span></a>. Self-explanatory sections are not described.</blockquote>
+<blockquote>Follow the guidelines below for completing the Noncash Gift Transmittal and Acknowledgment form on <a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-11.pdf">30.70.11</a>. Self-explanatory sections are not described.</blockquote>
 Paperwork Check-Off List
 <blockquote>Check off each item as completed for submittal with the noncash gift.</blockquote>
 <em>All Noncash Gifts</em>
@@ -1057,34 +993,31 @@ Acknowledgment Instructions
 <strong><a name="routing"></a>Routing (All Gift Transmittals)</strong>
 <blockquote>Send the original to Gift Accounting and retain a copy in departmental files.</blockquote>
 <strong><a name="retain"></a>Records Retention</strong>
-<blockquote>Retain records of the entire gift transmittal process, including courier service, in accordance with University records retention rules. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.01_University_Records--Retention_and_Disposition.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.01</span></span></a>.</blockquote>
+<blockquote>Retain records of the entire gift transmittal process, including courier service, in accordance with University records retention rules. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.01_University_Records--Retention_and_Disposition.htm">90.01</a>.</blockquote>
 <strong>Donor's Correspondence</strong>
 <blockquote>Send pertinent donor's correspondence to Gift Accounting with the Gift Transmittal and Acknowledgment and the gift. This includes any correspondence which states how the gift is to be used.</blockquote>
 <p align="center">See the PDF forms:
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-10.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.10</span></span></a>: Gift Transmittal and Acknowledgment
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-11.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.11</span></span></a>: Noncash Gift Transmittal and Acknowledgment
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-12.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.12</span></span></a>: Golf Tournament Gift Transmittal
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-13.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.13</span></span></a>: Auction Bid Gift Transmittal
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-14.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.14</span></span></a>: Auction Item Gift Transmittal
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-15.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.15</span></span></a>: Noncash Multiple Gift Transmittal
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-16.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.16</span></span></a>: Gift Payroll Deduction
-<a href="http://public.wsu.edu/~forms/PUBPDF/30-70-17.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.17</span></span></a>: Gift Electronic Funds Transfer Authorization
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-18.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.18</span></span></a>: Courier Service Inserts
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-19.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.19</span></span></a>: Gift Accounting Log Sheet
-<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-20.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">30.70.20</span></span></a>: Drop-Off Receipts
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-10.pdf">30.70.10</a>: Gift Transmittal and Acknowledgment
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-11.pdf">30.70.11</a>: Noncash Gift Transmittal and Acknowledgment
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-12.pdf">30.70.12</a>: Golf Tournament Gift Transmittal
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-13.pdf">30.70.13</a>: Auction Bid Gift Transmittal
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-14.pdf">30.70.14</a>: Auction Item Gift Transmittal
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-15.pdf">30.70.15</a>: Noncash Multiple Gift Transmittal
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-16.pdf">30.70.16</a>: Gift Payroll Deduction
+<a href="http://public.wsu.edu/~forms/PUBPDF/30-70-17.pdf">30.70.17</a>: Gift Electronic Funds Transfer Authorization
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-18.pdf">30.70.18</a>: Courier Service Inserts
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-19.pdf">30.70.19</a>: Gift Accounting Log Sheet
+<a href="http://public.wsu.edu/~forms/PDF/BPPM/30-70-20.pdf">30.70.20</a>: Drop-Off Receipts
 Complete and/or print as needed.</p></div></div><i class="page-break">%nbsp;</i></div><i class='page-break'></i><div id='catpdf_appendix'><h1 class='CoverTitle'>appendix</h1></div>
 <script type="text/php">
 	$bs = $GLOBALS["backside"];
-	//var_dump($bs);
-	
-	$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
-	$size = 12;
 
-	
+	$count=$pdf->get_page_number();
 	$chapters=$GLOBALS["chapters"];
 	//var_dump($pdf->get_cpdf());
 	
 	$o=1;
+	$p=1;
 	foreach($pdf->get_cpdf()->objects as $obj){
 		foreach ($chapters as $chapter => $page) {
 			if(isset($pdf->get_cpdf()->objects[$o]["c"])){
@@ -1094,24 +1027,22 @@ Complete and/or print as needed.</p></div></div><i class="page-break">%nbsp;</i>
 				$chapter_str	= "Chapter ".$chapter." ";
 				$pagenumber_str	= " p: ".$page["page"];
 				$text_str		= $page["text"]." ";
-
-				$content = str_replace( '{%%chapter'.$chapter.'%%}' , $chapter_str , $content );
-				$content = str_replace( '{%%page'.$chapter.'%%}' , $pagenumber_str , $content );
-				$content = str_replace( '{%%text'.$chapter.'%%}' , $text_str , $content );
-
+				if(strpos($content,'{chapter') !== false){
+					$content = str_replace( '{chapter'.$chapter.'}' , $chapter_str, $content );
+					$content = str_replace( '{page'.$chapter.'}' , $pagenumber_str, $content );
+					$content = str_replace( '{text'.$chapter.'}' , $text_str, $content );
+				}
+				if(strpos($content,'{pg#}') !== false){
+					$content = str_replace( '{pg#}' , $p."", $content );
+					$content = str_replace( '{pgT}' , $count."", $content );
+					$p++;
+				}
 				$pdf->get_cpdf()->objects[$o]["c"]=$content;
-
-
-
-				
 				
 			}
 		} 
 		$o++;
 	}
-	
-	
-	
 	$pdf->page_script('$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }');
-</script> 
+</script>
 		</body></html>
