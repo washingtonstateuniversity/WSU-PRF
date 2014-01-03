@@ -119,7 +119,7 @@ public function getTitle($post){
 		$template    = $this->template;
 		$this->title       = $this->buildFileName($template,$options);
 		$pageheader  = $this->filter_shortcodes('pageheader').$pagew."::".$pageh;
-		$pagefooter  = '<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" />'.$this->filter_shortcodes('pagefooter');//$this->filter_shortcodes('pagefooter');
+		$pagefooter  = $this->filter_shortcodes('pagefooter');//$this->filter_shortcodes('pagefooter');
 
 		
 		/* there should be a base html template? */
