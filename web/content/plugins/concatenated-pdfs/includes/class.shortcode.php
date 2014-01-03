@@ -1,4 +1,8 @@
 <?php
+/*
+	Still needs a good refactor
+	noted inline
+*/
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -51,6 +55,7 @@ class shortcode {
 
     /*
     * Register template shortcodes
+	* should be a little more robust here... 
     */
     public function register_template_shortcodes() {
         $shortcodes = shortcode::build_shortcodes();
@@ -94,9 +99,10 @@ class shortcode {
 	}
 	
 	
-	
-	
-	
+/******************
+* Functions
+*******************/	
+
     /*
     * Display download button
     */

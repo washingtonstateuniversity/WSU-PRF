@@ -1,4 +1,8 @@
 <?php
+/*
+	Still needs a good refactor
+	- actions should be moved and ?page should be detected?
+*/
 
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;

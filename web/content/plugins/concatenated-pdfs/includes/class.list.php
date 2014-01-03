@@ -1,4 +1,6 @@
 <?php
+
+/* lists helpers.. rethink this */
 class template_list extends WP_List_Table {
     function __construct() {
         global $status, $page;
@@ -9,17 +11,13 @@ class template_list extends WP_List_Table {
         ));
     }
     /*
-    
     * Return no result copy
-    
     */
     function no_items() {
         _e('No template found.');
     }
     /*
-    
     * Return column default
-    
     */
     function column_default($item, $column_name) {
         $user_info = get_userdata($item->create_by);
@@ -42,9 +40,7 @@ class template_list extends WP_List_Table {
         }
     }
     /*
-    
     * Set table column
-    
     */
     function get_columns() {
         $columns = array(
@@ -57,44 +53,26 @@ class template_list extends WP_List_Table {
         return $columns;
     }
     /*
-    
     * Set sortable columns
-    
     */
     public function get_sortable_columns() {
         return $sortable = array(
-            'template_id' => array(
-                'template_id',
-                true
-            ),
-            'template_name' => array(
-                'template_name',
-                true
-            ),
-            'create_date' => array(
-                'create_date',
-                true
-            )
+            'template_id' => array( 'template_id', true ),
+            'template_name' => array( 'template_name', true ),
+            'create_date' => array( 'create_date', true )
         );
     }
     /*
-    
     * Set template name column structure
-    
     @item - object
-    
     */
     function column_template_name($item) {
-        $arr_params = array(
-            'template' => $item->template_id,
-            'catpdf_action' => 'edit'
-        );
+        $arr_params = array( 'template' => $item->template_id, 'catpdf_action' => 'edit' );
         $editlink   = add_query_arg($arr_params);
-        $arr_params = array(
-            'template' => $item->template_id,
-            'catpdf_action' => 'delete'
-        );
+		
+        $arr_params = array( 'template' => $item->template_id, 'catpdf_action' => 'delete' );
         $deletelink = add_query_arg($arr_params);
+		
         $actions    = array(
             'edit' => '<a href="' . $editlink . '">Edit</a>',
             'delete' => '<a href="' . $deletelink . '">Delete</a>'
@@ -102,9 +80,7 @@ class template_list extends WP_List_Table {
         return sprintf('<strong><a href="' . $editlink . '" title="Edit">%1$s</a></strong> %2$s', $item->template_name, $this->row_actions($actions));
     }
     /*
-    
     * Set table bulk action
-    
     */
     function get_bulk_actions() {
         $actions = array(
@@ -113,19 +89,15 @@ class template_list extends WP_List_Table {
         return $actions;
     }
     /*
-    
     * Set culumn checkbox
-    
     * @item - object
-    
     */
     function column_cb($item) {
         return sprintf('<input type="checkbox" name="template[]" value="%s" />', $item->template_id);
     }
     /*
-    
     * Process action performed
-    
+	* @todo post for _params
     */
     function process_bulk_action() {
         global $catpdf_templates;
@@ -138,9 +110,7 @@ class template_list extends WP_List_Table {
         }
     }
     /*
-    
     * Process action performed
-    
     */
     function process_link_action() {
         global $catpdf_templates;
@@ -149,9 +119,8 @@ class template_list extends WP_List_Table {
         }
     }
     /*
-    
     * Prepage table items
-    
+	* @todo reduce sql
     */
     function prepare_items() {
         global $wpdb, $_wp_column_headers;

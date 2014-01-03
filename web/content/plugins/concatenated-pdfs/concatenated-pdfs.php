@@ -21,9 +21,9 @@ define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
 
 /* things still to do
 [ ]-remove the use themes templates inlue of per template css path link
-[ ]-must beable to sort on optional items like tax/type etc
-[ ]-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
-[ ]-provide more areas to controll
+[ ]-must be able to sort on optional items like tax/type etc
+[•]-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
+[•]-provide more areas to controll
 [x]-make the index
 [ ]-create ruls for the bookmarking
 [ ]-create log/debug page

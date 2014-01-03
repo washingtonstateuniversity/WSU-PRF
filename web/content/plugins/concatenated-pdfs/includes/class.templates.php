@@ -1,5 +1,11 @@
 <?php
 
+/*
+	Still needs a good refactor
+	- sections should be abstracted to subplugin style
+*/
+
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 

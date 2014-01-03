@@ -1,5 +1,9 @@
 <?php
-
+/*
+	Still needs a good refactor
+	- oh where to start
+	noted below
+*/
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
