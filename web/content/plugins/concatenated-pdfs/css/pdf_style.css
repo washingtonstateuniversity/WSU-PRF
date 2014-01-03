@@ -1,12 +1,23 @@
 /*style roots
 Note: the box is set for you, try not to get to wild
 unless you are a css ninja
-
+body{}
 #head_area{}
 #head_area .wrap{}
 #foot_area{}
 #foot_area .wrap{}
 
+//the hooks to the content sections
+#catpdf_content{}
+#catpdf_cover{}
+#catpdf_index{}
+#catpdf_appendix{}
+#catpdf_%sectionName%{}
+
+//predefined shortcode html structure
+#page_numbers{}
+#page_numbers #pn_text{}
+#page_numbers #pn_number{}
 */
 
 #head_area .wrap{border:1px solid #494949;}
@@ -16,22 +27,10 @@ unless you are a css ninja
 
 
 
-
-
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
+/* DEFAULTS */
+html, body{ margin: 0; padding: 0; border: 0; }
+table { border-collapse: collapse; border-spacing: 0; }
 strong{ font-weight:bold;}
-
-html, body{
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-
 h1{font-size:20pt;}
 h2{font-size:16pt;}
 h3{font-size:14pt;}
