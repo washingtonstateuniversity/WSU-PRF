@@ -131,7 +131,7 @@ public function getTitle($post){
 		$body_padding="{$body_topPad} {$body_rightPad} {$body_bottomPad} {$body_leftPad}";
 		
 
-        $body = '<body>';
+        $body = '<body class="typeset">';
 		$indexscriptglobals='<script type="text/php">
 			$font = Font_Metrics::get_font("helvetica", "bold");
 			$GLOBALS["i"]=1;

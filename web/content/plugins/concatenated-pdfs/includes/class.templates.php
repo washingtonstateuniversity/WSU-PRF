@@ -62,7 +62,17 @@ class catpdf_templates {
 		$index.= "";
 		$c=1;
 		foreach($posts as $post){
-			$index.="<table class='indexed_chapter'><tr><td class='chapter'>{%%chapter{$c}%%}</td><td class='text'>{%%text{$c}%%}</td><td class='segment'></td><td class='pagenumber'>{%%page{$c}%%}</td></tr></table>";
+			$index.="<table class='indexed_chapter'>
+  <tbody>
+    <tr>
+      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{%%chapter{$c}%%}</td>
+      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{%%text{$c}%%}</td>
+      <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
+      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{%%page{$c}%%}</td>
+    </tr>
+  </tbody>
+</table>
+";
 			$c++;
 		}
 		$index.= "";
@@ -107,7 +117,7 @@ class catpdf_templates {
     /*
      * Return default template structure
      */
-    private function custruct_default_template($type = 'all') {
+    public function custruct_default_template($type = 'all') {
         $temp         = array();
         $temp['name'] = 'Default';
 		
@@ -133,19 +143,21 @@ class catpdf_templates {
         } else {
             // Construct template loop
             $looptemplate = '<div class="content-wrapper"><div class="post">';
-            $looptemplate .= '<h2>[title]</h2>';
+            $looptemplate .= '<h1>[title]</h1>';
+			$looptemplate .= '<h2>[category label="Posted in:"]</h2>';
+			$looptemplate .= '<h3>[tags label="Tagged:"]</h3>';
+			$looptemplate .= '<h4>version [version_count] <span>([revision_count] revisions)<span></h4>';
             $looptemplate .= '<div class="meta"><p>Posted on <strong>[date]</strong> by <strong>[author]</strong></p></div>';
-            $looptemplate .= '<p>[content]</p>';
-            $looptemplate .= '<div class="taxonomy">[category label="Posted in:"] | [tags label="Tagged:"] | With [comments_count] comments</div>';
-            $looptemplate .= '</div></div>';
+            $looptemplate .= '[content]';
+            $looptemplate .= '</div></div><i class="page-break"></i>';
             // Construct template body
             $bodytemplate = '';
-            $bodytemplate .= '<div class="pdf-header">';
+            $bodytemplate .= '<!--<div class="pdf-header">';
             $bodytemplate .= '<h1>Post List</h1>';
             $bodytemplate .= '<h2>[site_title]</h2>';
             $bodytemplate .= '<h3>[site_tagline]</h3>';
             $bodytemplate .= '[from_date label="From:"] [to_date label="To:"]';
-            $bodytemplate .= '</div>';
+            $bodytemplate .= '</div>-->';
             $bodytemplate .= '<div>[loop]</div>';
             $bodytemplate .= '';
         }

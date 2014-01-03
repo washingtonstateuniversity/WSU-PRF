@@ -29,34 +29,39 @@ define('PDF_STYLE', CATPDF_URL . 'css/pdf_style.css');
 
 */
 if ( ! class_exists( 'concatenatedPDFsLoad' ) ) {
-
+	$catpdf_core = NULL;
 	class concatenatedPDFsLoad {
-		public $catpdf_core = NULL;
+		
 		public function __construct() {
 			global $catpdf_core;
 			// Include core
 			include(CATPDF_PATH . '/includes/class.core.php');
 			$catpdf_core = new catpdf_core();// Instantiate core class
 
-			register_activation_hook(__CLASS__, 'catpdf_initializer');
-			register_deactivation_hook(__CLASS__, 'catpdf_remove');
+			
+
 		}
-		// Set option values
-		function catpdf_initializer() {
-			global $catpdf_core;
-			$catpdf_core->install_init();		// Call plugin initializer
-		}
-		// Unset option values
-		function catpdf_remove() {
-			delete_option('catpdf_options');	// Delete plugin options
-		}
+
+
 		
 	}
 	/*
 	 * Initiate the plug-in.
 	 */
-	global $concatenatedPDFs;
-	$concatenatedPDFs = new concatenatedPDFsLoad();
+	register_activation_hook(__FILE__,  'catpdf_initializer');
+	register_deactivation_hook(__FILE__,  'catpdf_remove');
+	// Set option values
+	function catpdf_initializer() {
+		global $catpdf_core;
+		$catpdf_core->install_init();		// Call plugin initializer
+	}
+	// Unset option values
+	function catpdf_remove() {
+		delete_option('catpdf_options');	// Delete plugin options
+	}	 
+	 
+	global $concatenatedPDFsLoad;
+	$concatenatedPDFsLoad = new concatenatedPDFsLoad();
 }
 
 ?>

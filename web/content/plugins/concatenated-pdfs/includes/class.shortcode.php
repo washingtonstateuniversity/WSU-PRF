@@ -125,12 +125,7 @@ class shortcode {
 			$indexerscript='
 <script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "'.$title.'"; $GLOBALS["i"]=$i+1; } </script>
 ';
-			$indexedcontent=$indexerscript.$item.
-								'<h1>EndOfContent [on page '.
-								'<script type="text/php">'
-								.	'echo "p:";'
-								.'</script>'
-								.']</h1>';
+			$indexedcontent=$indexerscript.$item;
 			$item=$indexedcontent;
         return $item;
     }
@@ -301,7 +296,8 @@ class shortcode {
         if (count($posts) > 0) {
             foreach ($posts as $post) {
                 $this->single = $post;
-                $item .= $catpdf_output->filter_shortcodes('loop');
+				$postHtml = $catpdf_output->filter_shortcodes('loop');
+                $item .= $postHtml;
             }
         }
         return $item;

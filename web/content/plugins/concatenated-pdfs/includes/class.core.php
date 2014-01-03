@@ -67,12 +67,11 @@ class catpdf_core {
     /*
      * Add template table
      */
-    private function _add_table() {
+    public function _add_table() {
         global $wpdb,$catpdf_data;
         // Construct query
         $table_name = $wpdb->prefix . "catpdf_template";
         $sql        = "
-		DROP TABLE IF EXISTS `{$table_name}`;
 		CREATE TABLE `{$table_name}`  (
 			`template_id` mediumint(9) NOT NULL AUTO_INCREMENT,
 			`template_name` varchar(50) NOT NULL,
@@ -97,7 +96,7 @@ class catpdf_core {
 	/*
      * Set option defaults
      */
-    private function _insert_defaults() {
+    public function _insert_defaults() {
 		global $catpdf_templates;
         // Check if default template exist
         if (!$this->_is_exist('template_name', 'Sample Template')) {
