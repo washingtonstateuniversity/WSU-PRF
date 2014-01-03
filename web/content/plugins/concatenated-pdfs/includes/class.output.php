@@ -124,18 +124,18 @@ public function getTitle($post){
 		$bodycolor="#F0F0F0";		//@@!!OPTION REPLACE
 		
 		$topMargin="15";			//@@!!OPTION REPLACE
-		$headHeight="55";			//@@!!OPTION REPLACE
+		$headHeight="155";			//@@!!OPTION REPLACE
 		$headSep="15";				//@@!!OPTION REPLACE
 
 		$bottomMargin="15";			//@@!!OPTION REPLACE
-		$footHeight="25";			//@@!!OPTION REPLACE
+		$footHeight="125";			//@@!!OPTION REPLACE
 		$footSep="10";				//@@!!OPTION REPLACE
 		$footSkip=($footHeight+$footSep);//equal to bottom:{VAL}px
 
 		$pageHeadMargin= ($topMargin+$headHeight+$headSep);
 		$pageFootMargin=($bottomMargin+$footSkip);
-		$pagerightMargin="15";	//@@!!OPTION REPLACE
-		$pageleftMargin="15";		//@@!!OPTION REPLACE
+		$pagerightMargin="75";	//@@!!OPTION REPLACE
+		$pageleftMargin="55";		//@@!!OPTION REPLACE
 		
 		$textBoxingWidth=$pagew-$pagerightMargin-$pageleftMargin;
 		
@@ -163,7 +163,7 @@ $script="";
 			@page{}
 			#head_area{ position:fixed;left:'.$pageleftMargin.$unit.';top:'.$topMargin.$unit.';height:'.$headHeight.$unit.'; width:'.$textBoxingWidth.$unit.'; }
 			#head_area .wrap{position:relative; width:100%; height:'.$headHeight.$unit.';}
-			#foot_area{ position:fixed;left:'.$pageleftMargin.$unit.';bottom:'.$footSkip.$unit.';height:'.$footHeight.$unit.';width:'.$textBoxingWidth.$unit.';}
+			#foot_area{ position:fixed;left:'.$pageleftMargin.$unit.';bottom:'.$bottomMargin.$unit.';height:'.$footHeight.$unit.';width:'.$textBoxingWidth.$unit.';}
 			#foot_area .wrap{position:relative; width:100%; height:'.$footHeight.$unit.';}
 			body {padding:'.$page_padding.';}/*note that the body is used as our sudo "page" it is our saffal base*/
 			i.page-break {page-break-after: always;border: 0;}
