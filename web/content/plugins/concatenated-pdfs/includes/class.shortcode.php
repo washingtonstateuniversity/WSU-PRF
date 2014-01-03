@@ -40,10 +40,13 @@ class shortcode {
 			'featured_image'=> array('dis'=>__('Featured Image'),'function'=>'featured_image_func'),
 			'category'=> array('dis'=>__('Category'),'function'=>'category_func'),
 			'tags'=> array('dis'=>__('Tags'),'function'=>'tags_func'),
-			'comments_count'=> array('dis'=>__('Comments Count'),'function'=>'comments_count_func')
+			'comments_count'=> array('dis'=>__('Comments Count'),'function'=>'comments_count_func'),
+			'version_count'=> array('dis'=>__('Number of versions'),'function'=>'version_count_func')
 		);
 		return $shortcodes;
 	}
+
+
 
     /*
     * Register template shortcodes
@@ -76,7 +79,7 @@ class shortcode {
 				$usingCodes = array(
 					'title','excerpt','content','permalink',
 					'date','author','author_photo','author_description',
-					'status','featured_image','category','tags','comments_count'
+					'status','featured_image','category','tags','comments_count','version_count'
 				);
 				$returning = array();
 				foreach($shortcodes as $code=>$props){
@@ -140,6 +143,16 @@ class shortcode {
         $item = get_the_excerpt();
         return $item;
     }
+    /*
+    * Return post tags list
+    * @atts - array
+    */	
+	public function version_count_func(){
+		global $post;
+		setup_postdata($post);
+		$revisions=wp_get_post_revisions(get_the_ID());
+		return count($revisions);
+	}
     /*
     * Return post tags list
     * @atts - array
