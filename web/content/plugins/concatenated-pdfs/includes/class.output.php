@@ -140,11 +140,11 @@ public function getTitle($post){
 		$pageFootMargin=($bottomMargin+$footSkip);
 		$textBoxingWidth=$pagew-$pagerightMargin-$pageleftMargin;
 		
-		
 		$page_padding="{$pageHeadMargin}{$unit} {$pagerightMargin}{$unit} {$pageFootMargin}{$unit} {$pageleftMargin}{$unit}";
 		
-
-        $body = '<body><div id="head_area"><div class="wrap">'.$pageheader.'</div></div><div id="foot_area"><div class="wrap">'.$pagefooter.'</div></div>';
+		$bodyOpenTag = '<body>';
+		$header_section = '<div id="head_area"><div class="wrap">'.$pageheader.'</div></div>';
+		$footer_section = '<div id="foot_area"><div class="wrap">'.$pagefooter.'</div></div>';
 		
 		//sets up the globals for the rendered inline php 
 		$indexscriptglobals='<script type="text/php">
@@ -169,24 +169,26 @@ $script="";
 			' . strip_tags($options['customcss']) . '
 		</style>';
 
-        $this->head  = $head_html.$head_style.$head_html_tag.$body.$indexscriptglobals.$script;
-
+        $this->head  = $head_html
+						.$head_style
+						.$head_html_tag
+						.$bodyOpenTag
+						.$header_section
+						.$footer_section
+						.$indexscriptglobals
+						.$script;
 		$indexer = '
 <script type="text/php">
-	$bs = $GLOBALS["backside"];
+	$bs = $GLOBALS["backside"]; // work to remove
 
 	$count=$pdf->get_page_number();
 	$chapters=$GLOBALS["chapters"];
-	//var_dump($pdf->get_cpdf());
-	
 	$o=1;
 	$p=1;
 	foreach($pdf->get_cpdf()->objects as $obj){
 		foreach ($chapters as $chapter => $page) {
 			if(isset($pdf->get_cpdf()->objects[$o]["c"])){
 				$content = $pdf->get_cpdf()->objects[$o]["c"];
-				//var_dump($content);
-				
 				$chapter_str	= "Chapter ".$chapter." ";
 				$pagenumber_str	= " p: ".$page["page"];
 				$text_str		= $page["text"]." ";
@@ -201,17 +203,20 @@ $script="";
 					$p++;
 				}
 				$pdf->get_cpdf()->objects[$o]["c"]=$content;
-				
 			}
 		} 
 		$o++;
 	}
+	//page_script seems to need to be oneline?
 	$pdf->page_script(\'$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }\');
 </script>';
-        $footer_html = $indexer
-					.	'</body>'
-					.'</html>';
-        $this->foot = $footer_html;
+        $bodyCloseTag='</body>';
+		$htmlCloseTag='</html>';
+					
+		$bottomHtml = $indexer
+					.$bodyCloseTag
+					.$htmlCloseTag;		
+        $this->foot = $bottomHtml;
     }
     /*
      * Return html with filtered shortcodes
@@ -243,6 +248,44 @@ $script="";
         }
         return $html;
     }
+
+
+
+
+
+	public function sendPdf($file,$prettyname=NULL){
+		$name = $prettyname==NULL?$file:$prettyname;
+		$file=CATPDF_CACHE_PATH.$file;
+		if (file_exists($file)){
+			if(false !== ($hanlder = fopen($file,"r"))){
+				header('Content-Description: File Transfer');
+				header('Content-Type: application/octet-stream');
+				header('Content-Disposition: attachment; filename='.$name);
+				header('Content-Transfer-Encoding: binary');
+				header('Expires: 0');
+				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				header('Pragma: public');
+				header('Content-Length: ' . filesize($file)); //Remove
+				/*//Send the content in chunks
+				while(false !== ($chunk = fread($handler,4096))){
+					echo $chunk;
+				}*/
+				ob_clean();
+				flush();
+				readfile($file);
+				exit;
+			} //out put error message
+		} //out put error message
+	}
+	public function cachePdf($file,$contents){
+		$file = CATPDF_CACHE_PATH.$file;
+		return file_put_contents($file, $contents);
+	}	
+
+
+
+
+
 
 }
 ?>
