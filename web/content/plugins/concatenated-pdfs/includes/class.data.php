@@ -4,9 +4,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class catpdf_data {
-    function __construct() {
-		
-    }
+    function __construct() { }
 
 	public function get_options(){
 		$plugin_option = get_option('catpdf_options',array(
@@ -18,9 +16,7 @@ class catpdf_data {
 		return $plugin_option;
 	}
 
-	public function getAllPostTypes(){
-		
-	}
+	public function getAllPostTypes(){ }
 
     /*
      * Get post data
@@ -30,8 +26,7 @@ class catpdf_data {
      */
     public function query_posts($id = NULL) {
 		global $_params;
- 		$params = $_params;
-		$type = isset($params['type'])?$params['type']:"post";
+		$type = isset($_params['type'])?$_params['type']:"post";
         $args = array(
             'post_type' => $type,
             'posts_per_page' => -1,
@@ -40,32 +35,19 @@ class catpdf_data {
         if ($id !== NULL) {
             $args['p'] = $id;
         }
-        if (isset($params['user']) && count($params['user']) > 0) {
-            $au_str = '';
-            foreach ($params['user'] as $au) {
-                $au_str .= $au . ',';
-            }
-            $args['author'] = substr($au_str, 0, -1);
+        if (isset($_params['user']) && count($_params['user']) > 0) {
+            $args['author'] = implode(',',$_params['user']);
         }
-        if (isset($params['status']) && count($params['status']) > 0) {
-            $status_str = '';
-            foreach ($params['status'] as $status) {
-                $status_str .= $status . ',';
-            }
-            $args['post_status'] = substr($status_str, 0, -1);
+        if (isset($_params['status']) && count($_params['status']) > 0) {
+			$args['post_status'] = implode(',',$_params['status']);
         }
-        if (isset($params['cat']) && count($params['cat']) > 0) {
-            $cat_str = '';
-            foreach ($params['cat'] as $cat) {
-                $cat_str .= $cat . ',';
-            }
-            $args['cat'] = substr($cat_str, 0, -1);
+        if (isset($_params['cat']) && count($_params['cat']) > 0) {
+            $args['cat'] = implode(',',$_params['cat']);
         }
         add_filter('posts_where', array( $this, 'filter_where' ));
         $result = new WP_Query($args);
 		
         return $result->posts;
-
     }
     /*
      * Return query filter
@@ -73,13 +55,12 @@ class catpdf_data {
      */
     public function filter_where($where = '') {
         global $_params;
- 		$params = $_params;
-        if (isset($params['from']) && $params['from'] != '') {
-            $from = date('Y-m-d', strtotime($params['from']));
+        if (isset($_params['from']) && $_params['from'] != '') {
+            $from = date('Y-m-d', strtotime($_params['from']));
             $where .= ' AND DATE_FORMAT( post_date , "%Y-%m-%d" ) >= "' . $from . '"';
         }
-        if (isset($params['to']) && $params['to'] != '') {
-            $to = date('Y-m-d', strtotime($params['to']));
+        if (isset($_params['to']) && $_params['to'] != '') {
+            $to = date('Y-m-d', strtotime($_params['to']));
             $where .= ' AND DATE_FORMAT( post_date , "%Y-%m-%d" ) <= "' . $to . '"';
         }
         return $where;

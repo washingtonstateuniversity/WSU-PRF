@@ -11,31 +11,22 @@ class catpdf_pages {
 		global $_params;
         if (is_admin()) {
 			if (isset($_params)) {
-				// Check if option save is performed
-				if (isset($_params['catpdf_save_option'])) {
-					// Add update option action hook
-					add_action('init', array( $this, 'update_options' ));
+				if (isset($_params['catpdf_save_option'])) {// Check if option save is performed
+					add_action('init', array( $this, 'update_options' ));// Add update option action hook
 				}
-				// Check if pdf export is performed
-				if (isset($_params['catpdf_export'])) {
-					// Add export hook
-					add_action('init', array( $this, 'export' ));
+				if (isset($_params['catpdf_export'])) {// Check if pdf export is performed
+					add_action('init', array( $this, 'export' ));// Add export hook
 				}
 			}
+			add_action('admin_init', array( $this, 'admin_init' ));
+			add_action('admin_menu', array( $this, 'admin_menu' ));
 		}
-        // Check if post download is performed
-        if (isset($_GET['catpdf_dl'])) {
-            // Add download action hook
-            add_action('init', array( $this, 'download_post' ));
+        if (isset($_GET['catpdf_dl'])) {// Check if post download is performed
+            add_action('init', array( $this, 'download_post' ));// Add download action hook
         }
-        // Check if single post download is performed
-        if (isset($_GET['catpdf_post_dl'])) {
-            // Add download action hook
-            add_action('init', array( $this, 'download_posts' ));
+        if (isset($_GET['catpdf_post_dl'])) {// Check if single post download is performed
+            add_action('init', array( $this, 'download_posts' ));// Add download action hook
         }
-		
-		add_action('admin_init', array( $this, 'admin_init' ));
-		add_action('admin_menu', array( $this, 'admin_menu' ));
     }
     /*
      * Initailize plugin admin part
@@ -44,15 +35,11 @@ class catpdf_pages {
 		global $wp_scripts;
         // Enque style and script		
         wp_enqueue_script('jquery-ui-core');
-        wp_enqueue_script('jquery-ui-datepicker', CATPDF_URL . 'js/ui/jquery.ui.datepicker.js', array(
-            'jquery'
-        ), '1.9.0', 'all');
-		wp_enqueue_style('jquery-ui-datepicker', CATPDF_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+        wp_enqueue_script('jquery-ui-datepicker', CATPDF_URL.'js/ui/jquery.ui.datepicker.js', array('jquery'), '1.9.0', 'all');
+		wp_enqueue_style('jquery-ui-datepicker', CATPDF_URL.'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
 		
-        wp_enqueue_script('jquery-ui-tabs', CATPDF_URL . 'js/ui/jquery.ui.tabs.js', array(
-            'jquery'
-        ), '1.9.0', 'all');		
-		wp_enqueue_style('jquery-ui-tabs', CATPDF_URL . 'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+        wp_enqueue_script('jquery-ui-tabs', CATPDF_URL.'js/ui/jquery.ui.tabs.js', array('jquery'), '1.9.0', 'all');		
+		wp_enqueue_style('jquery-ui-tabs', CATPDF_URL.'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
 		// get registered script object for jquery-ui
 		$ui = $wp_scripts->query('jquery-ui-core');
 	 
@@ -61,9 +48,7 @@ class catpdf_pages {
 		$url = "$protocol://ajax.googleapis.com/ajax/libs/jqueryui/{$ui->ver}/themes/smoothness/jquery-ui.min.css";
 		wp_enqueue_style('jquery-ui-smoothness', $url, false, null);
 
-        wp_enqueue_script('catpdf-js', CATPDF_URL . 'js/catpdf.custom.js', array(
-            'jquery'
-        ), '', 'all');
+        wp_enqueue_script('catpdf-js', CATPDF_URL . 'js/catpdf.custom.js', array('jquery'), '', 'all');
         wp_enqueue_style('catpdfport-style', CATPDF_URL . 'css/style.css', false, '1.9.0', 'all');
     }
     /*
@@ -71,7 +56,7 @@ class catpdf_pages {
      */
     public function admin_menu() {
         // Register menu
-        add_menu_page(CATPDF_NAME, CATPDF_NAME, 'manage_options', CATPDF_BASE_NAME, array( &$this, 'option_page' ), CATPDF_URL . 'images/nav-icon.png');
+        add_menu_page(CATPDF_NAME, CATPDF_NAME, 'manage_options', CATPDF_BASE_NAME, array( $this, 'option_page' ), CATPDF_URL . 'images/nav-icon.png');
         // Register sub-menu
         add_submenu_page(CATPDF_BASE_NAME, _('Download PDF'), _('Download PDF'), 'manage_options', 'catpdf-download-pdf', array( $this, 'download_page' ));
         add_submenu_page(CATPDF_BASE_NAME, _('Template Manager'), _('Template Manager'), 'manage_options', 'catpdf-template-manager', array( $this, 'template_manager_page' ));
@@ -149,6 +134,14 @@ class catpdf_pages {
 			$select_types.='<option value="'. $post_type.'"  class="level-0" >'. $post_type. '</option>';
 		}
 		$select_types.='</select>';
+
+
+		$select_tags= '<select name="tags[]" multiple="multiple" class="postform" >';
+		foreach ($post_types  as $post_type ) {
+			$select_tags.='<option value="'. $post_type.'"  class="level-0" >'. $post_type. '</option>';
+		}
+		$select_tags.='</select>';
+
 		
 		
         $select_cats           = str_replace("name='cat' id=", "name='cat[]' multiple='multiple' id=", $select_cats);
@@ -161,6 +154,7 @@ class catpdf_pages {
         $select_author         = str_replace("name='user' ", "name='user[]' multiple='multiple' ", $select_author);
         $select_author         = str_replace("<option", '<option ', $select_author);
 		
+		$data['select_tags']  = $select_tags;
 		$data['select_types']  = $select_types;
         $data['select_cats']   = $select_cats;
         $data['select_author'] = $select_author;

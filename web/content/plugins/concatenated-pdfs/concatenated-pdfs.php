@@ -3,7 +3,7 @@
 Plugin Name: Concatenated PDF
 Version: 0.1
 Plugin URI: #
-Description: #
+Description: A full feature PDF exporter.  Full-Controll,Caching,Smart
 Author: Jeremy Bass
 Author URI: #
 */
@@ -18,6 +18,7 @@ define('CATPDF_STYLE', CATPDF_PATH . '/css/style.css');
 define('PDF_STYLE', CATPDF_URL . 'css/pdf_style.css');
 define('CATPDF_CACHE_PATH', CATPDF_PATH . 'cache/');
 define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
+
 /* things still to do
 [ ]-remove the use themes templates inlue of per template css path link
 [ ]-must beable to sort on optional items like tax/type etc
@@ -25,17 +26,14 @@ define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
 [ ]-provide more areas to controll
 [x]-make the index
 [ ]-create ruls for the bookmarking
-
-
+[ ]-create log/debug page
 */
 if ( ! class_exists( 'concatenatedPDFsLoad' ) ) {
 	$catpdf_core = NULL;
 	class concatenatedPDFsLoad {
-		
 		public function __construct() {
 			global $catpdf_core;
-			// Include core
-			include(CATPDF_PATH . '/includes/class.core.php');
+			include(CATPDF_PATH . '/includes/class.core.php');// Include core
 			$catpdf_core = new catpdf_core();// Instantiate core class
 		}
 	}
