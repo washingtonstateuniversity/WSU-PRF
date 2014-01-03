@@ -206,16 +206,59 @@ class catpdf_pages {
     /*
      * Perform export pdf
      */
+	 
+	public function sendPdf($file,$prettyname=NULL){
+		$name = $prettyname==NULL?$file:$prettyname;
+		$file=CATPDF_CACHE_PATH.$file;
+		if (file_exists($file)){
+			if(false !== ($hanlder = fopen($file,"r"))){
+				header('Content-Description: File Transfer');
+				header('Content-Type: application/octet-stream');
+				header('Content-Disposition: attachment; filename='.$name);
+				header('Content-Transfer-Encoding: binary');
+				header('Expires: 0');
+				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+				header('Pragma: public');
+				header('Content-Length: ' . filesize($file)); //Remove
+				/*//Send the content in chunks
+				while(false !== ($chunk = fread($handler,4096))){
+					echo $chunk;
+				}*/
+				ob_clean();
+				flush();
+				readfile($file);
+				exit;
+			} //out put error message
+		} //out put error message
+	}
+	public function cachePdf($file,$contents){
+		$file = CATPDF_CACHE_PATH.$file;
+		return file_put_contents($file, $contents);
+	}	 
+	 
     public function export() {
         global $dompdf, $catpdf_output, $_params;
         
-        
-		$dompdf->set_paper($_params['papersize'], $_params['orientation']);
-		$content     = $catpdf_output->custruct_template();
-		$dompdf->load_html($content);
-        $dompdf->render();
+		$file = date("Now") . ".pdf";//need to fix this
+		//would have saved recorde of publication to pull from
+		$cached=false;//add check
+        if(!$cached){
+			$dompdf->set_paper($_params['papersize'], $_params['orientation']);
+			$content     = $catpdf_output->custruct_template();
+			$dompdf->load_html($content);
+			$dompdf->render();
+			$pdf = $dompdf->output();//store it for output
+			//$dompdf->stream();
+			$prettyname = trim($catpdf_output->title) . ".pdf";
 
-        $dompdf->stream(trim($catpdf_output->title) . ".pdf");
+			if( $this->cachePdf($file,$pdf) ){
+				$this->sendPdf($file,$prettyname);
+			}else{
+				//send off error message	
+			}
+		}else{
+			$this->sendPdf($file);
+		}
     }
     /*
      * Download post pdf

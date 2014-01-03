@@ -16,15 +16,15 @@ define('CATPDF_URL', plugin_dir_url(__FILE__));
 define('CATPDF_PATH', plugin_dir_path(__FILE__));
 define('CATPDF_STYLE', CATPDF_PATH . '/css/style.css');
 define('PDF_STYLE', CATPDF_URL . 'css/pdf_style.css');
-
-
+define('CATPDF_CACHE_PATH', CATPDF_PATH . 'cache/');
+define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
 /* things still to do
--remove the use themes templates inlue of per template css path link
--must beable to sort on optional items like tax/type etc
--cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
--provide more areas to controll
--make the index
--create ruls for the bookmarking
+[ ]-remove the use themes templates inlue of per template css path link
+[ ]-must beable to sort on optional items like tax/type etc
+[ ]-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
+[ ]-provide more areas to controll
+[x]-make the index
+[ ]-create ruls for the bookmarking
 
 
 */
@@ -37,13 +37,7 @@ if ( ! class_exists( 'concatenatedPDFsLoad' ) ) {
 			// Include core
 			include(CATPDF_PATH . '/includes/class.core.php');
 			$catpdf_core = new catpdf_core();// Instantiate core class
-
-			
-
 		}
-
-
-		
 	}
 	/*
 	 * Initiate the plug-in.
