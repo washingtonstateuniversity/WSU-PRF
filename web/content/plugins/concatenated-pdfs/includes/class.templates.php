@@ -126,7 +126,7 @@ class catpdf_templates {
 		// Construct template loop
 		$pageheadertemplate = '<div id="site_info_block">
 <img src="http://images.wsu.edu/index-images/bg-header.jpg" id="logo" />
-<div id="site_info">[site_title]<br/>[site_tagline]</div>
+<div id="site_info"><span id="site_info_name">[site_title]</span><br/><span id="site_info_tag">[site_tagline]</span></div>
 </div>
 <div id="site_tag">[date_today]<br/>[site_url link=true]</div>';
 		$pagefootertemplate = '[page_numbers label="PAGE" separator="/"]';

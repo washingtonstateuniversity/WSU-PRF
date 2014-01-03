@@ -20,8 +20,8 @@ body{}
 #page_numbers #pn_number{}
 */
 
-#head_area .wrap{border:1px solid #494949;}
-#foot_area .wrap{border:1px solid #494949;}
+#head_area .wrap{border-bottom:2px solid #6A6A6A;}
+#foot_area .wrap{border-top:2px solid #6A6A6A;}
 /*fun note on the head/foot warp is that doing height=100% goes the whole page 
  there is room to play just note that there are defaults*/
 
@@ -87,14 +87,15 @@ h1.CoverTitle {
 #catpdf_index h2{font-size:20px !important;font-weight:bold !important; border-bottom:1px solid #585755;}
 
 
-#page_numbers{position:absolute; width:75px; height:35px; top:0px; right:5px; text-align:left;
-border:1px solid #494949;}
-#page_numbers #pn_text{display:inline-block;position:absolute; width:100%; top:0px; right:0px; text-align: center;}
-#page_numbers #pn_number{display:inline-block;position:absolute; width:100%; top:15px; right:0px; text-align: center;}
+#page_numbers{position:absolute; width:75px; height:35px; top:2.5px; right:0px; text-align:left;}
+#page_numbers #pn_text{display:block;position:absolute; width:100%; top:0px; right:0px; text-align: left;border-bottom:1px solid #e2e2e2;}
+#page_numbers #pn_number{display:block;position:absolute; width:100%; top:20px; right:0px; text-align: left;}
 
 #head_area .wrap{padding:5px;}
 #site_info_block{height:50px; width:250px;}
 #site_info{margin-left:5px;display:inline-block;}
+#site_info_name{font-size:20px; font-weight:bold;}
+#site_info_tag{font-size:12px; font-style:italic;}
 #logo{float:left;height:50px;}
-#site_tag{position:absolute; top:12.5px; right:12.5px;text-align: right;width:auto;}
+#site_tag{position:absolute; top:12.5px; right:12.5px;text-align: right;width:auto;font-size:12px;}
 
