@@ -121,6 +121,17 @@ class shortcode {
         $post = $this->single;
         setup_postdata($post);
         $item = get_the_content();
+		$title = get_the_title();
+			$indexerscript='
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "'.$title.'"; $GLOBALS["i"]=$i+1; } </script>
+';
+			$indexedcontent=$indexerscript.$item.
+								'<h1>EndOfContent [on page '.
+								'<script type="text/php">'
+								.	'echo "p:";'
+								.'</script>'
+								.']</h1>';
+			$item=$indexedcontent;
         return $item;
     }
     /*

@@ -23,6 +23,60 @@ class catpdf_templates {
 			}
 		}  
     }
+
+
+	public function get_default_template_sections(){
+		$sections = array(
+			'cover'=>"",
+			'index'=>"",
+			'content'=>"",
+			'appendix'=>"",
+		);
+		return $sections;
+	}
+
+	/*
+	* @todo set this up to accept inserted parts
+	*/
+	public function get_template_sections(){
+		return $this->get_default_template_sections();
+	}
+	
+	public function get_section_content(){	
+		global $catpdf_output;
+		$catpdf_output->_html_structure();
+		$content 		= $catpdf_output->filter_shortcodes('body');
+		$contentHtml	= "<div id='catpdf_content'>{$content}</div>";	
+		return $content;
+	}	
+	public function get_section_cover(){
+		$cover			= "<h1 class='CoverTitle'>Cover Letter</h1>";
+		$coverHtml 		= "<div id='catpdf_cover'>{$cover}</div>";	
+		return $coverHtml;
+	}
+	
+	public function get_section_index(){
+		global $posts;
+		$index='<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>';
+		$index.= "<h2>Table of Contents</h2>";
+		$index.= "";
+		$c=1;
+		foreach($posts as $post){
+			$index.="<table class='indexed_chapter'><tr><td class='chapter'>{%%chapter{$c}%%}</td><td class='text'>{%%text{$c}%%}</td><td class='segment'></td><td class='pagenumber'>{%%page{$c}%%}</td></tr></table>";
+			$c++;
+		}
+		$index.= "";
+		$index.="</div>";
+		$index.='<script type="text/php"> $pdf->close_object(); </script>';
+		$indexHtml="<div id='catpdf_index'>{$index}</div>";
+		return $indexHtml;
+	}	
+	public function get_section_appendix(){	
+		$appendix			= "<h1 class='CoverTitle'>appendix</h1>";
+		$appendixHtml 		= "<div id='catpdf_appendix'>{$appendix}</div>";	
+		return $appendixHtml;
+	}
+	
 	/*
 	* return template object
 	*/

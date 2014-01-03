@@ -1,0 +1,817 @@
+<!DOCTYPE html><html><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>concatenated-pdfs-01-03-2014</title><link type="text/css" rel="stylesheet" href="http://prf.wsu.edu/content/plugins/concatenated-pdfs/css/pdf_style.css">
+		<style>
+			
+			html,body {
+				font-family: sans-serif;
+				text-align: justify;
+				background-color:#f5f3e9;
+			}
+			body {padding:125px 0px 20px 0px;}
+			i.page-break {
+			  page-break-after: always;
+			  border: 0;
+			}
+		</style></head><body><script type="text/php">
+			$font = Font_Metrics::get_font("helvetica", "bold");
+			$GLOBALS["i"]=1;
+			$GLOBALS["indexpage"]=0;
+			$GLOBALS["chapters"] = array();
+		</script><script type="text/php">
+			if ( isset($pdf) ) {
+				$header = "";
+				$footertext = "";
+				$w = $pdf->get_width();
+				$h = $pdf->get_height();
+				$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
+				$size = 12;
+				
+					
+					$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
+					
+					
+					// Open the object: all drawing commands will
+					// go to the object instead of the current page
+					$footer = $pdf->open_object();
+						$pnum=$pdf->get_page_number();
+						$pcount=$pdf->get_page_count();	
+					
+						$pageText1 =  " {$footertext} " ;
+						$y1 = $h - 34;
+						$x1 = $w - 15 - Font_Metrics::get_text_width($pageText1, $font, $size);
+						$pdf->text($x1, $y1, $pageText1, $font, $size);
+						
+						$pageText =  $PAGE_NUM." of ". $PAGE_COUNT;
+						$y = $h - 20;
+						$x = $w - 15 - Font_Metrics::get_text_width($pageText, $font, $size);
+						$pdf->text($x, $y, $pageText, $font, $size);
+			
+						// Draw a line along the bottom
+						$line_height=1;
+						$color = array(125,125,125);
+						$y = $h - 2 * $line_height - 24;
+						$pdf->line(16, $y, $w - 16, $y, $color, 1);
+	
+						//image
+						$w = $pdf->get_width();
+						$h = $pdf->get_height();
+						// Add a logo
+						$img_w = 25; 
+						$img_h = 25; 		
+						$pdf->image("../../content/themes/cbn/img/wsuaa-logo.png", "png", $h-$img_h, 75, $img_w, $img_h);
+						
+					// Close the object (stop capture)
+					$pdf->close_object();
+					
+					// Add the object to every page. You can
+					// also specify "odd" or "even"
+					$pdf->add_object($footer, "all");	
+	
+					
+					
+					//Header
+					$pageHeaderText =  "This is the header. {$header}" ;
+					$t_y = 0 + 31.25;
+					$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
+					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
+				/*if($pagenum>1){}	
+					*/
+			
+			} 
+			</script><div id='catpdf_cover'><h1 class='CoverTitle'>Cover Letter</h1></div><i class='page-break'></i><div id='catpdf_index'><script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script><h2>Table of Contents</h2><table class='indexed_chapter'><tr><td class='chapter'>{%%chapter1%%}</td><td class='text'>{%%text1%%}</td><td class='segment'></td><td class='pagenumber'>{%%page1%%}</td></tr></table><table class='indexed_chapter'><tr><td class='chapter'>{%%chapter2%%}</td><td class='text'>{%%text2%%}</td><td class='segment'></td><td class='pagenumber'>{%%page2%%}</td></tr></table><table class='indexed_chapter'><tr><td class='chapter'>{%%chapter3%%}</td><td class='text'>{%%text3%%}</td><td class='segment'></td><td class='pagenumber'>{%%page3%%}</td></tr></table><table class='indexed_chapter'><tr><td class='chapter'>{%%chapter4%%}</td><td class='text'>{%%text4%%}</td><td class='segment'></td><td class='pagenumber'>{%%page4%%}</td></tr></table><table class='indexed_chapter'><tr><td class='chapter'>{%%chapter5%%}</td><td class='text'>{%%text5%%}</td><td class='segment'></td><td class='pagenumber'>{%%page5%%}</td></tr></table><table class='indexed_chapter'><tr><td class='chapter'>{%%chapter6%%}</td><td class='text'>{%%text6%%}</td><td class='segment'></td><td class='pagenumber'>{%%page6%%}</td></tr></table></div><script type="text/php"> $pdf->close_object(); </script></div><i class='page-break'></i><div class="pdf-header"><h1>Post List</h1><h2>prf</h2><h3>Just another WordPress site</h3> </div><div><div class="content-wrapper"><div class="post"><h2>Reasonable Accommodation</h2><div class="meta"><p>Posted on <strong>January 01,2014</strong> by <strong>jeremy.bass</strong></p></div><p>
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "Reasonable Accommodation"; $GLOBALS["i"]=$i+1; } </script>
+<strong>POLICY</strong>
+<blockquote>Washington State University is committed to providing equal opportunity in its services, programs, and employment for individuals with disabilities. The University complies with federal and state laws (e.g., <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a>) and regulations (e.g., <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26</span></span></a>) regarding reasonable accommodation for persons with disabilities.
+
+This policy sets forth guidelines for meeting reasonable accommodation requirements of state and federal laws. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#statutes"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>. The reasonable accommodation process is subject to flexibility within governing law.</blockquote>
+<strong>Purpose</strong>
+<blockquote>The University's reasonable accommodation process is designed to:
+<ul>
+<ul>
+	<li>Assist individuals with disabilities (impairments) with applying for employment,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Ensure equal access to employment, and</li>
+</ul>
+</ul>
+<ul>
+	<li>Help individuals remain in their jobs or appointments, with or without accommodations.</li>
+</ul>
+</blockquote>
+<strong>Applicability</strong>
+<blockquote>This policy is applicable to all employees, appointees, candidates, and applicants for employment with Washington State University. It provides reasonable accommodations to persons with disabilities in accordance with <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040</span></span></a> and other applicable state and federal laws. See also "Definitions" <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#definitions"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.
+
+Persons with disabilities have the right to request and receive reasonable accommodation in all aspects of employment procedures with the University, including but not limited to application, recruitment, selection/hiring, promotion, testing, medical examinations, layoff/recall, assignments, termination, evaluation, compensation, disciplinary processes, leave, training, employee benefits including insurance, and employer-supported activities.</blockquote>
+<strong>Reasonable Accommodation </strong>
+<blockquote>Reasonable accommodation means modification or adjustment to a job, work environment, policy, practice, or procedure that enables an individual with a disability to enjoy equal employment opportunity and that does not impose an undue hardship on the employer.
+
+In accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-015"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26-015</span></span></a>, reasonable accommodation may include, but is not limited to:
+<ul>
+<ul>
+	<li>Accommodation in application procedures, testing, and interview processes; or</li>
+</ul>
+</ul>
+<ul>
+	<li>Modifications or adjustments to a job, work method, or work environment that make it possible for a qualified person with a disability to:</li>
+</ul>
+<blockquote>
+<blockquote>Perform the functions of the position, or
+
+Enjoy the benefits and privileges of employment equal to employees without disabilities.</blockquote>
+</blockquote>
+</blockquote>
+<strong>Contact Staff </strong>
+<blockquote>Trained HRS staff have the authority necessary to initiate the University's reasonable accommodation process.</blockquote>
+<strong>ACCOMMODATION PROCESS</strong>
+
+<strong>Notification</strong>
+<blockquote>The University must provide each employee who requests reasonable accommodation with access to the University's reasonable accommodation procedure in a format that is accessible to that employee in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-020"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26-020</span></span></a>.
+
+The University must include notification of the right to make a reasonable accommodation request and information on how to initiate such a request with all recruitment efforts.
+
+A person in the employee's supervisory hierarchy should refer the employee to Human Resource Services (HRS) to discuss the availability of reasonable accommodation under the following circumstances:
+<ul>
+<ul>
+	<li>When he or she becomes aware of the employee's impairment(s), and</li>
+</ul>
+</ul>
+<ul>
+	<li>If it reasonably appears that the impairment may have a substantially limiting affect on the employee's ability to perform his or her job or enjoy access to equal benefits, privileges, or terms and conditions of employment.</li>
+</ul>
+HRS recommends that the supervisor also notify HRS of the referral.
+
+The referral recommendations above are not meant to impair an employee's rights to seek reasonable accommodation on his or her own, nor to alter protections set forth in this policy and under law.</blockquote>
+<strong>Requesting Accommodation</strong>
+
+Employee Responsibilities
+<blockquote>Unless the employer has received notice of the impairment, it is the employee's responsibility to inform the supervisor or HRS that he or she needs a reasonable accommodation in order to perform her or his job functions or to receive equal benefits, privileges, or terms and conditions of employment.
+
+The employee is responsible for providing current information concerning her or his medical condition, skills, abilities, training, and experience to HRS as part of the reasonable accommodation request.</blockquote>
+Department Responsibilities
+<blockquote>The supervisor should inquire whether the employee perceives a need for reasonable accommodation when:
+<ul>
+<ul>
+	<li>The employer has received notice of the impairment, and</li>
+</ul>
+</ul>
+<ul>
+	<li>The impairment is reasonably believed to interfere with job functions or access to equal benefits, privileges, or terms and conditions of employment currently or in the future.</li>
+</ul>
+Since impairments may change over time, a single inquiry does not relieve the employer or the employee from the potential for ongoing discussion or engagement in an interactive process.
+
+NOTE: The supervisor must be careful to avoid an improper inquiry about the employee's possible impairment and to protect the employee's right to privacy. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.08_Preemployment_Inquiry_Guidelines.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.08</span></span></a> regarding applicants. <strong>The supervisor should contact HRS for assistance with this process. </strong>Supervisors are not to request medical documentation regarding the impairment or discuss the specifics of the medical diagnosis with the employee. HRS is responsible for maintaining medical documentation needed in the reasonable accommodation process.</blockquote>
+<strong>Qualifying for Reasonable Accommodation in Employment</strong>
+<blockquote>For the purposes of qualifying for reasonable accommodation in employment, the employee and the employer must participate in an interactive process.
+<ul>
+<ul>
+	<li>The employee and her or his health care provider must provide documentation to HRS indicating that a disability or medical impairment is known or shown to exist in fact; <strong>and</strong></li>
+</ul>
+</ul>
+<ul>
+	<li>The impairment must have a substantially limiting effect upon the individual's:</li>
+</ul>
+<blockquote>
+<blockquote>Ability to perform his or her job,
+Ability to be considered for a job, or
+Access to equal benefits, privileges, or terms and conditions of employment; <strong>and</strong></blockquote>
+</blockquote>
+<ul>
+	<li>The existence of the impairment and the medical documentation must establish a reasonable likelihood that engaging in job functions without an accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect. (All medical documentation is to be provided to HRS. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#medical"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.)</li>
+</ul>
+<blockquote>NOTE: A limitation is not substantial if it has only a trivial effect. (<a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)(d)(e)</span></span></a>)</blockquote>
+The obligation to provide a reasonable accommodation applies to all aspects of employment. This duty is ongoing and may arise any time that a person's disability/impairment or job changes.
+
+Behavior related to a disability must be examined in the context of possible eligibility for reasonable accommodation before an employee may be subject to discipline or other adverse employment action as a result.</blockquote>
+Timely Response
+<blockquote>Timely response to a reasonable accommodation request is essential in providing equal opportunity. Failure of a department to provide reasonable accommodation in a timely manner is justification for an applicant for a position to be granted an extension of application or other applicable deadlines to be considered for the applicant/employee.</blockquote>
+Documentation
+
+<em>Request Form </em>
+<blockquote>To make a written reasonable accommodation request, the employee or applicant completes and submits an Accommodation Request for Disability or Serious Medical Condition form to HRS. Obtain copies of the form by completing and/or printing the blank master on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-18.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.21.18</span></span></a>.
+
+NOTE: Completion of a request form may not always be necessary. However, completion is recommended to assist HRS and the department with maintaining an accurate record of the request and action taken. If the employee fails to complete an Accommodation Request for Disability or Serious Medical Condition form, HRS may request the employee to do so. An employee who makes a verbal request may be asked to complete written documents. HRS provides assistance with completing the written documents if reasonable accommodation for such completion is required.</blockquote>
+<em><a name="medical"></a>Medical Documentation </em>
+<blockquote>HRS may request that the employee provide written documentation from a licensed health care provider (HCP), including a statement of the employee's functional limitations or substantially limiting effects. This documentation may also include the HCP's recommendations about potential alterations or adjustments to the job functions.
+
+Use the following forms, as needed, to request and obtain written documentation from a health care provider:
+<ul>
+<ul>
+	<li>Medical Release Statement for Reasonable Accommodation Requests on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-19.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.21.19</span></span></a>, and</li>
+</ul>
+</ul>
+<ul>
+	<li>Health Care Provider Statement for Reasonable Accommodation Requests on <a href="http://public.wsu.edu/~forms/PDF/BPPM/60-21-20-24.pdf"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.21.20-24</span></span></a>. The health care provider statement includes a work assessment section.</li>
+</ul>
+Refusal by the employee to provide adequate medical documentation may result in denial of reasonable accommodation or separation from employment.</blockquote>
+<strong>Review of Request</strong>
+
+HRS Review/Consultation
+<blockquote>Upon receiving the reasonable accommodation request, HRS reviews the current position description, the position's functions, and qualifications.
+
+HRS contacts the department and employee once the completed request is received. HRS may request additional information. The employee may also schedule an appointment with HRS on his or her own initiative.</blockquote>
+<em>With Employee </em>
+<blockquote>Human Resource Services consults with the individual to:
+<ul>
+<ul>
+	<li>Discuss his or her specific sensory, mental, and/or physical abilities and limitations in relation to the job functions;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Identify the disability-related barriers to job performance and current or potential substantially limiting effects;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Assess how reasonable accommodation may overcome these barriers; and</li>
+</ul>
+</ul>
+<ul>
+	<li>Discuss the employee's preferences with regard to reasonable accommodation.</li>
+</ul>
+</blockquote>
+<em>With Department </em>
+<blockquote>The department, in consultation with HRS, may consider a reasonable accommodation for job functions or elimination or adjustment of certain functions. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#determine"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> regarding determination of functions.</blockquote>
+Verification
+<blockquote>The University through HRS may request that an applicant or employee provide verification from a health care professional (HCP) when he or she requests an accommodation and:
+<ul>
+<ul>
+	<li>The disability is not readily apparent or understandable without HCP input;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The disability has not been previously documented;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The reasonableness of the request is not evident; and/or</li>
+</ul>
+</ul>
+<ul>
+	<li>Medical documentation is required to establish a substantially limiting effect or a reasonable likelihood that engaging in job functions without an accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect.</li>
+</ul>
+</blockquote>
+<em>HCP Opinion </em>
+<blockquote>The University through HRS may request the health care professional's opinion as to whether or not:
+<ul>
+<ul>
+	<li>The employee or applicant has sensory, mental, and/or physical impairment as claimed;</li>
+</ul>
+</ul>
+<ul>
+	<li>The impairment has the effect of necessitating reasonable accommodation in that it has a substantially limiting effect on the individual's:</li>
+</ul>
+<blockquote>
+<blockquote>Ability to perform his or her job,
+Ability to apply or to be considered for a job, or
+Access to equal benefits, privileges, or terms and conditions of employment;</blockquote>
+</blockquote>
+<ul>
+<ul>
+	<li>The employee or applicant is able to perform the functions of the job with or without reasonable accommodation;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>A reasonable likelihood exists that engaging in job functions without a reasonable accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect; and/or</li>
+</ul>
+</ul>
+<ul>
+	<li>The requested accommodation is appropriate to the disability.</li>
+</ul>
+</blockquote>
+<em>Second Opinion</em>
+<blockquote>The University may obtain a second opinion from a health care professional chosen and paid for by the employing department. Such inquiries are limited to:
+<ul>
+<ul>
+	<li>Verification of the employee's claims;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Comments on the appropriateness of the requested accommodation; and/or</li>
+</ul>
+</ul>
+<ul>
+	<li>Suggestions of possible effective alternative accommodations.</li>
+</ul>
+</blockquote>
+<em>Medical Examination and/or Certification</em>
+<blockquote>The University may require a medical examination and/or health care professional's certificate where a question arises concerning the fitness of a current employee to perform the duties of his or her position. The employing department pays the cost of the medical examination and/or certificate.</blockquote>
+<strong><a name="determine"></a>Determining Reasonable Accommodation</strong>
+<blockquote>HRS consults with the supervisor, the employee, and if applicable, a vocational professional if the disability:
+<ul>
+<ul>
+	<li>Precludes the employee from performing job functions,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Substantially limits the individual's ability to perform his or her job, or</li>
+</ul>
+</ul>
+<ul>
+	<li>Is reasonably likely to substantially limit the individual's ability to perform his or her job without reasonable accommodation.</li>
+</ul>
+The consulting group undertakes the following actions, as appropriate:
+<ul>
+<ul>
+	<li>Evaluation of the employee's functional abilities and limitations;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Analysis of the job requirements;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Exploration of reasonable accommodation options available to enable the employee to perform the job's functions, including but not limited to:
+<blockquote>Making existing facilities used by employees readily accessible to be used by the employee with an impairment or impairments;
+
+Restructuring the job in a manner consistent with reasonable accommodation;
+
+Granting a leave of absence in a manner consistent with law;
+
+Modifying work schedules in a manner consistent with law;
+
+Acquiring or modifying equipment or devices, in accordance with law;
+
+Providing qualified readers and interpreters;
+
+Reviewing current vacancies within the department; and/or
+
+Providing the opportunity for reassignment to an active vacant position.</blockquote>
+</li>
+	<li>Determination of the most effective reasonable accommodations;</li>
+</ul>
+</ul>
+<ul>
+	<li>Evaluation concerning whether or not the employee can perform the job in a manner safe to others and the employee.</li>
+</ul>
+For any questions concerning the nature of the limitation or a reasonable accommodation being considered, the employee and/or the supervisor should consult with HRS. HRS may also consult with other knowledgeable sources. All parties are obligated to engage in the reasonable accommodation process in such instances.</blockquote>
+HRS and Department Evaluation
+<blockquote>HRS and the department evaluate the suggested accommodation(s) by assessing:
+<ul>
+<ul>
+	<li>The effectiveness of the proposed accommodation in enabling the employee to perform the job functions;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The operational needs of the department; and</li>
+</ul>
+</ul>
+<ul>
+	<li>The cost of the proposed accommodation.</li>
+</ul>
+</blockquote>
+<em>Considerations</em>
+<blockquote>HRS and the department consider the following factors, as appropriate:
+<ul>
+<ul>
+	<li>The number of persons employed in the department.</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The number, type, and locations of the units within the department.</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The type of operation, including:
+<blockquote>The composition, structure, and functions of the department's workforce,
+The department's geographic separateness, and
+The administrative or fiscal relationship of the department to the campus;</blockquote>
+</li>
+	<li>Impact of the proposed accommodation on:
+<blockquote>The operation of the department,
+The ability of other employees to perform their duties,
+The department's ability to conduct business.</blockquote>
+</li>
+	<li>The nature and cost of the proposed accommodation.</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The overall financial resources of the University with respect to the number of employees and the number, type, and location of University facilities;</li>
+</ul>
+</ul>
+<ul>
+	<li>The effect on expenses and resources or other impact of the proposed accommodation on business operations.</li>
+</ul>
+</blockquote>
+<em>Undue Hardship Limitation </em>
+<blockquote>The University must provide reasonable accommodation to qualified individuals with disabilities who are employees or applicants for employment, unless doing so imposes an undue hardship. However, before concluding that a particular accommodation would impose an undue hardship, the University must consider whether or not there are alternative reasonable accommodations that would not impose such a hardship.
+
+NOTE: Determinations of "undue hardship" may be made only by the appropriate dean or vice president after consultation with HRS. Such determinations must be documented in writing with the appropriate signatures. See also <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#hardship"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.</blockquote>
+<strong>Accommodation Options</strong>
+<blockquote>The supervisor and HRS review any selected reasonable accommodation options with the employee, as necessary. Dialogue concerning reasonable accommodation may be ongoing and may involve members of the employee and supervisor's supervisory hierarchy, as well as other relevant University officials.</blockquote>
+Accommodation to Position
+<blockquote>If two or more effective accommodations exist, and after considering the preference of the individual with a disability, the University may select the reasonable accommodations to be provided.</blockquote>
+Placement in Alternate Position
+<blockquote>The University attempts to place an employee with a documented disability in an equivalent or lower status vacant position for which the employee qualifies if:
+<ul>
+<ul>
+	<li>The employee is no longer able to perform the functions of his or her position with or without reasonable accommodation;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Medical documentation establishes a reasonable likelihood that engaging in job functions without a reasonable accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect and no reasonable accommodation for the position exists; and/or</li>
+</ul>
+</ul>
+<ul>
+	<li>Accommodation in the present position would cause an undue hardship (see <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#hardship"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>).</li>
+</ul>
+Generally, placement under this policy is without competition. However, an employee covered by this policy may compete with other similarly-situated candidates for the same nonpromotional position. The employee must meet the minimum qualifications and specific position requirements for any vacant position offered as a reasonable accommodation. The employee must meet those position requirements with or without a reasonable accommodation.
+
+Under this policy, the University is <strong>not</strong> required to:
+<ul>
+<ul>
+	<li>Create a position,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Displace another employee,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Offer a promotion, or</li>
+</ul>
+</ul>
+<ul>
+	<li>Move an employee into a position for which the employee is not qualified.</li>
+</ul>
+Refusal by the employee to cooperate with the placement efforts or to provide adequate medical documentation may result in separation or the employee not receiving reasonable accommodation.</blockquote>
+Individual Options
+<blockquote>If the cost of a reasonable accommodation imposes an undue hardship and there are no other financial resources available, the University gives the individual with a disability the option of providing the accommodation, or paying that portion of the cost which constitutes an undue hardship.
+
+Individuals should consult with HRS in those situations where the employee or his or her supervisor seeks an adjustment.</blockquote>
+No Accommodation Selected
+
+<em>By Department </em>
+<blockquote>The department should discuss with HRS any suggested accommodations that appear to be unacceptable. This determination includes an evaluation of undue hardship. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#hardship"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a>.
+
+A reasonable accommodation identified or adopted by the parties as acceptable may not be rejected or ceased by a department as an undue hardship without involving HRS.
+
+The department should consult with HRS prior to ceasing any previously approved or pursued reasonable accommodation, including those cases where the potential action appears to be consensual between the employee and supervisor.</blockquote>
+<em>Written Justification </em>
+<blockquote>The University provides written justification, signed by the appropriate dean or vice president, to the individual for any decision not to provide a reasonable accommodation because of undue hardship.</blockquote>
+<em>By Employee </em>
+<blockquote>A qualified individual with a disability has the right to refuse a reasonable accommodation. (See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.21_Reasonable_Accommodation.htm#qualified"><span style="text-decoration: underline;"><span style="color: #0066cc;">below</span></span></a> for the definition of a qualified individual with a disability.)
+
+However, if the individual refuses the reasonable accommodation and is unable to perform the job functions without the accommodation, he or she is not then considered to be a qualified individual with a disability. In this case, the employee may be separated from employment.</blockquote>
+Disability Separation
+<blockquote>A disability separation is an action taken to separate an employee from service when the employer determines that the employee is unable to perform the essential functions of his or her position or class with or without reasonable accommodation due to mental, sensory, or physical incapacity. Disability separation is not a disciplinary action. (<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-46-160"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-46-160</span></span></a>)
+
+If no applicable position is available (through an alternative vacant position), and after the employee has exhausted his or her family medical leave entitlement, the employee may be separated from the University and accorded reemployment assistance for a period of two years. See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.56_Faculty_and_Administrative_Professional_Personnel_Leave.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.56</span></span></a> and <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.57_Civil_Service_Employee_Leave.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.57</span></span></a> regarding family medical leave.</blockquote>
+<em>Requested by Employer </em>
+<blockquote>The University notifies the employee in writing that WSU may initiate a disability separation if:
+<ul>
+<ul>
+	<li>WSU is not able to provide reasonable accommodation to the employee in his or her current position, <strong>or</strong></li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Placement of the employee in an alternative vacant position is not possible, <strong>or</strong></li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>The University receives medical documentation indicating that the employee is unable to work in any capacity, <strong>or</strong></li>
+</ul>
+</ul>
+<ul>
+	<li>The attempted reasonable accommodation was unsuccessful in enabling the employee to perform her or his job duties.</li>
+</ul>
+</blockquote>
+<em>Requested by Employee </em>
+<blockquote>An employee who is unable to perform his or her job due to mental, sensory, or physical incapacity may choose not to pursue reasonable accommodation and may request to be separated from employment by notifying his or her employer. (<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26-025"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26-025</span></span></a>) In this case, WSU is not required to consider a reasonable accommodation and may initiate a disability separation in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-46-160"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-46-160</span></span></a>, the <a href="http://hrs.wsu.edu/APHandbook"><span style="text-decoration: underline;"><span style="color: #0066cc;">Administrative Professional Handbook</span></span></a>, and the <a href="http://facsen.wsu.edu/faculty_manual/"><span style="text-decoration: underline;"><span style="color: #0066cc;">Faculty Manual</span></span></a>.</blockquote>
+<em>Reemployment Assistance </em>
+<blockquote>Employees who are separated due to disability from WSU employment are eligible for reemployment assistance for up to two years following separation. See <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-19-470"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-19-470</span></span></a> for information regarding reemployment services.
+
+Former employees who are able to work at least 50 percent FTE (full-time equivalent) and are interested in seeking reemployment assistance contact Human Resource Services; telephone 509-335-4521; Text/TTY 509-335-0155; or e-mail to:
+<blockquote><a href="mailto:hrs@wsu.edu"><span style="text-decoration: underline;"><span style="color: #0066cc;">hrs@wsu.edu</span></span></a></blockquote>
+Reemployment rights of an appointee depend on the terms of her or his appointment.</blockquote>
+<strong>CONFIDENTIALITY </strong>
+<blockquote>By law, medical information received by the University is confidential (subject to certain limited exceptions). Such information is maintained separate from the personnel records.
+
+Reasonable accommodation medical records for all University employees and affected others (e.g., applicants seeking reasonable accommodation) are retained in HRS, in files separate from personnel or benefits records which are unrelated to reasonable accommodation.
+
+Each department, including HRS, must treat all information regarding the presence or nature of an employee's or applicant's disability as confidential medical records. The department must forward such records to HRS.
+
+See also <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.01_University_Records--Retention_and_Disposition.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.01</span></span></a>, <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.05_Release_of_Public_Records.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.05</span></span></a>, and <a href="http://public.wsu.edu/~forms/HTML/BPPM/90_Records/90.07_Release_of_Personnel_Records.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">90.07</span></span></a> regarding confidential records.</blockquote>
+<strong>Employee Disclosure </strong>
+<blockquote>Individuals are not required to reveal diagnoses or the details of medical treatments to immediate supervisors or to coworkers. However, some persons voluntarily choose to share this information with others. While someone may voluntarily choose to share some information about his/her condition, supervisors must understand that:
+<ul>
+<ul>
+	<li>The information should still be considered confidential; and</li>
+</ul>
+</ul>
+<ul>
+	<li>A person who has shared some information at a particular time may later decide that she or he longer wishes to discuss the condition or treatment. Such a decision must be respected.</li>
+</ul>
+Employees may be expected to provide medical information to HRS or other University representatives who have responsibility for assisting with the reasonable accommodation process.</blockquote>
+<strong>Health Care Provider Information</strong>
+<blockquote>If an employee gives to his or her supervisor written information or requests from his or her health care provider, the supervisor is to immediately forward the documents(s) to HRS.</blockquote>
+<strong>DISPUTES AND CONCERNS</strong>
+<blockquote>The University has developed a review procedure for addressing disputes related to requests for reasonable accommodations and other concerns.
+
+Advisory guidelines regarding workplace concern resolution are available from the Human Resource Services (HRS) website, at:
+<blockquote><a href="http://www.hrs.wsu.edu/"><span style="text-decoration: underline;"><span style="color: #0066cc;">http://www.hrs.wsu.edu</span></span></a></blockquote>
+</blockquote>
+<strong>Collective Bargaining Unit Employees</strong>
+<blockquote>Employees covered by collective bargaining unit agreements follow the procedures outlined in the applicable agreements regarding disputes. Bargaining unit agreements may be viewed from the HRS website at:
+<blockquote><a href="http://www.hrs.wsu.edu/"><span style="text-decoration: underline;"><span style="color: #0066cc;">http://www.hrs.wsu.edu</span></span></a></blockquote>
+</blockquote>
+<strong>TRAINING</strong>
+<blockquote>Information concerning reasonable accommodation, the University's policy and procedures, and applicable forms are available through various training sessions, as well as in this section (60.21). See <a href="http://public.wsu.edu/~forms/HTML/BPPM/60_Personnel/60.71_Training_and_Development.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">60.71</span></span></a> regarding training.</blockquote>
+<strong><a name="definitions"></a>DEFINITIONS</strong>
+
+<strong>Appointees</strong>
+<blockquote>Appointees are fellows, residents, and graduate student assistants.</blockquote>
+<strong>Employees</strong>
+<blockquote>University employees are faculty, administrative professional personnel, civil service and collective bargaining unit staff, temporary employees, and hourly student employees.</blockquote>
+<strong>Job Functions </strong>
+<blockquote>Job functions are the fundamental job duties of the position that the individual with the disability holds or has applied for. The term does not include the marginal functions of the position.</blockquote>
+Determining Job Functions of a Position
+<blockquote>The department is obligated to examine each position to determine the position's purpose and central functions. Appropriate times to examine a position include when:
+<ul>
+<ul>
+	<li>Position is established,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Position becomes vacant,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Duties are changed,</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Request for a reasonable accommodation is made, or&lt;</li>
+</ul>
+</ul>
+<ul>
+	<li>Annual review is conducted.</li>
+</ul>
+</blockquote>
+<em>Criteria</em>
+<blockquote>The department considers all of the following criteria in identifying the functions of a job:
+<ul>
+<ul>
+	<li>Is an employee in the position actually required to perform the function?</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Would removing that function fundamentally change the job?</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Was the position established to perform the function?</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Are there a limited number of other employees available to perform the function, or among whom the function can be distributed?</li>
+</ul>
+</ul>
+<ul>
+	<li>Is the function highly specialized and is the person in the position hired for special expertise or ability to perform the function?</li>
+</ul>
+</blockquote>
+<strong>Equal Employment Opportunity</strong>
+<blockquote>Equal employment opportunity means an opportunity for a qualified individual with a disability to perform the job functions or enjoy the same benefits and privileges of employment available to a similarly-qualified applicant or employee without a disability.</blockquote>
+<strong>Health Care Professional or Health Care Provider </strong>
+<blockquote>Health care professional means a person who has completed a course of study and is licensed to practice in a field of health care which includes the diagnoses and assessment of the particular disability or disabilities in question.</blockquote>
+<strong>Disability</strong>
+<blockquote>According to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)</span></span></a>, the term "disability" means the presence of a sensory, mental, or physical impairment that:
+<ul>
+<ul>
+	<li>Is medically cognizable or diagnosable; or</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Exists as a record or history; or</li>
+</ul>
+</ul>
+<ul>
+	<li>Is perceived to exist whether or not it exists in fact.</li>
+</ul>
+A disability exists whether or not it:
+<ul>
+<ul>
+	<li>Is temporary or permanent;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Is common or uncommon;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Is mitigated or unmitigated;</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>Limits the ability to work generally or work at a particular job; or</li>
+</ul>
+</ul>
+<ul>
+	<li>Limits any other activity within the scope of <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a>.</li>
+</ul>
+</blockquote>
+<strong>Impairment</strong>
+<blockquote>According to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)</span></span></a>, impairment includes, but is not limited to:
+<ul>
+<ul>
+	<li>Any physiological disorder or condition, cosmetic disfigurement, or anatomical loss affecting one or more of the following body systems: neurological; musculoskeletal; special sense organs; respiratory, including speech organs; cardiovascular; reproductive; digestive; genitor-urinary; hemic and lymphatic; skin; and endocrine; <strong>or</strong></li>
+</ul>
+</ul>
+<ul>
+	<li>Any mental, developmental, traumatic, or psychological disorder, including but not limited to cognitive limitation, organic brain syndrome, emotional or mental illness, and specific learning disabilities.</li>
+</ul>
+</blockquote>
+Impairment for Purposes of Reasonable Accommodation for Employment
+<blockquote>For the purposes of qualifying for reasonable accommodation in employment according to <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)</span></span></a>, an impairment must be known or shown through an interactive process to exist in fact and:
+<ul>
+	<li>The impairment must have a substantially limiting effect upon the individual's:</li>
+</ul>
+<blockquote>
+<blockquote>Ability to perform her or his job,
+Ability to apply or be considered for a job, or
+Access to equal benefits, privileges, or terms and conditions of employment; <strong>or</strong></blockquote>
+</blockquote>
+<ul>
+	<li>The employee must give the employer notice of the existence of an impairment and medical documentation must establish a reasonable likelihood that engaging in job functions without an accommodation would aggravate the impairment to the extent that it would create a substantially limiting effect.</li>
+</ul>
+<blockquote>NOTE: A limitation is not substantial if it has only a trivial effect. (<a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60.040"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60.040(25)(d)(e)</span></span></a>)</blockquote>
+</blockquote>
+<strong><a name="qualified"></a>Qualified Individual With a Disability</strong>
+<blockquote>Qualified individual with a disability means an individual with a disability who meets the skill, experience, education, and other job-related requirements of the position held or desired, and who, with or without reasonable accommodation, is able to perform the functions of the job.</blockquote>
+<strong><a name="hardship"></a>Undue Hardship </strong>
+<blockquote>Undue hardship means an excessively costly, extensive, substantial, or disruptive modification, or one that would fundamentally alter the nature or operation of the institution or program.</blockquote>
+<strong>ADDITIONAL INFORMATION</strong>
+
+<strong> Selection Criteria </strong>
+<blockquote>University departments are obligated to ensure that qualification standards, employment tests, or other selection criteria do not screen out or tend to screen out individuals with disabilities unless such criteria are job-related and consistent with business necessity.
+
+University departments are obligated to use employment tests in the most effective manner to measure actual abilities. Tests used must accurately reflect the skills, aptitude, or other factors being measured. Tests used are not to reflect the impaired sensory, manual, or speaking skills of an employee or applicant with a disability (unless those are the skills the test is designed to measure and such skills are consistent with business necessity).</blockquote>
+<strong>Equal Terms, Benefits, Privileges, and Conditions of Employment</strong>
+<blockquote>The University provides reasonable accommodations to enable an employee with a disability to enjoy terms, benefits, privileges, and conditions of employment equal to those enjoyed by a similarly-situated employee without impairment(s) or disability(ies).
+
+The need for a reasonable accommodation is <strong>not</strong> to be a factor in the selection of an employee for promotion, training, travel, participation in projects, committees, or any opportunity which may have an impact on the employee's career development.
+
+The University provides reasonable accommodations to enable an employee with a disability to have the opportunity to enjoy all employer-supported social or recreational activities.
+
+Timelines for all activities and opportunities covered under this section must allow adequate opportunity for arranging reasonable accommodations.</blockquote>
+<strong>Complaints</strong>
+<blockquote>If an individual believes that she or he has been discriminated against on the basis of a disability and/or denied a reasonable accommodation on the basis of a disability, the individual may contact the Office for Equal Opportunity; telephone 509-335-8288.
+
+An individual may also file a discrimination complaint with the following offices:
+<ul>
+<ul>
+	<li>U.S. Equal Employment Opportunity Commission; telephone 206-220-6883; Text/TTY 206-220-6882.</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>U.S. Department of Labor, Office of Federal Contract Compliance Programs; telephone 206-553-7182; Text/TTY 206-553-7745.</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>U.S. Department of Education, Office for Civil Rights; telephone 206-220-7900; Text/TTY 206-220-7907.</li>
+</ul>
+</ul>
+<ul>
+<ul>
+	<li>U.S. Department of Health and Human Services, Office for Civil Rights; telephone 206-615-2290; Text/TTY 206-615-2296.</li>
+</ul>
+</ul>
+<ul>
+	<li>Washington State Human Rights Commission; telephone 800-233-3247; Text/TTY 800-300-7525.</li>
+</ul>
+</blockquote>
+Retaliation
+<blockquote>It is against Washington State University policy and state and federal laws to retaliate against an individual who files a complaint of discrimination, participates in an investigation, or opposes illegal discrimination.</blockquote>
+<strong><a name="statutes"></a>APPLICABLE STATUTES, REGULATIONS, AND ORDERS</strong>
+<blockquote>This policy and procedures are in accordance with the Washington Law Against Discrimination, <a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a>, and its definitional and reasonable accommodation provisions. It is in accordance with <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26"><span style="text-decoration: underline;"><span style="color: #0066cc;">Washington Administrative Code 357-26</span></span></a>.
+
+This policy and procedures complement relevant personnel policies and collective bargaining agreements and should be read in conjunction with those provisions.
+
+The policy is based on the "State Policy Guidelines on Reasonable Accommodation of Persons with Disabilities Related to State Employment" issued November 1, 1994 by the Washington State Office of Financial Management, which exists under the authority of <a href="http://www.governor.wa.gov/execorders/eoarchive/eo96-04.htm"><span style="text-decoration: underline;"><span style="color: #0066cc;">Executive Order 96-04</span></span></a> and with reference to the following provisions, as amended subsequent to the issuance of the guidelines:
+<ul>
+	<li>Americans With Disabilities Act, Title I of 1990 (P.L. 101-336)</li>
+	<li>29 CFR Part 1630</li>
+	<li>28 CFR Part 35</li>
+	<li>Rehabilitation Act of 1973 (P.L. 93-11)</li>
+	<li>45 CFR 84</li>
+	<li><a href="http://apps.leg.wa.gov/RCW/default.aspx?cite=49.60"><span style="text-decoration: underline;"><span style="color: #0066cc;">RCW 49.60</span></span></a></li>
+	<li><a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=162-22"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 162-22</span></span></a></li>
+	<li><a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=357-26"><span style="text-decoration: underline;"><span style="color: #0066cc;">WAC 357-26</span></span></a></li>
+</ul>
+</blockquote>
+<strong>ASSISTANCE </strong>
+<blockquote>Questions regarding the application of these procedures may be directed to Human Resource Services; telephone 509-335-4521; Text TTY 509-335-0155: or email to:
+<blockquote><a href="mailto:hrs@wsu.edu"><span style="text-decoration: underline;"><span style="color: #0066cc;">hrs@wsu.edu</span></span></a></blockquote>
+For further information and resources regarding University accessibility for individuals with disabilities, go to the University's Accessibility website at:
+<blockquote><a href="http://access.wsu.edu/"><span style="text-decoration: underline;"><span style="color: #0066cc;">http://access.wsu.edu/</span></span></a></blockquote>
+To request this information in an alternate format, contact the Access Center; telephone 509-335-1566.</blockquote><h1>EndOfContent [on page <script type="text/php">echo "p:";</script>]</h1></p><div class="taxonomy">Posted in:Personnel |  | With 0 comments</div></div></div><div class="content-wrapper"><div class="post"><h2>test</h2><div class="meta"><p>Posted on <strong>January 01,2014</strong> by <strong>jeremy.bass</strong></p></div><p>
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "test"; $GLOBALS["i"]=$i+1; } </script>
+test<h1>EndOfContent [on page <script type="text/php">echo "p:";</script>]</h1></p><div class="taxonomy"> |  | With 0 comments</div></div></div><div class="content-wrapper"><div class="post"><h2>ok lots</h2><div class="meta"><p>Posted on <strong>December 31,2013</strong> by <strong>jeremy.bass</strong></p></div><p>
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "ok lots"; $GLOBALS["i"]=$i+1; } </script>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ornare, neque eget suscipit bibendum, dui sapien viverra quam, ut commodo sem metus ac quam. Mauris imperdiet auctor augue, eu accumsan tellus convallis vitae. Donec congue malesuada mattis. Donec fermentum nunc ac velit dapibus, sed ullamcorper arcu euismod. Vivamus viverra, erat porttitor iaculis dictum, quam turpis convallis elit, in tincidunt nulla est quis sem. Suspendisse venenatis tincidunt ante vel dignissim. Praesent non lorem non libero auctor dapibus. 
+
+In malesuada arcu at quam molestie egestas. Mauris egestas eros velit, nec euismod metus tristique at. Ut vehicula tristique viverra. Phasellus faucibus imperdiet lectus ultricies convallis. Aenean scelerisque volutpat ipsum, non placerat metus consectetur ac. In suscipit semper orci, ut auctor elit facilisis sed. Quisque varius porta felis, sit amet posuere libero interdum a. Nam lectus massa, consequat vitae rutrum consequat, malesuada in ipsum. Etiam blandit tincidunt justo, in tincidunt elit eleifend ac. 
+
+Sed dignissim elit mauris, sed bibendum odio volutpat id. In felis ligula, consequat euismod libero vel, tempus blandit velit. Praesent luctus in leo vitae laoreet. Morbi feugiat nibh vitae fringilla pulvinar. Quisque magna magna, vehicula vitae interdum eu, consectetur vitae ante. Nulla rutrum dignissim aliquam. Quisque lectus ligula, venenatis non orci id, sollicitudin placerat turpis. Cras pretium eros est, in ultricies metus iaculis eget. Sed egestas nibh enim, vitae egestas tellus dictum ac. Mauris vulputate diam odio, sed luctus mi sodales sit amet. 
+
+Quisque orci nulla, mollis ut mi in, ullamcorper tempus justo. Sed tellus mauris, iaculis et ipsum dictum, euismod venenatis nibh. Nullam sit amet sem nibh. Ut bibendum eget leo rutrum laoreet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi tortor velit, bibendum sit amet varius sit amet, posuere eget nunc. Proin condimentum justo vitae libero dapibus, ac dictum elit facilisis. Nulla a augue erat. Fusce nec ipsum sit amet velit tempor luctus quis nec augue. Vestibulum in est id dui vestibulum tempor id non sapien. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum mattis blandit leo id elementum. 
+
+Vivamus at odio viverra, congue lectus sed, feugiat diam. Sed scelerisque velit felis, nec consectetur lectus feugiat non. Praesent ut sapien vel odio convallis auctor nec lobortis nunc. Cras felis metus, laoreet eu cursus eu, commodo quis enim. Integer mollis elit quis malesuada rutrum. Nam ac rutrum justo. Morbi faucibus, est ut adipiscing gravida, lacus sem faucibus est, eget facilisis tellus erat ut massa. 
+
+Interdum et malesuada fames ac ante ipsum primis in faucibus. Nulla facilisi. Nulla convallis magna purus, eu elementum neque suscipit quis. Integer sit amet euismod turpis. Praesent sed tellus nulla. Fusce accumsan interdum tempor. Nunc eleifend, arcu eget tristique aliquam, urna urna iaculis nisi, ut volutpat mi nisl cursus risus. Donec elementum erat ut commodo tristique. Aliquam vitae condimentum nisi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
+
+Integer orci nisl, facilisis eget hendrerit sit amet, porta quis diam. Aenean sagittis hendrerit turpis sed lacinia. Vivamus pellentesque ut lectus vitae lobortis. Vestibulum gravida placerat justo, id aliquam lorem tincidunt et. Donec et velit sed nunc fringilla mattis. Vestibulum sed volutpat diam. Phasellus eget varius dui. Sed ut arcu non est semper sagittis. Fusce lobortis ante id condimentum aliquam. Quisque condimentum lacinia feugiat. Fusce rutrum sem vel est ultricies tempus. Aliquam luctus, est et dictum consequat, quam felis dapibus nunc, ac ullamcorper lacus augue id neque. Maecenas mollis, mauris quis pretium tincidunt, erat neque luctus lorem, vel interdum lectus turpis id leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam ut quam ut nulla facilisis vulputate vitae ac arcu. 
+
+In et fringilla leo, mattis tempus lacus. Sed eu sapien arcu. Nullam id eros risus. Pellentesque fermentum orci in eros pharetra egestas. Suspendisse sodales vestibulum suscipit. In malesuada, nisi id cursus malesuada, lacus neque pharetra nulla, vel tempor ligula risus at nisi. Praesent sit amet sollicitudin libero. Aliquam iaculis convallis feugiat. Nullam cursus massa non semper ullamcorper. 
+
+Quisque est odio, placerat ac adipiscing ornare, consequat a ligula. Aenean egestas imperdiet laoreet. Fusce quis nulla volutpat, scelerisque ante a, ultrices tellus. Nunc commodo sed turpis nec consequat. Vivamus eu lacus massa. Nam ultrices pretium nibh, non lobortis ipsum viverra sodales. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc ut ipsum odio. Sed vulputate odio ut dui dictum, vitae consequat turpis mattis. Etiam tincidunt est in eros pulvinar, ac euismod augue commodo. Nulla lacus lacus, accumsan ac nisi et, faucibus porttitor enim. Curabitur in dolor tincidunt, euismod libero viverra, venenatis neque. Vivamus nec mauris erat. Sed semper nibh turpis. 
+
+Etiam in diam dolor. Sed sit amet quam volutpat, commodo orci eget, suscipit purus. Donec et arcu vel orci feugiat suscipit quis vel justo. In enim nunc, placerat sed tempor et, aliquam vitae tortor. Morbi viverra risus vel ante cursus ultrices. Sed quis auctor mi. Sed a pulvinar metus. Praesent ultricies lacus vel tortor euismod, id vehicula sem aliquam. Pellentesque non lorem non erat ultricies sollicitudin a vitae sapien. Vivamus dictum augue in sapien malesuada, ac aliquam ligula tincidunt. Maecenas aliquet erat ac metus tempus aliquam. Aliquam non nisi vitae libero aliquam pellentesque. Suspendisse pharetra eget mauris a aliquam. Maecenas odio nisl, accumsan nec justo sed, dapibus luctus augue. Maecenas semper magna ante, et malesuada libero adipiscing id. Ut vel interdum urna. 
+<h1>EndOfContent [on page <script type="text/php">echo "p:";</script>]</h1></p><div class="taxonomy">Posted in:Uncategorized |  | With 0 comments</div></div></div><div class="content-wrapper"><div class="post"><h2>test</h2><div class="meta"><p>Posted on <strong>December 31,2013</strong> by <strong>jeremy.bass</strong></p></div><p>
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "test"; $GLOBALS["i"]=$i+1; } </script>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer neque neque, dignissim vel dictum ut, cursus sit amet neque. Praesent ut lobortis leo, at facilisis urna. Sed magna massa, suscipit ut dui eu, laoreet fermentum justo. Suspendisse a magna id mauris mollis venenatis vel ut sapien. Mauris vel orci at ipsum semper aliquet vel eget diam. Ut venenatis, ligula id vestibulum facilisis, felis turpis accumsan massa, a semper augue ligula non lectus. Phasellus iaculis ornare sagittis. Suspendisse rhoncus dictum felis ut scelerisque. Nunc ac condimentum lectus. 
+
+Aliquam erat volutpat. Etiam suscipit mollis enim ac pretium. Donec tempor urna elit, vitae luctus dolor hendrerit ullamcorper. Maecenas et arcu pellentesque, tristique lectus eu, blandit dui. Cras sit amet semper mi, at auctor urna. Donec eu luctus nisi, a vehicula nibh. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce mollis nunc sed odio tincidunt, ut pellentesque erat accumsan. 
+
+In pulvinar, lectus eu accumsan ultricies, lacus dui vestibulum mi, vitae tincidunt dolor erat nec odio. Pellentesque commodo sollicitudin scelerisque. Proin venenatis mollis eros sit amet hendrerit. In hac habitasse platea dictumst. Vivamus accumsan pulvinar ante, vitae tincidunt enim congue ac. Sed pulvinar nec neque nec consectetur. Curabitur sed rutrum ligula. Duis massa nisi, condimentum vitae sagittis ut, pretium in lorem. Suspendisse scelerisque neque ac nisi consectetur, quis fringilla odio placerat. 
+
+Vestibulum nibh felis, iaculis non lacus ut, placerat condimentum metus. Phasellus blandit faucibus quam vel fringilla. Nullam eget dolor at quam viverra hendrerit et ac eros. Suspendisse non dictum felis, non rhoncus lectus. Interdum et malesuada fames ac ante ipsum primis in faucibus. In ac tempus nunc, consequat mollis diam. Cras vitae tortor magna. 
+
+Nulla non augue eu sem accumsan semper eu ut magna. Nullam feugiat libero et nulla dapibus faucibus. Phasellus ac vulputate mauris. Phasellus at sollicitudin mauris, eget aliquam eros. Aliquam tincidunt risus erat, eu tincidunt velit suscipit vel. Nam posuere, eros sed dignissim consequat, lectus mi ullamcorper metus, eu rhoncus urna magna ut mi. Vestibulum sollicitudin lobortis felis, quis molestie justo interdum a. Morbi odio justo, vulputate id pharetra id, euismod a orci. 
+<h1>EndOfContent [on page <script type="text/php">echo "p:";</script>]</h1></p><div class="taxonomy">Posted in:Uncategorized |  | With 0 comments</div></div></div><div class="content-wrapper"><div class="post"><h2>by by</h2><div class="meta"><p>Posted on <strong>December 31,2013</strong> by <strong>jeremy.bass</strong></p></div><p>
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "by by"; $GLOBALS["i"]=$i+1; } </script>
+bye bye<h1>EndOfContent [on page <script type="text/php">echo "p:";</script>]</h1></p><div class="taxonomy">Posted in:Uncategorized |  | With 0 comments</div></div></div><div class="content-wrapper"><div class="post"><h2>Hello world!</h2><div class="meta"><p>Posted on <strong>December 31,2013</strong> by <strong>jeremy.bass</strong></p></div><p>
+<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "Hello world!"; $GLOBALS["i"]=$i+1; } </script>
+Welcome to WordPress. This is your first post. Edit or delete it, then start blogging!<h1>EndOfContent [on page <script type="text/php">echo "p:";</script>]</h1></p><div class="taxonomy">Posted in:Uncategorized |  | With 1 comments</div></div></div></div><i class='page-break'></i><div id='catpdf_appendix'><h1 class='CoverTitle'>appendix</h1></div>
+<script type="text/php">
+	$bs = $GLOBALS["backside"];
+	//var_dump($bs);
+	
+	$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
+	$size = 12;
+
+	
+	$chapters=$GLOBALS["chapters"];
+	//var_dump($pdf->get_cpdf());
+	
+	$o=1;
+	foreach($pdf->get_cpdf()->objects as $obj){
+		foreach ($chapters as $chapter => $page) {
+			if(isset($pdf->get_cpdf()->objects[$o]["c"])){
+				$content = $pdf->get_cpdf()->objects[$o]["c"];
+				//var_dump($content);
+				
+				$chapter_str	= "Chapter ".$chapter." ";
+				$pagenumber_str	= " p: ".$page["page"];
+				$text_str		= $page["text"]." ";
+
+				$content = str_replace( '{%%chapter'.$chapter.'%%}' , $chapter_str , $content );
+				$content = str_replace( '{%%page'.$chapter.'%%}' , $pagenumber_str , $content );
+				$content = str_replace( '{%%text'.$chapter.'%%}' , $text_str , $content );
+
+				$pdf->get_cpdf()->objects[$o]["c"]=$content;
+
+
+
+				
+				
+			}
+		} 
+		$o++;
+	}
+	
+	
+	
+	$pdf->page_script('$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }');
+</script> 
+		</body></html>

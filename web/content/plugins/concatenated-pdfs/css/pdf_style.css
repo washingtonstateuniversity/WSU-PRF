@@ -85,12 +85,6 @@ h1, h2, h3, h4, h5, h6, p {
 	font-style: italic;
 }
 
-
-i.page-break {
-  page-break-after: always;
-  border: 0;
-}
-
 h1.CoverTitle {
 	left: 0;
 	line-height: 200px;
@@ -101,3 +95,14 @@ h1.CoverTitle {
 	width: 100%;
 	text-align: center;
 }
+
+#catpdf_index{padding:0px 75px;}
+#catpdf_index h2{font-size:20px !important;font-weight:bold !important; border-bottom:1px solid #585755;}
+
+.indexed_chapter{width:100%;}
+.indexed_chapter .chapter{width:5%;}
+.indexed_chapter .text{}
+.indexed_chapter .segment{border-bottom:2px dotted #494949;}
+.indexed_chapter .pagenumber{width:5%; text-align:left;}
+
+
