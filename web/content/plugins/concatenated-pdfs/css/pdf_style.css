@@ -28,7 +28,7 @@ body{}
 
 
 /* DEFAULTS */
-html, body{ margin: 0; padding: 0; border: 0; }
+html, body{ margin: 0; padding: 0; border: 0; font-family: sans-serif; text-align: justify;}
 table { border-collapse: collapse; border-spacing: 0; }
 strong{ font-weight:bold;}
 h1{font-size:20pt;}
