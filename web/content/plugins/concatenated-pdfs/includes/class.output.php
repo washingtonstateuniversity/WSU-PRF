@@ -102,14 +102,14 @@ public function getTitle($post){
 		$bodycolor="#F0F0F0";		//@@!!OPTION REPLACE
 		
 		$topMargin="15";			//@@!!OPTION REPLACE
-		$headHeight="155";			//@@!!OPTION REPLACE
+		$headHeight="60";			//@@!!OPTION REPLACE
 		$headSep="15";				//@@!!OPTION REPLACE
 
 		$bottomMargin="15";			//@@!!OPTION REPLACE
-		$footHeight="125";			//@@!!OPTION REPLACE
+		$footHeight="35";			//@@!!OPTION REPLACE
 		$footSep="10";				//@@!!OPTION REPLACE
-		$pagerightMargin="75";	//@@!!OPTION REPLACE
-		$pageleftMargin="55";		//@@!!OPTION REPLACE
+		$pagerightMargin="15";	//@@!!OPTION REPLACE
+		$pageleftMargin="15";		//@@!!OPTION REPLACE
 		
 		
 		

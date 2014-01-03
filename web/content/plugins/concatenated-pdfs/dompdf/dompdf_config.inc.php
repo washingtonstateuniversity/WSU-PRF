@@ -30,7 +30,7 @@ def("DOMPDF_DEFAULT_FONT", "serif");
 def("DOMPDF_DPI", 96);
 def("DOMPDF_ENABLE_PHP", true);
 def("DOMPDF_ENABLE_JAVASCRIPT", true);
-def("DOMPDF_ENABLE_REMOTE", false);
+def("DOMPDF_ENABLE_REMOTE", true);
 def("DOMPDF_LOG_OUTPUT_FILE", DOMPDF_FONT_DIR . "log.htm");
 def("DOMPDF_FONT_HEIGHT_RATIO", 1.1);
 def("DOMPDF_ENABLE_CSS_FLOAT", false);

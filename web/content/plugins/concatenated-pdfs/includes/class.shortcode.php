@@ -375,8 +375,14 @@ class shortcode {
     /*
     * Return site url
     */
-    public function site_url_func() {
-        $item = get_bloginfo('url');
+    public function site_url_func($atts) {
+		extract(shortcode_atts(array(
+            'link' => false,
+			'text' => ''
+        ), $atts));
+        $url = get_bloginfo('url');
+		$text = $text=='' ? $url : $text;
+		$item = !$link ? $url : "<a href='{$url}'>{$text}</a>";
         return $item;
     }
     /*
