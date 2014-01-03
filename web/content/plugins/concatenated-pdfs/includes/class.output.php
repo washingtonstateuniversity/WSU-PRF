@@ -102,7 +102,7 @@ public function getTitle($post){
             $title       = $this->buildFileName($template,$options);
             $this->title = $title;
             $pageheader  = $this->filter_shortcodes('pageheader');
-			$pagefooter  = "PAGE";//$this->filter_shortcodes('pagefooter');
+			$pagefooter  = $this->filter_shortcodes('pagefooter');
         } else {
             $title       = CATPDF_BASE_NAME . '-' . date('m-d-Y');
             $this->title = $title;
@@ -116,12 +116,14 @@ public function getTitle($post){
 		
 		
 		$bodycolor="#f5f3e9";
-		$opHeaderHeight="125px";
+		$opHeaderHeight="75px";
 		$headerHeight=(int)(trim(str_replace('px','',$opHeaderHeight)))*0.75;//point convertion
+		
+		$opFooterHeight="50px";
 		
 		
 		$body_topPad="{$opHeaderHeight}";//should be building this
-		$body_bottomPad="20px";
+		$body_bottomPad="{$opFooterHeight}";
 		$body_leftPad="0px";
 		$body_rightPad="0px";
 		
@@ -131,7 +133,7 @@ public function getTitle($post){
 		$body_padding="{$body_topPad} {$body_rightPad} {$body_bottomPad} {$body_leftPad}";
 		
 
-        $body = '<body class="typeset">';
+        $body = '<body><div id="head_area">'.$pageheader.'</div><div id="foot_area">'.$pagefooter.'<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /></div>';
 		$indexscriptglobals='<script type="text/php">
 			$font = Font_Metrics::get_font("helvetica", "bold");
 			$GLOBALS["i"]=1;
@@ -147,7 +149,7 @@ public function getTitle($post){
 				$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
 				$size = 12;
 				
-					
+					/*
 					$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
 					
 					
@@ -187,14 +189,14 @@ public function getTitle($post){
 					// Add the object to every page. You can
 					// also specify "odd" or "even"
 					$pdf->add_object($footer, "all");	
-	
+	*/
 					
 					
 					//Header
-					$pageHeaderText =  "This is the header. {$header}" ;
+					/*$pageHeaderText =  "This is the header. {$header}" ;
 					$t_y = 0 + '.($headerHeight/3).';
 					$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
-					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
+					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);*/
 				/*if($pagenum>1){}	
 					*/
 			
@@ -209,12 +211,17 @@ public function getTitle($post){
 				font-family: sans-serif;
 				text-align: justify;
 				background-color:'.$bodycolor.';
+				position: relative;
 			}
+			@page{}
+			#head_area{ position:fixed; top:0px;height:'.$opHeaderHeight.'; border:1px solid #494949;}
+			#foot_area{ position:fixed; bottom:0px;height:'.$opFooterHeight.'; border:1px solid #494949;}
 			body {padding:'.$body_padding.';}
 			i.page-break {
 			  page-break-after: always;
 			  border: 0;
 			}
+			#logo{ height:50px; top:12.5px; left:12.5px;  }
 		</style>';
 
 		

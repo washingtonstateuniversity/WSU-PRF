@@ -5,13 +5,18 @@
 				font-family: sans-serif;
 				text-align: justify;
 				background-color:#f5f3e9;
+				position: relative;
 			}
-			body {padding:125px 0px 20px 0px;}
+			@page{}
+			#head_area{ position:fixed; top:0px;height:75px; border:1px solid #494949;}
+			#foot_area{ position:fixed; bottom:0px;height:50px; border:1px solid #494949;}
+			body {padding:75px 0px 50px 0px;}
 			i.page-break {
 			  page-break-after: always;
 			  border: 0;
 			}
-		</style></head><body class="typeset"><script type="text/php">
+			#logo{ height:50px; top:12.5px; left:12.5px;  }
+		</style></head><body><div id="head_area">prf,Just another WordPress site</div><div id="foot_area">[page numbers]<img src="../../content/themes/cbn/img/wsuaa-logo.png" id="logo" /></div><script type="text/php">
 			$font = Font_Metrics::get_font("helvetica", "bold");
 			$GLOBALS["i"]=1;
 			$GLOBALS["indexpage"]=0;
@@ -19,13 +24,13 @@
 		</script><script type="text/php">
 			if ( isset($pdf) ) {
 				$header = "prf,Just another WordPress site";
-				$footertext = "PAGE";
+				$footertext = "[page numbers]";
 				$w = $pdf->get_width();
 				$h = $pdf->get_height();
 				$font = Font_Metrics::get_font("Arial, Helvetica, sans-serif", "normal");
 				$size = 12;
 				
-					
+					/*
 					$pdf->page_text($w-150, 0, $w." :: ".$h, $font, $size);
 					
 					
@@ -65,14 +70,14 @@
 					// Add the object to every page. You can
 					// also specify "odd" or "even"
 					$pdf->add_object($footer, "all");	
-	
+	*/
 					
 					
 					//Header
-					$pageHeaderText =  "This is the header. {$header}" ;
-					$t_y = 0 + 31.25;
+					/*$pageHeaderText =  "This is the header. {$header}" ;
+					$t_y = 0 + 18.75;
 					$t_x = 0 + 15;// + Font_Metrics::get_text_width($pageHeaderText, $font, $size);
-					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);
+					$pdf->page_text($t_x, $t_y, $pageHeaderText, $font, $size);*/
 				/*if($pagenum>1){}	
 					*/
 			
