@@ -6,7 +6,6 @@ Description: Handles functionality for WSU Policies and Procedures
 Author: washingtonstateuniversity, jeremyBass
 Version: 0.1
 */
-
-include( dirname( __FILE__ ) . '/includes/wsu-content-type-policie.php' );
-include( dirname( __FILE__ ) . '/includes/wsu-news-policie-calendar-widget.php' );
-//include( dirname( __FILE__ ) . '/includes/wsu-content-type-newsletter.php'           );
+define('PNP_URL', plugin_dir_url(__FILE__));
+define('PNP_PATH', plugin_dir_path(__FILE__));
+include( dirname( __FILE__ ) . '/includes/wsu-content-type-policy.php' );
