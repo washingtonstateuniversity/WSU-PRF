@@ -33,13 +33,14 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 			global $scrape_core;
 			include(SCRAPE_PATH . '/includes/class.core.php');// Include core
 			$scrape_core = new scrape_core();// Instantiate core class
+			/*
+			 * Initiate the plug-in.
+			 */
+			register_activation_hook(__FILE__,  'scrape_N_post_initializer');
+			register_deactivation_hook(__FILE__,  'scrape_N_post_remove');
 		}
 	}
-	/*
-	 * Initiate the plug-in.
-	 */
-	register_activation_hook(__FILE__,  'scrape_N_post_initializer');
-	register_deactivation_hook(__FILE__,  'scrape_N_post_remove');
+
 	// Set option values
 	function scrape_N_post_initializer() {
 		global $scrape_core;

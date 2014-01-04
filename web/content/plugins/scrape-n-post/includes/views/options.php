@@ -1,3 +1,10 @@
+<?php
+
+//var_dump($scrape_options);
+
+?>
+
+
 <div id="scrape-wrap" class="wrap">
   <div class="icon32" id="icon-options-general"><br>
   </div>

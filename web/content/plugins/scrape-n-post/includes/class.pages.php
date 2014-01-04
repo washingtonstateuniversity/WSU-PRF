@@ -11,6 +11,8 @@ class scrape_pages {
     public $dompdf = NULL;
     public $message = array();
     public $title = '';
+
+	
     function __construct() {
 		global $_params;
         if (is_admin()) {
@@ -18,8 +20,8 @@ class scrape_pages {
 				if (isset($_params['scrape_save_option'])) {// Check if option save is performed
 					add_action('init', array( $this, 'update_options' ));// Add update option action hook
 				}
-				if (isset($_params['scrape_export'])) {// Check if pdf export is performed
-					add_action('init', array( $this, 'export' ));// Add export hook
+				if (isset($_params['scrape_findlinks'])) {// Check if pdf export is performed
+					add_action('init', array( $this, 'findlinks' ));// Add export hook
 				}
 			}
 			add_action('admin_init', array( $this, 'admin_init' ));
@@ -145,7 +147,7 @@ class scrape_pages {
 		global $scrape_data;
         // Set options
         $data['options']   = $scrape_data->get_options();
-		$data['scrape_options']   = $scrape_data->get_options();
+		$data['scrape_options']   = $data['options']['scrape_options'];
         // Get templates
         $data['templates'] = "";
         // Display option form
@@ -158,14 +160,21 @@ class scrape_pages {
      * Perform export pdf
      */
     public function findlinks() {
-        global $scrape_output, $_params;
-        die("going to build the link array");
-		$page=scrape_get_content($_params['url'], $_params['selector'], $_params['xpath'], $scrapeopt);
+        global $scrape_output,$scrape_data, $_params;
+
+		$scrape_data->depth = 0;
+		$scrape_data->limit = 3;
+
+		$url=$_params['scrape_url'];
 		
-		
-		
-		
+		$scrape_data->rootUrl = parse_url($url, PHP_URL_HOST);
+		var_dump($url);
+		$urls = $scrape_data->get_all_urls($url);
+				
+		var_dump($urls);
+		die("going to build the link array");
     }
+
 
 
     /*-------------------------------------------------------------------------*/

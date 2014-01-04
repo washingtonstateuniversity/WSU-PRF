@@ -17,20 +17,17 @@ class scrape_core {
 		$_params = $_POST;
 
 		if (is_admin()) {
-			// Include output
-			include(SCRAPE_PATH . '/includes/class.pages.php');
+			
+			include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 			$scrape_pages = new scrape_pages();
-	
-			// Include output
-			include(SCRAPE_PATH . '/includes/class.output.php');
+
+			include(SCRAPE_PATH . '/includes/class.output.php');// Include scrape_output::
 			$scrape_output = new scrape_output();
-	
-			// Include data
-			include(SCRAPE_PATH . '/includes/class.data.php');
-			$scrape_data = new scrape_data();
+
+			include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::
+			//$scrape_data = new scrape_data();
 
         }
-       
     }
     /*
      * Initialize install
@@ -48,15 +45,16 @@ class scrape_core {
         $table_name = $wpdb->prefix . "scrape_n_post_queue";
         $sql        = "
 		CREATE TABLE `{$table_name}`  (
-			`target_id` mediumint(9) NOT NULL AUTO_INCREMENT,
-			`url` text NOT NULL,
-			`referrer` text,
-			`match_level` text,
-			`http_status` text,
-			`last_imported` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			`last_checked` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			`added_date` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-	    UNIQUE KEY id (template_id)
+			`target_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+			`url` TEXT NOT NULL,
+			`referrer` TEXT,
+			`match_level` TEXT,
+			`http_status` TEXT,
+			`type` VARCHAR(255) DEFAULT NULL,
+			`last_imported` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+			`last_checked` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+			`added_date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	    UNIQUE KEY id (target_id)
 		);";
         // Import wordpress database library
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
