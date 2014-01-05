@@ -25,14 +25,13 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 	$scrape_core = NULL;
 	class scrapeNpostLoad {
 		public function __construct() {
-			global $scrape_core;
-			include(SCRAPE_PATH . '/includes/class.core.php');// Include core
-			$scrape_core = new scrape_core();// Instantiate core class
+			
 			/*
 			 * Initiate the plug-in.
 			 */
-			register_activation_hook(__FILE__,  'scrape_N_post_initializer');
-			register_deactivation_hook(__FILE__,  'scrape_N_post_remove');
+			include(SCRAPE_PATH . '/includes/class.core.php');// Include core
+			register_activation_hook(__FILE__,  'scrape_N_post_initializer');// Install
+			register_deactivation_hook(__FILE__,  'scrape_N_post_remove');// Uninstall
 		}
 	}
 
@@ -44,8 +43,7 @@ if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 	// Unset option values
 	function scrape_N_post_remove() {
 		//delete_option('scrape_options');	// Delete plugin options
-	}	 
-	 
+	}
 	global $scrapeNpostLoad;
 	$scrapeNpostLoad = new scrapeNpostLoad();
 }

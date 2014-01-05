@@ -1,23 +1,14 @@
 <?php
 /*
-	Still needs a good refactor
-	- oh where to start
-	noted below
+	stub atm
 */
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-class scrape_output {
-
-	public $template = NULL;
-    public $post = array();
-    public $title = '';
-	public $head = NULL;
-    function __construct() {
-		
-    }
-
-
-
+if ( ! class_exists( 'scrape_output' ) ) {
+	class scrape_output {
+		function __construct() { }
+	}
+	global $scrape_output;
+	$scrape_output = new scrape_output();
 }
 ?>
