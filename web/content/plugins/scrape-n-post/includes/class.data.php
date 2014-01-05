@@ -4,13 +4,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'scrape_data' ) ) {
 	class scrape_data extends scrape_core {
-		public $seen_urls = array();
-		public $found_urls = array();
-		public $limit = 0;
-		public $depth = 0;
-		public $rootUrl = '';
-		public $currentUrl = '';
-
+		public $seen = array();
+		public $wanted = array();
 		function __construct() {
 			
 			
@@ -46,7 +41,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
      * @data - array
      */
     public function update_queue($arr = array()) {
-        global $wpdb,$catpdf_core,$_params;
+        global $wpdb,$scrape_core,$_params;
         $where         = array(
             'target_id' => $_params['target_id']
         );
@@ -63,30 +58,137 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				));
 				*/
 
-    public function ignore_url($arr = array()) {
-        global $wpdb,$catpdf_core,$_params;
+    public function ignore_url($target_id=NULL) {
+        global $wpdb,$scrape_core,$_params;
+		if( $target_id==NULL && !isset($_params['url']) ){
+			 return; // do message
+		}else{
+			$id = $target_id==NULL ? $_params['url'] : $target_id;
+		}
         $where         = array(
-            'target_id' => $_params['target_id']
+            'target_id' => $id
         );
+		$arr['ignore'] = 1;
+        $table_name    = $wpdb->prefix . "scrape_n_post_queue";
+        $rows_affected = $wpdb->update($table_name, $arr, $where);
+		//needs message
+    }
+    public function detach_post($target_id=NULL) {
+        global $wpdb,$scrape_core,$_params,$scrape_pages;
+		if( $target_id==NULL && !isset($_params['url']) ){
+			 return; // do message
+		}else{
+			$id = $target_id==NULL ? $_params['url'] : $target_id;
+		}
+        $where         = array(
+            'target_id' => $id 
+        );
+		$arr['post_id'] = NULL;
+        $table_name    = $wpdb->prefix . "scrape_n_post_queue";
+        $rows_affected = $wpdb->update($table_name, $arr, $where);
+		$scrape_pages->foward('scrape-crawler',$scheme='http');
+		//needs message
+    }
+	
+    public function url_to_post($post_id=NULL,$target_id=NULL) {
+        global $wpdb,$scrape_core,$_params;
+		if( $target_id==NULL && !isset($_params['url']) ){
+			 return; // do message
+		}else{
+			$id = $target_id==NULL ? $_params['url'] : $target_id;
+		}
+		
+		if( $post_id==NULL && !isset($_params['post_id']) ){
+			 return; // do message
+		}else{
+			$post_id = $post_id==NULL ? $_params['post_id'] : $post_id;
+		}
+		
+        $where         = array(
+            'target_id' => $id 
+        );
+		$arr['post_id'] = $post_id;
 		$arr['last_checked'] = current_time('mysql');
         $table_name    = $wpdb->prefix . "scrape_n_post_queue";
         $rows_affected = $wpdb->update($table_name, $arr, $where);
 		//needs message
     }
-    public function url_to_post($arr = array()) {
-        global $wpdb,$catpdf_core,$_params;
-        $where         = array(
-            'target_id' => $_params['target_id']
-        );
-		$arr['last_checked'] = current_time('mysql');
-        $table_name    = $wpdb->prefix . "scrape_n_post_queue";
-        $rows_affected = $wpdb->update($table_name, $arr, $where);
-		//needs message
-    }
+
+
+	public function make_post($target_id=NULL, $arr = array()){
+        global $wpdb, $current_user,$scrape_data,$_params;
+		
+		if( $target_id==NULL && !isset($_params['url']) ){
+			 return; // do message
+		}else{
+			$id = $target_id==NULL ? $_params['url'] : $target_id;
+		}
+		
+		$page = $scrape_data->scrape_get_content($id, 'html');
+		if($page=="ERROR::404"){
+			var_dump($url); die(); //should be a message no? yes!
+		}
+		$doc = phpQuery::newDocument($page);
+		$title = pq('h2:first')->text();
+		$content = pq('body')->remove('h3:first')->remove('p:first')->remove('h2:first')->remove('p:first')->html();
+		$catName = pq('p:first')->html();
+		//should applie paterens by option
+		$catarea = explode('<BR>',$catName);
+		$catName = trim($catarea[0]);
+
+		
+        // Get user info
+       	$current_user = get_currentuserinfo();
+        $user               = $current_user;
+
+		$user = get_userdatabylogin('jeremy.bass');
+		if($user) $author_id=$user->ID; // Outputs 1
+		if($author_id<=0)die('user not found');
+		
+		$cat_ID = 0;
+		$catSlug = sanitize_title_with_dashes($catName);
+		if ($cat = get_term_by('slug', $catSlug,'category')){
+			$cat_ID = $cat->term_id;
+		}else{
+			wp_insert_term($catName, 'category', array(
+				'description' => '',
+				'slug' => $catSlug
+			));	
+			if ($cat = get_term_by('slug', $catSlug,'category')){
+				$cat_ID = $cat->term_id;
+			}
+		}
+		
+		// Create post object
+		$complied = array(
+			'post_type' => 'wsu_policy', // yes don't hard code in final   
+			'post_title' => $title,
+			'post_content' => $content,
+			'post_status' => 'draft',
+			'comment_status'	=>	'closed',
+			'ping_status'		=>	'closed',
+			'post_category' => array($cat_ID),
+			'post_author' => $author_id,
+		);	
+		
+		$arrs = array_merge($complied,$arr);
+		//good so far let make the post
+		$post_id = wp_insert_post($arrs);
+		//all good let tie the post to the url
+		$this->url_to_post($post_id,$id);
+	}
 
 
 
-	public function crawl_from() {
+
+
+
+
+
+
+
+
+	public function crawl_from($url=NULL) {
 		global $_params,$scrape_core;
 		if(isset($_params['url'])){
 			$options = get_option( 'scrape_options', array('crawl_depth'=>5) );
@@ -98,8 +200,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 
 
 
-	public $seen = array();
-	public $wanted = array();	
+
 	public function get_all_urls($url, $depth = 5) {
 		$this->traverse_all_urls($url,$depth);
 		//var_dump($this->wanted);
@@ -256,10 +357,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		//$scrape_options = $scrape_options['scrape_options'];
 		$default_scrapeopt = array(
 				'postargs' => '',
-				'cache' => $scrape_options['cache'],
 				'user_agent' => $scrape_options['useragent'],
 				'timeout' => $scrape_options['timeout'],
-				'on_error' => $scrape_options['on_error'],
 				'output' => 'html',
 				'clear_regex' => '',
 				'clear_selector' => '',
@@ -297,8 +396,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			$scrapeopt['postargs'] = preg_replace_callback('/___(.*?)___/', create_function('$matches','return $_REQUEST[$matches[1]];'), $scrapeopt['postargs']);
 		}
 	
-		$cache_args['cache'] = $scrapeopt['cache'];
-	
+		//$cache_args['cache'] = $scrapeopt['cache'];
+		$cache_args=array();
 		if ( !empty($scrapeopt['postargs']) ) {
 			$http_args['headers'] = $scrapeopt['postargs'];
 			$cache_args['headers'] = $scrapeopt['postargs'];
@@ -560,4 +659,3 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	global $scrape_data;
 	$scrape_data = new scrape_data();
 }
-?>

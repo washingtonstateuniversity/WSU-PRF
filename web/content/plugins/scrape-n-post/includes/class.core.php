@@ -16,15 +16,15 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		function __construct() {
 			global $scrape_data,$_params;
 			
-			$_params = $_POST; // this needs to get validated and noonced and what not
+			$_params = $_REQUEST; // this needs to get validated and noonced and what not
+
 			if (is_admin()) {
 				
 				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_data::			
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
 				include(SCRAPE_PATH . '/includes/class.output.php');// Include scrape_output::
 				include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::
-				
-				
+
 				$options = $scrape_data->get_options(); // after _param validation just in case
 				//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
 				if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1)
@@ -57,7 +57,7 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			CREATE TABLE `{$table_name}`  (
 				`target_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
 				`post_id` MEDIUMINT(9),
-				`ignore` VARCHAR(3) DEFAULT NULL,
+				`ignore` BIT(1) NOT NULL DEFAULT 0,
 				`url` TEXT NOT NULL,
 				`referrer` TEXT,
 				`match_level` TEXT,

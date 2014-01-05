@@ -83,18 +83,18 @@ class crawl_list extends WP_List_Table {
     * @item - object
     */
     function column_url($item) {
-		if($item->post_id==NULL){
-			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'topost' );
+		if($item->post_id==NULL || $item->post_id==0){
+			$arr_params = array( 'url' => $item->url, 'scrape_action' => 'topost' );
 			$topostlink   = add_query_arg($arr_params);
 		}
         $arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'ignore' );
         $ignorelink = add_query_arg($arr_params);
 
-        $arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'crawlhere' );
+        $arr_params = array( 'url' => $item->url, 'scrape_action' => 'crawlhere' );
         $crawlherelink = add_query_arg($arr_params);
 		
         $actions    = array(
-            'topost' => ($item->post_id==NULL)?'<a href="' . $topostlink . '">Make Post</a>':"",
+            'topost' => ($item->post_id==NULL || $item->post_id==0)?'<a href="' . $topostlink . '">Make Post</a>':"",
             'ignore' => '<a href="' . $ignorelink . '">Ignore</a>',
             'crawlhere' => '<a href="' . $crawlherelink . '">Crawl</a>',
 			'view' => '<a href="' . $item->url . '" target="_blank">View</a>'
@@ -107,7 +107,7 @@ class crawl_list extends WP_List_Table {
     * @item - object
     */
     function column_post_id($item) {
-		if($item->post_id!=NULL){
+		if($item->post_id>0){
 			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'reimport' );
 			$reimportlink   = add_query_arg($arr_params);
 			
@@ -163,10 +163,7 @@ class crawl_list extends WP_List_Table {
         if ('topost' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
-					//$scrape_data->make_post($url);
-					
-					//add change import data
-                    //$scrape_data->update_queue($url);
+					$scrape_data->make_post($url,array());
                 }
             }
         }
@@ -183,10 +180,7 @@ class crawl_list extends WP_List_Table {
         if ('detach' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
-					//$scrape_data->make_post($url);
-					
-					//add change import data
-                    //$scrape_data->update_queue($url);
+					$scrape_data->detach_post($url);
                 }
             }
         }		
@@ -202,13 +196,10 @@ class crawl_list extends WP_List_Table {
         global $scrape_data;
         if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'ignore') {
 			//add ignore flag
-            //$scrape_data->update_queue($_GET['url'])
+            $scrape_data->ignore_url();
         }
         if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'topost') {
-			//$scrape_data->make_post($_GET['url']);
-			
-			//add change import data
-			//$scrape_data->update_queue($_GET['url']);
+			$scrape_data->make_post();
         }
         if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'crawlhere') {
 			//$scrape_data->make_post($_GET['url']);
@@ -223,12 +214,9 @@ class crawl_list extends WP_List_Table {
 			//$scrape_data->update_queue($_GET['url']);
         }
         if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'detach') {
-			//$scrape_data->make_post($_GET['url']);
-			
-			//add change import data
-			//$scrape_data->update_queue($_GET['url']);
-        }		
-
+			//remove post id
+			$scrape_data->detach_post();
+        }
     }
 	
     /*
@@ -241,11 +229,15 @@ class crawl_list extends WP_List_Table {
         $this->process_bulk_action();
         $this->process_link_action();
         $query   = "SELECT * FROM " . $wpdb->prefix . "scrape_n_post_queue";
+		if(isset($_GET['ignore'])){
+			$query .= ' WHERE `ignore`='.mysql_real_escape_string($_GET['ignore']).' ';
+		}
         $orderby = !empty($_GET["orderby"]) ? mysql_real_escape_string($_GET["orderby"]) : 'ASC';
         $order   = !empty($_GET["order"]) ? mysql_real_escape_string($_GET["order"]) : '';
         if (!empty($orderby) & !empty($order)) {
             $query .= ' ORDER BY ' . $orderby . ' ' . $order;
         }
+
         $totalitems = $wpdb->query($query);
         $perpage    = 50;
         $paged      = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';

@@ -69,7 +69,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 		}
 	
 		/*
-		 * Display "Download" page
+		 * Display "Crawler" pages
 		 */
 		public function crawler_page() {
 			global $scrape_data;
@@ -99,6 +99,22 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 	
 			$this->download_page();
 		}
+
+		public function url_to_post() {
+			global $scrape_data;
+			include(SCRAPE_PATH . '/includes/views/lists/class.crawl_list.php');
+			$wp_list_table = new crawl_list();
+			$wp_list_table->prepare_items();
+			ob_start();
+			$wp_list_table->display();
+			$data['table']   = ob_get_clean();
+			$data['message'] = $this->get_message();
+			$data['option_url']    = "";//$tool_url;
+			
+			$this->view(SCRAPE_PATH . '/includes/views/crawl_list.php', $data);
+		}
+
+
 			
 		/*-------------------------------------------------------------------------*/
 		/* -Option- 															   */
@@ -161,10 +177,15 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 				include($file);
 			}
 		}
-		
+		public function foward($page,$scheme='http') {  //fix the header issue
+			if ( function_exists('admin_url') ) {
+				wp_redirect( admin_url('admin.php?page='.$page, $scheme) );
+			} else {
+				wp_redirect( get_option('siteurl') . '/wp-admin/' . 'admin.php?page='.$page );
+			}
+		}
 
 	}
 	global $scrape_pages;
 	$scrape_pages = new scrape_pages();
 }
-?>
