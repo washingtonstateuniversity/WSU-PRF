@@ -14,8 +14,12 @@ class scrape_core {
 	public $_params;
     function __construct() {
 		global $scrape_output,$scrape_data,$_params;
-		$_params = $_POST;
-
+		
+		$_params = $_POST; // this needs to get validated and noonced and what not
+		
+		//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
+		ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
+		
 		if (is_admin()) {
 			
 			include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
@@ -36,6 +40,9 @@ class scrape_core {
         // Add database table
         $this->_add_table();
     }
+	
+	
+	//move installs to install class
     /*
      * Add template table
      */
@@ -78,7 +85,9 @@ class scrape_core {
 		
     }
 
-	
+
+
+	//@todo move it on out of here to ?data? class
     /*
      * Check if entry already exist
      * @column - string
@@ -90,6 +99,10 @@ class scrape_core {
         $result     = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE " . $column . " = '" . $value . "'");
         return (count($result) > 0);
     }
+
+	
+	
+	
 
 }
 ?>

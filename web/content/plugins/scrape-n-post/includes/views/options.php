@@ -4,7 +4,6 @@
 
 ?>
 
-
 <div id="scrape-wrap" class="wrap">
   <div class="icon32" id="icon-options-general"><br>
   </div>
@@ -14,59 +13,39 @@
     <form id="scrape_form" method="post">
       <div class="field-wrap">
         <div class="field">
-          <label>
-            <?php _e( "Enable single post download"); ?>
-          </label>
-          <input type="checkbox" name="postdl" id="postdl" <?php echo ( ( isset( $options['postdl'] ) && $options['postdl'] == 'on' ) ? 'checked="checked"' : '' );?> >
+          <label> <?php _e( "Crawl Depth"); ?> </label>
+          <input type="text" name="crawl_depth" id="crawl_depth"  value="<?php echo $scrape_options['crawl_depth']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
-          <?php _e("Tick this checkbox if you want to enable PDF download on each post."); ?>
+          <?php _e("Set the number to the deth you whish to crawl a site.  If the site is big 100-200 is a good choice.  Make sure you have the php max-* limits set to account for a deep crawl before running."); ?>
           )</span> </div>
       </div>
 
-        <table class="form-table">
 
-            <tr valign="top">
-                <th scope="row"><label>Error handling options</label></th>
-                <td>
-                <select name="scrape_options[on_error]" id="scrape_on_error" style="width:325px" class="regular-text code" >
-                        <option value="error_hide"<?php selected('error_hide', $scrape_options['on_error']); ?>>Fail silently (display blank string on failure)</option>
-                        <option value="error_show"<?php selected('error_show', $scrape_options['on_error']); ?>>Display error (can be used while debugging)</option>
-                </select>
-                <span class="setting-description">Default error handling. Fail silently or display error.</span>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th scope="row"><label>Useragent string</label></th>
-                <td>
-                <input name="scrape_options[useragent]" type="text" id="scrape_useragent" value="<?php echo $scrape_options['useragent']; ?>" class="regular-text code" />
-                <span class="setting-description">Default useragent header to identify yourself when crawling sites.</span>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th scope="row"><label> Timeout (in seconds)</label></th>
-                <td>
-                <input name="scrape_options[timeout]" type="text" id="scrape_timeout" value="<?php echo $scrape_options['timeout']; ?>" class="small-text code" />
-                <span class="setting-description">Default timeout interval in seconds for cURL or Fopen. Larger interval might slow down your page.</span>
-                </td>
-            </tr>
-            <tr valign="top">
-                <th scope="row"><label>Cache expiry (in minutes)</label></th>
-                <td>
-                <input name="scrape_options[cache]" type="text" id="scrape_cache" value="<?php echo $scrape_options['cache']; ?>" class="small-text code"/>
-                <span class="setting-description">Default cache expiry in minutes for cached webpages.</span>
-                </td>
-            </tr>
-        </table>
-        <input type="hidden" name="action" value="update" />
+      <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Useragent string"); ?> </label>
+          <input type="text" name="useragent" id="scrape_useragent"  value="<?php echo $scrape_options['useragent']; ?>"  class="large-text code"/>
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default useragent header to identify yourself when crawling sites."); ?>
+          )</span> </div>
+      </div>
+      <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Timeout (in seconds)"); ?> </label>
+          <input type="text" name="timeout" id="scrape_timeout"  value="<?php echo $scrape_options['timeout']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default timeout interval in seconds for cURL or Fopen. Larger interval might slow down your page."); ?>
+          )</span> </div>
+      </div>
+      
+      
+      <input type="hidden" name="action" value="update" />
       <p class="submit">
         <input type="submit" name="scrape_save_option" class="button-primary" value="Save Changes">
       </p>
-      
-      
-      
-      
-      
     </form>
   </div>
 </div>

@@ -15,8 +15,17 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			
 			
 			}
-
-
+	// @TODO
+		public function get_options(){
+			$plugin_option = get_option('scrape_options', array(
+				'crawl_depth' => 5,
+				'on_error' => 'error_hide',
+				'custom_error' => 'Unable to fetch data',
+				'useragent' => "Scrape-N-Post bot -- NOT A DDoS",
+				'timeout' => 2
+			));	
+			return $plugin_option;
+		}
 
     /*
      * Insert to template table
@@ -27,6 +36,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		$arr['added_date'] = current_time('mysql');
 		$table_name         = $wpdb->prefix . "scrape_n_post_queue";
 		$rows_affected      = $wpdb->insert($table_name, $arr);
+		//needs message
     }
     /*
      * Update entry in template table
@@ -40,6 +50,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		$arr['last_checked'] = current_time('mysql');
         $table_name    = $wpdb->prefix . "scrape_n_post_queue";
         $rows_affected = $wpdb->update($table_name, $arr, $where);
+		//needs message
     }
 /*				$_params['target_id']=$target_id;
 				$this->update_queue(array(
@@ -49,24 +60,179 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				));
 				*/
 
+    public function ignore_url($arr = array()) {
+        global $wpdb,$catpdf_core,$_params;
+        $where         = array(
+            'target_id' => $_params['target_id']
+        );
+		$arr['last_checked'] = current_time('mysql');
+        $table_name    = $wpdb->prefix . "scrape_n_post_queue";
+        $rows_affected = $wpdb->update($table_name, $arr, $where);
+		//needs message
+    }
+    public function url_to_post($arr = array()) {
+        global $wpdb,$catpdf_core,$_params;
+        $where         = array(
+            'target_id' => $_params['target_id']
+        );
+		$arr['last_checked'] = current_time('mysql');
+        $table_name    = $wpdb->prefix . "scrape_n_post_queue";
+        $rows_affected = $wpdb->update($table_name, $arr, $where);
+		//needs message
+    }
+
+
+
+	public function crawl_from() {
+		global $_params,$scrape_core;
+		if(isset($_params['url'])){
+			$options = get_option( 'scrape_options', array('crawl_depth'=>5) );
+			$depth = $options['depth']; 
+			$this->traverse_all_urls($_params['url'],$depth);
+		}
+	}
+
+
+
+
+	public $seen = array();
+	public $wanted = array();	
+	public function get_all_urls($url, $depth = 5) {
+		$this->traverse_all_urls($url,$depth);
+		//var_dump($this->wanted);
+		return $this->wanted;
+	}
+	public function traverse_all_urls($url,  $depth = 5) {
+		global $_params,$scrape_core;
+		
+		if ( isset($this->seen["{$url}"]) 
+			 || $depth === 0 
+			 || strpos($url,'javascript:newWindow') !== false
+			 ) {
+			return;
+		}
+		//print('MARKING AS SEEN ==== '.$url);
+		$this->seen["{$url}"] = true;
+	
+		$urls = $this->get_urls($url);
+		//var_dump($urls);
+		foreach($urls as $href=>$obj ) {
+			if($obj['type']=='page'){
+				//print('<h3>ready with=>'.$depth.'::'.$href.'</h3>');
+				if (0 !== strpos($href, 'http')) {
+					$relative=false;
+					if(substr($href,0,1)!='/'){
+						$relative=true;
+					}
+					$path = '/' . ltrim($href, '/');
+
+					$parts = parse_url($url);
+					//var_dump($parts);
+					$href = $parts['scheme'] . '://';
+					if (isset($parts['user']) && isset($parts['pass'])) {
+						$href .= $parts['user'] . ':' . $parts['pass'] . '@';
+					}
+					$href .= $parts['host'];
+					if (isset($parts['port'])) {
+						$href .= ':' . $parts['port'];
+					}
+					if($relative){
+						$pathparts=explode('/',$parts['path']);
+						$last=end($pathparts);
+						if(strpos($last,'.')!==false){
+							array_pop($pathparts);
+						}
+						$urlpath=implode('/',$pathparts);
+						$href .= '/'.trim($urlpath, '/').'/'.trim($path, '/');
+						//print('<h3>relative built=>'.$href.'</h3>');
+					}else{
+						$href .= '/'.trim($path, '/');	
+						//print('<h3>non--relative built=>'.$href.'</h3>');
+					}
+					//print('<h3>built=>'.$href.'</h3>');
+				}
+			}
+			if(strpos($href,'.htm/')!==false){
+				die($href);
+			}
+			
+			
+			//$o_href=$href;
+			//print('<h4>here=>'.$depth.'::'.$href.'</h4>');
+			if (isset($this->seen["{$href}"]) && $this->seen["{$href}"]) {
+				//print('<h4>SAW=>'.$depth.'::'.$href.'</h4>');
+				continue;
+			}
+			
+			//var_dump($href);
+			//var_dump($obj);
+			if( $obj['type'] == "page" ){
+				$exist=$scrape_core->_is_exist('url',$href);
+				if(!$exist){
+					$this->add_queue(array(
+						'url'=>$href,
+						'type'=>$obj['type'],
+						'http_status'=>200
+					));
+				}
+				$this->wanted[$href]=$obj;
+				$this->traverse_all_urls($href,$depth - 1);
+			}
+		}
+		sleep( 1 );
+		echo $url;
+	}
+
+	public function get_urls($url){
+		global $scrape_data,$_params;
+
+		$page=$scrape_data->scrape_get_content($url, 'body');
+		if($page=="ERROR::404"){
+			var_dump($url);
+			die();
+		}
+		$doc = phpQuery::newDocument($page);
+		$as = pq('a');
+		$urls=array();
+		foreach($as as $a) {
+			$link_url=pq($a)->attr('href');
+			//$link_url=$this->normalize_url_format($link_url);
+			if(!empty($link_url)){
+				$type='page';
+				if(!$this->is_localurl($link_url)){
+					$type='external';
+				}elseif($this->is_fileurl($link_url)){
+					$type='file';
+				}elseif($this->is_email($link_url)){
+					$type='email';
+				}elseif($this->is_anchor($link_url)){
+					$type='anchor';
+				}
+				//$link_url=$this->normalize_url($link_url);
+				$urls["{$link_url}"]=array('type'=>$type);
+			}
+		}
+		return $urls;
+		//if(!empty($page)){}die('had nothing');
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 	
-		public function get_options(){
-			$plugin_option = get_option('scrape_options',array(
-				'sc_posts' => 1,
-				'sc_widgets' => 1,
-				'on_error' => 'error_hide',
-				'custom_error' => 'Unable to fetch data',
-				'useragent' => "Scrape-N-Post bot (".get_bloginfo('url').")",
-				'timeout' => 2,
-				'cache' => 60
-			));	
-			return $plugin_option;
-		}
+
 	
 	
 		public function build_link_object(){
@@ -84,7 +250,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	 */
 	function scrape_get_content($url, $selector = '', $xpath = '', $scrapeopt = '') {
 		$scrape_options = get_option('scrape_options');
-		$scrape_options = $scrape_options['scrape_options'];
+		//$scrape_options = $scrape_options['scrape_options'];
 		$default_scrapeopt = array(
 				'postargs' => '',
 				'cache' => $scrape_options['cache'],
@@ -228,127 +394,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	}
 
 	
-	public $seen = array();
-	public $wanted = array();	
-	function get_all_urls($url, $depth = 5) {
-		$this->traverse_all_urls($url,$depth);
-		//var_dump($this->wanted);
-		return $this->wanted;
-	}
-	
-	function traverse_all_urls($url,  $depth = 5) {
-		global $_params,$scrape_core;
-		
-		if ( isset($this->seen["{$url}"]) 
-			 || $depth === 0 
-			 || strpos($url,'javascript:newWindow') !== false
-			 ) {
-			return;
-		}
-		//print('MARKING AS SEEN ==== '.$url);
-		$this->seen["{$url}"] = true;
-	
-		$urls = $this->get_urls($url);
-		//var_dump($urls);
-		foreach($urls as $href=>$obj ) {
-			if($obj['type']=='page'){
-				//print('<h3>ready with=>'.$depth.'::'.$href.'</h3>');
-				if (0 !== strpos($href, 'http')) {
-					$relative=false;
-					if(substr($href,0,1)!='/'){
-						$relative=true;
-					}
-					$path = '/' . ltrim($href, '/');
 
-					$parts = parse_url($url);
-					//var_dump($parts);
-					$href = $parts['scheme'] . '://';
-					if (isset($parts['user']) && isset($parts['pass'])) {
-						$href .= $parts['user'] . ':' . $parts['pass'] . '@';
-					}
-					$href .= $parts['host'];
-					if (isset($parts['port'])) {
-						$href .= ':' . $parts['port'];
-					}
-					if($relative){
-						$pathparts=explode('/',$parts['path']);
-						$last=end($pathparts);
-						if(strpos($last,'.')!==false){
-							array_pop($pathparts);
-						}
-						$urlpath=implode('/',$pathparts);
-						$href .= '/'.trim($urlpath, '/').'/'.trim($path, '/');
-						//print('<h3>relative built=>'.$href.'</h3>');
-					}else{
-						$href .= '/'.trim($path, '/');	
-						//print('<h3>non--relative built=>'.$href.'</h3>');
-					}
-					//print('<h3>built=>'.$href.'</h3>');
-				}
-			}
-			if(strpos($href,'.htm/')!==false){
-				die($href);
-			}
-			
-			
-			//$o_href=$href;
-			//print('<h4>here=>'.$depth.'::'.$href.'</h4>');
-			if (isset($this->seen["{$href}"]) && $this->seen["{$href}"]) {
-				//print('<h4>SAW=>'.$depth.'::'.$href.'</h4>');
-				continue;
-			}
-			
-			//var_dump($href);
-			//var_dump($obj);
-			if( $obj['type'] == "page" ){
-				$exist=$scrape_core->_is_exist('url',$href);
-				if(!$exist){
-					$this->add_queue(array(
-						'url'=>$href,
-						'type'=>$obj['type'],
-						'http_status'=>200
-					));
-				}
-				$this->wanted[$href]=$obj;
-				$this->traverse_all_urls($href,$depth - 1);
-			}
-		}
-		sleep( 1 );
-		echo $url;
-	}
-
-	public function get_urls($url){
-		global $scrape_data,$_params;
-
-		$page=$scrape_data->scrape_get_content($url, 'body');
-		if($page=="ERROR::404"){
-			var_dump($url);
-			die();
-		}
-		$doc = phpQuery::newDocument($page);
-		$as = pq('a');
-		$urls=array();
-		foreach($as as $a) {
-			$link_url=pq($a)->attr('href');
-			//$link_url=$this->normalize_url_format($link_url);
-			if(!empty($link_url)){
-				$type='page';
-				if(!$this->is_localurl($link_url)){
-					$type='external';
-				}elseif($this->is_fileurl($link_url)){
-					$type='file';
-				}elseif($this->is_email($link_url)){
-					$type='email';
-				}elseif($this->is_anchor($link_url)){
-					$type='anchor';
-				}
-				//$link_url=$this->normalize_url($link_url);
-				$urls["{$link_url}"]=array('type'=>$type);
-			}
-		}
-		return $urls;
-		//if(!empty($page)){}die('had nothing');
-	}
 	
 	/*
 	* take @param $url and insure it's a fully qualified URL 

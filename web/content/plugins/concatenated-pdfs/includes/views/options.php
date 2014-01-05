@@ -42,12 +42,10 @@
             <?php _e( "Post download template" ); ?>
           </label>
           <select name="dltemplate">
-            <option <?php echo ( ( $options['dltemplate']=='def' )?'selected="selected"':'' );?> value="def">
-            <?php _e('Default');?>
-            </option>
+            <option <?php selected('def', $scrape_options['dltemplate']); ?> value="def"> <?php _e('Default');?> </option>
             <?php if( count( $templates ) ) : ?>
             <?php foreach( $templates as $template ) :?>
-            <option <?php echo ( ( $template->template_id == $options['dltemplate'] )?'selected="selected"':'' );?> value="<?php echo $template->template_id;?>"><?php echo $template->template_name;?></option>
+            <option <?php selected($template->template_id, $scrape_options['dltemplate']); ?> value="<?php echo $template->template_id;?>"><?php echo $template->template_name;?></option>
             <?php endforeach; ?>
             <?php endif; ?>
           </select>

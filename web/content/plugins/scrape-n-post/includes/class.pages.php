@@ -64,14 +64,14 @@ class scrape_pages {
         // Register menu
         add_menu_page(SCRAPE_NAME, SCRAPE_NAME, 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ), SCRAPE_URL . 'images/nav-icon.png');
         // Register sub-menu
-        add_submenu_page(SCRAPE_BASE_NAME, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-download-pdf', array( $this, 'download_page' ));
+        add_submenu_page(SCRAPE_BASE_NAME, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
 
     }
 
     /*
      * Display "Download" page
      */
-    public function download_page() {
+    public function crawler_page() {
 		global $scrape_data;
         include(SCRAPE_PATH . '/includes/views/lists/class.crawl_list.php');
         $wp_list_table = new crawl_list();
@@ -84,7 +84,22 @@ class scrape_pages {
 		
 		$this->view(SCRAPE_PATH . '/includes/views/crawl_list.php', $data);
     }
-	
+
+    public function findlinks() {
+        global $wpdb, $scrape_output,$scrape_data, $_params;
+		
+		$options = $scrape_data->get_options();
+
+		$url=$_params['scrape_url'];
+		$scrape_data->rootUrl = parse_url($url, PHP_URL_HOST);
+		//var_dump($url);
+		$urls = $scrape_data->get_all_urls($url,$options['crawl_depth']);
+		//var_dump($urls);
+		die("going to build the link array");
+
+        $this->download_page();
+    }
+		
     /*-------------------------------------------------------------------------*/
     /* -Option- 															   */
     /*-------------------------------------------------------------------------*/
@@ -103,69 +118,13 @@ class scrape_pages {
 		global $scrape_data;
         // Set options
         $data['options']   = $scrape_data->get_options();
-		$data['scrape_options']   = $data['options']['scrape_options'];
+		$data['scrape_options']   = $data['options'];
         // Get templates
         $data['templates'] = "";
         // Display option form
         $this->view(SCRAPE_PATH . '/includes/views/options.php', $data);
     }
-    /*-------------------------------------------------------------------------*/
-    /* -Export- 															   */
-    /*-------------------------------------------------------------------------*/
-    /*
-     * Perform export pdf
-     */
-	 
 
-	 
-    public function findlinks() {
-        global $wpdb, $scrape_output,$scrape_data, $_params;
-
-		$scrape_data->depth = 0;
-		$scrape_data->limit = 3;
-
-		$url=$_params['scrape_url'];
-		
-		//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
-		ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000);
-		$scrape_data->rootUrl = parse_url($url, PHP_URL_HOST);
-		var_dump($url);
-		$urls = $scrape_data->get_all_urls($url,100);
-		var_dump($urls);
-		die("going to build the link array");
-		
-		//$data['urls'] = $urls;
-
-			/*`target_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
-			`post_id` MEDIUMINT(9),
-			`url` TEXT NOT NULL,
-			`referrer` TEXT,
-			`match_level` TEXT,
-			`http_status` MEDIUMINT(9),
-			`type` VARCHAR(255) DEFAULT NULL,
-			`last_imported` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-			`last_checked` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
-			`added_date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',*/
-        // Insert data
-		/*foreach($urls as $url=>$obj){
-			$arr['url']=$url;
-			$arr['type']=$obj['type'];
-			$arr['added_date'] = current_time('mysql');
-			$table_name         = $wpdb->prefix . "scrape_n_post_queue";
-			$rows_affected      = $wpdb->insert($table_name, $arr);
-		}*/
-
-        include(SCRAPE_PATH . '/includes/views/lists/class.crawl_list.php');
-        $wp_list_table = new template_list();
-        $wp_list_table->prepare_items();
-		ob_start();
-		$wp_list_table->display();
-		$data['table']   = ob_get_clean();
-		$data['message'] = $this->get_message();
-
-		
-		$this->view(SCRAPE_PATH . '/includes/views/crawl_list.php', $data);
-    }
 
 
 
