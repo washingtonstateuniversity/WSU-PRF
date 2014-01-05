@@ -22,17 +22,36 @@ class crawl_list extends WP_List_Table {
     function column_default($item, $column_name) {
         switch ($column_name) {
             case 'post_id':
-				if($item->post_id==NULL)$item->post_id="--NA--";
-                return stripslashes($item->post_id);
+					if($item->post_id==NULL)$item->post_id="--NA--";
+					return stripslashes($item->post_id);
+                break;
+            case 'http_status':
+					$imgurl = SCRAPE_URL."images/no-webshot.png"; // as if ==NULL
+					if($item->http_status==200){
+						//webshot would be the output url of te cache image created.
+						$webshot = false;//as in it failed.. thou it's not here yet
+						$imgurl = $webshot ? $webshot : SCRAPE_URL."images/no-webshot.png";
+					}
+					if($item->http_status==500){
+						$imgurl = SCRAPE_URL."images/no-webshot-500.png";
+					}
+					if($item->http_status==503){
+						$imgurl = SCRAPE_URL."images/no-webshot-503.png";
+					}								
+					if($item->http_status==404){
+						$imgurl = SCRAPE_URL."images/no-webshot-404.png";
+					}
+					$item->http_status="<img src='{$imgurl}' />";
+					return $item->http_status;
                 break;
             case 'url':
-                return stripslashes($item->url);
+                	return stripslashes($item->url);
                 break;
             case 'added_date':
-                return date('d-m-Y', strtotime($item->added_date));
+                	return date('d-m-Y', strtotime($item->added_date));
                 break;
             default:
-                return print_r($item, true);
+               		return print_r($item, true);
         }
     }
     /*
@@ -41,8 +60,9 @@ class crawl_list extends WP_List_Table {
     function get_columns() {
         $columns = array(
             'cb' => '<input type="checkbox" />',
+			'http_status' => __('Url Status', 'mylisttable'),
+			'url' => __('URL', 'mylisttable'),
             'post_id' => __('Post ID', 'mylisttable'),
-            'url' => __('URL', 'mylisttable'),
             'added_date' => __('Added Date', 'mylisttable')
         );
         return $columns;
@@ -59,12 +79,14 @@ class crawl_list extends WP_List_Table {
     }
     /*
     * Set template name column structure
-    @item - object
+	* note url is the id on perpose
+    * @item - object
     */
     function column_url($item) {
-        $arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'topost' );
-        $topostlink   = add_query_arg($arr_params);
-		
+		if($item->post_id==NULL){
+			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'topost' );
+			$topostlink   = add_query_arg($arr_params);
+		}
         $arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'ignore' );
         $ignorelink = add_query_arg($arr_params);
 
@@ -72,20 +94,48 @@ class crawl_list extends WP_List_Table {
         $crawlherelink = add_query_arg($arr_params);
 		
         $actions    = array(
-            'topost' => '<a href="' . $topostlink . '">Make Post</a>',
+            'topost' => ($item->post_id==NULL)?'<a href="' . $topostlink . '">Make Post</a>':"",
             'ignore' => '<a href="' . $ignorelink . '">Ignore</a>',
             'crawlhere' => '<a href="' . $crawlherelink . '">Crawl</a>',
 			'view' => '<a href="' . $item->url . '" target="_blank">View</a>'
         );
         return sprintf('<strong>%1$s</strong> %2$s', $item->url, $this->row_actions($actions));
     }
+
+    /*
+    * Set template name column structure
+    * @item - object
+    */
+    function column_post_id($item) {
+		if($item->post_id!=NULL){
+			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'reimport' );
+			$reimportlink   = add_query_arg($arr_params);
+			
+			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'detach' );
+			$detachlink = add_query_arg($arr_params);
+			
+			$actions    = array(
+				'reimport' => '<a href="' . $reimportlink . '">Reimport Post</a>',
+				'detach' => '<a href="' . $detachlink . '">Detact URL Relation</a>'
+			);
+		}else{
+			$actions=array();
+		}
+        return sprintf('<strong>%1$s</strong> %2$s', $item->post_id, $this->row_actions($actions));
+    }	
+	
+	
+	
+	
     /*
     * Set table bulk action
     */
     function get_bulk_actions() {
         $actions = array(
             'ignore' => 'Ignore',
-			'topost' => 'Make Post'
+			'topost' => 'Make Post',
+			'reimport' => 'Reimport Posts',
+			'detach' => 'Detact URL Relation'
         );
         return $actions;
     }
@@ -98,7 +148,7 @@ class crawl_list extends WP_List_Table {
     }
     /*
     * Process action performed
-	* @todo post for _params
+	* @todo post for _params but note url is the id on perpose
     */
     function process_bulk_action() {
         global $scrape_data,$_param;
@@ -120,7 +170,30 @@ class crawl_list extends WP_List_Table {
                 }
             }
         }
+        if ('reimport' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					//$scrape_data->make_post($url);
+					
+					//add change import data
+                    //$scrape_data->update_queue($url);
+                }
+            }
+        }	
+        if ('detach' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					//$scrape_data->make_post($url);
+					
+					//add change import data
+                    //$scrape_data->update_queue($url);
+                }
+            }
+        }		
 		
+		
+		
+			
     }
     /*
     * Process action performed
@@ -143,6 +216,19 @@ class crawl_list extends WP_List_Table {
 			//add change import data
 			//$scrape_data->update_queue($_GET['url']);
         }
+        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'reimport') {
+			//$scrape_data->make_post($_GET['url']);
+			
+			//add change import data
+			//$scrape_data->update_queue($_GET['url']);
+        }
+        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'detach') {
+			//$scrape_data->make_post($_GET['url']);
+			
+			//add change import data
+			//$scrape_data->update_queue($_GET['url']);
+        }		
+
     }
 	
     /*
