@@ -16,10 +16,6 @@ class scrape_core {
 		global $scrape_output,$scrape_data,$_params;
 		
 		$_params = $_POST; // this needs to get validated and noonced and what not
-		
-		//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
-		ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
-		
 		if (is_admin()) {
 			
 			include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
@@ -30,7 +26,15 @@ class scrape_core {
 
 			include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::
 			//$scrape_data = new scrape_data();
-
+			
+			$options = $scrape_data->get_options(); // after _param validation just in case
+			//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
+			if(isset($options['xdebug_fix']) && $options['xdebug_fix']==1)
+				ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000); // should quitely fail if no xdebug
+			if(isset($options['time_limit']) && $options['time_limit']>-1)
+				set_time_limit($options['time_limit']);
+			if(isset($options['memory_limit']) && $options['memory_limit']>-2)
+				ini_set('memory_limit', $options['memory_limit']);
         }
     }
     /*

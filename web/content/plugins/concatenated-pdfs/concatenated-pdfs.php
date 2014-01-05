@@ -20,6 +20,7 @@ define('CATPDF_CACHE_PATH', CATPDF_PATH . 'cache/');
 define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
 
 /* things still to do
+[ ]-POST/GET to $_param validation
 [ ]-remove the use themes templates inlue of per template css path link
 [ ]-must be able to sort on optional items like tax/type etc
 [•]-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)

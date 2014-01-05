@@ -42,6 +42,47 @@
       </div>
       
       
+      
+      
+      
+	<div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Apply Xdebug fix" ); ?>  </label>
+          <select name="xdebug_fix">
+            <option <?php selected('1', $scrape_options['xdebug_fix']); ?> value="1"> <?php _e('Yes');?> </option>
+            <option <?php selected('0', $scrape_options['xdebug_fix']); ?> value="0"> <?php _e('No');?> </option>
+          </select>
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Xdebug is not with out it's own bugs.  Such is life, but this will set the `xdebug.max_nesting_level` so that it follows your php.ini settings"); ?>
+          )</span> </div>
+	</div>   
+       <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Timeout (in seconds)"); ?> </label>
+          <input type="text" name="time_limit" id="scrape_time_limit"  value="<?php echo $scrape_options['time_limit']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Over write [if possible], php's time_limit"); ?>
+          )</span> </div>
+      </div>     
+      
+      
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "php Memory Limit (in MB)"); ?> </label>
+          <input type="text" name="memory_limit" id="scrape_memory_limit"  value="<?php echo $scrape_options['memory_limit']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Over write [if possible], php's memory_limit. NOTE: setting to 0 or blank disables, where setting to `-1` assigns unlimited."); ?>
+          )</span> </div>
+      </div>     
+           
+
+      
+      
+      
+      
       <input type="hidden" name="action" value="update" />
       <p class="submit">
         <input type="submit" name="scrape_save_option" class="button-primary" value="Save Changes">

@@ -22,7 +22,10 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				'on_error' => 'error_hide',
 				'custom_error' => 'Unable to fetch data',
 				'useragent' => "Scrape-N-Post bot -- NOT A DDoS",
-				'timeout' => 2
+				'timeout' => 2,
+				'time_limit'=>300,
+				'memory_limit'=>'-1',
+				'xdebug_fix'=>1
 			));	
 			return $plugin_option;
 		}

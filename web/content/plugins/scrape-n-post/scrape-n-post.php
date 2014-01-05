@@ -7,8 +7,7 @@ Description: Import content form your old site with easy
 Author: Jeremy Bass
 Author URI: #
 */
-set_time_limit(300);
-ini_set('memory_limit', '-1');
+
 define('SCRAPE_NAME', 'Scrape-N-Post');
 define('SCRAPE_BASE_NAME', 'scrape-n-post');
 define('SCRAPE_VERSION', '0.1');
@@ -19,6 +18,7 @@ define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
 
 /* things still to do
 [•]-Add webshot for previews of the urls
+[ ]-POST/GET to $_param validation
 [ ]-cronjob support for active crawl and snync
 */
 if ( ! class_exists( 'scrapeNpostLoad' ) ) {
