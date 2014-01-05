@@ -73,60 +73,16 @@ class scrape_pages {
      */
     public function download_page() {
 		global $scrape_data;
-        $data                  = array();
-        $args                  = array(
-            'orderby' => 'name',
-            'order' => 'ASC',
-            'hierarchical' => 1,
-            'hide_empty' => '0'
-        );
-        $options               = get_option('scrape_options');
-        // Construct category dropdown
-        $select_cats           = wp_dropdown_categories(array(
-            'echo' => 0,
-            'hierarchical' => 1
-        ));
+        include(SCRAPE_PATH . '/includes/views/lists/class.crawl_list.php');
+        $wp_list_table = new crawl_list();
+        $wp_list_table->prepare_items();
+		ob_start();
+		$wp_list_table->display();
+		$data['table']   = ob_get_clean();
+		$data['message'] = $this->get_message();
+		$data['option_url']    = "";//$tool_url;
 		
-		$post_types      = get_post_types(array(
-            'public'   => true,
-                     //'_builtin' => false
-        ),'names' , 'and' );
-		$select_types= '<select name="type[]" multiple="multiple" class="postform" >';
-		foreach ($post_types  as $post_type ) {
-			$select_types.='<option value="'. $post_type.'"  class="level-0" >'. $post_type. '</option>';
-		}
-		$select_types.='</select>';
-
-
-		$select_tags= '<select name="tags[]" multiple="multiple" class="postform" >';
-		foreach ($post_types  as $post_type ) {
-			$select_tags.='<option value="'. $post_type.'"  class="level-0" >'. $post_type. '</option>';
-		}
-		$select_tags.='</select>';
-
-		
-		
-        $select_cats           = str_replace("name='cat' id=", "name='cat[]' multiple='multiple' id=", $select_cats);
-        $select_cats           = str_replace("<option", '<option ', $select_cats);
-        // Construct user dropdown
-        $select_author         = wp_dropdown_users(array(
-            'id' => 'author',
-            'echo' => false
-        ));
-        $select_author         = str_replace("name='user' ", "name='user[]' multiple='multiple' ", $select_author);
-        $select_author         = str_replace("<option", '<option ', $select_author);
-		
-		$data['select_tags']  = $select_tags;
-		$data['select_types']  = $select_types;
-        $data['select_cats']   = $select_cats;
-        $data['select_author'] = $select_author;
-        $data['select_sizes']  = array( );
-        $data['select_ors']    = array( );
-        $data['option_url']    = "";//$tool_url;
-
-        $data['message']       = $this->get_message();
-        // Display export form
-        $this->view(SCRAPE_PATH . '/includes/views/export.php', $data);
+		$this->view(SCRAPE_PATH . '/includes/views/crawl_list.php', $data);
     }
 	
     /*-------------------------------------------------------------------------*/
@@ -159,20 +115,56 @@ class scrape_pages {
     /*
      * Perform export pdf
      */
+	 
+
+	 
     public function findlinks() {
-        global $scrape_output,$scrape_data, $_params;
+        global $wpdb, $scrape_output,$scrape_data, $_params;
 
 		$scrape_data->depth = 0;
 		$scrape_data->limit = 3;
 
 		$url=$_params['scrape_url'];
 		
+		//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have
+		ini_set('xdebug.max_nesting_level', 10000000000000000000000000000000);
 		$scrape_data->rootUrl = parse_url($url, PHP_URL_HOST);
 		var_dump($url);
-		$urls = $scrape_data->get_all_urls($url);
-				
+		$urls = $scrape_data->get_all_urls($url,100);
 		var_dump($urls);
 		die("going to build the link array");
+		
+		//$data['urls'] = $urls;
+
+			/*`target_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+			`post_id` MEDIUMINT(9),
+			`url` TEXT NOT NULL,
+			`referrer` TEXT,
+			`match_level` TEXT,
+			`http_status` MEDIUMINT(9),
+			`type` VARCHAR(255) DEFAULT NULL,
+			`last_imported` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+			`last_checked` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+			`added_date` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',*/
+        // Insert data
+		/*foreach($urls as $url=>$obj){
+			$arr['url']=$url;
+			$arr['type']=$obj['type'];
+			$arr['added_date'] = current_time('mysql');
+			$table_name         = $wpdb->prefix . "scrape_n_post_queue";
+			$rows_affected      = $wpdb->insert($table_name, $arr);
+		}*/
+
+        include(SCRAPE_PATH . '/includes/views/lists/class.crawl_list.php');
+        $wp_list_table = new template_list();
+        $wp_list_table->prepare_items();
+		ob_start();
+		$wp_list_table->display();
+		$data['table']   = ob_get_clean();
+		$data['message'] = $this->get_message();
+
+		
+		$this->view(SCRAPE_PATH . '/includes/views/crawl_list.php', $data);
     }
 
 

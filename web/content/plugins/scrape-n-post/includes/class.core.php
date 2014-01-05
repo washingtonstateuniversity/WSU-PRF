@@ -44,12 +44,15 @@ class scrape_core {
         // Construct query
         $table_name = $wpdb->prefix . "scrape_n_post_queue";
         $sql        = "
+		DROP TABLE IF EXISTS `{$table_name}`;
 		CREATE TABLE `{$table_name}`  (
 			`target_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+			`post_id` MEDIUMINT(9),
+			`ignore` VARCHAR(3) DEFAULT NULL,
 			`url` TEXT NOT NULL,
 			`referrer` TEXT,
 			`match_level` TEXT,
-			`http_status` TEXT,
+			`http_status` MEDIUMINT(9),
 			`type` VARCHAR(255) DEFAULT NULL,
 			`last_imported` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
 			`last_checked` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -81,7 +84,7 @@ class scrape_core {
      * @column - string
      * @value - string
      */
-    private function _is_exist($column = '', $value = '') {
+    public function _is_exist($column = '', $value = '') {
         global $wpdb;
         $table_name = $wpdb->prefix . "scrape_n_post_queue";
         $result     = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE " . $column . " = '" . $value . "'");

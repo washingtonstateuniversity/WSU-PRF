@@ -11,7 +11,49 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		public $rootUrl = '';
 		public $currentUrl = '';
 
-		function __construct() { }
+		function __construct() {
+			
+			
+			}
+
+
+
+    /*
+     * Insert to template table
+     * @arr - array
+     */
+    public function add_queue($arr = array()) {
+        global $wpdb;
+		$arr['added_date'] = current_time('mysql');
+		$table_name         = $wpdb->prefix . "scrape_n_post_queue";
+		$rows_affected      = $wpdb->insert($table_name, $arr);
+    }
+    /*
+     * Update entry in template table
+     * @data - array
+     */
+    public function update_queue($arr = array()) {
+        global $wpdb,$catpdf_core,$_params;
+        $where         = array(
+            'target_id' => $_params['target_id']
+        );
+		$arr['last_checked'] = current_time('mysql');
+        $table_name    = $wpdb->prefix . "scrape_n_post_queue";
+        $rows_affected = $wpdb->update($table_name, $arr, $where);
+    }
+/*				$_params['target_id']=$target_id;
+				$this->update_queue(array(
+					'url'=>$href,
+					'type'=>$obj['type'],
+					'http_status'=>200
+				));
+				*/
+
+
+
+
+
+
 	
 		public function get_options(){
 			$plugin_option = get_option('scrape_options',array(
@@ -42,6 +84,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	 */
 	function scrape_get_content($url, $selector = '', $xpath = '', $scrapeopt = '') {
 		$scrape_options = get_option('scrape_options');
+		$scrape_options = $scrape_options['scrape_options'];
 		$default_scrapeopt = array(
 				'postargs' => '',
 				'cache' => $scrape_options['cache'],
@@ -66,24 +109,11 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		unset($scrapeopt['url']);
 		unset($scrapeopt['selector']);
 		unset($scrapeopt['xpath']);
-	
+		//print('getting content for <h5>'.$url.'</h5>');
 		if(!isset($scrapeopt['request_mt']))$scrapeopt['request_mt']=microtime(true);
-	
-		if($scrapeopt['debug'] == '1') {
-			$header = "\n<!--\n Start of web scrape (created by Scrape-N-Post)\n Source URL: $url \n Selector: $selector\n Xpath: $xpath";
-			$footer = "\n<!--\n End of web scrape";
-		} elseif ($scrapeopt['debug'] == '0') {
-			$header = '';
-			$footer = '';
-		}
-	
+
 		if(empty($url)) {
-			$header .= "\n Other options: ".print_r($scrapeopt, true)."-->\n";
-			if($scrapeopt['on_error'] == 'error_hide') {
-				return $header.$footer;
-			} else {
-				return "$header Scrape-N-Post Error: No URL and/or selector specified $footer";
-			}
+			//on error
 		}
 	
 		if( strstr($url, '___QUERY_STRING___') ) {
@@ -106,8 +136,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		}
 		$http_args['user-agent'] = $scrapeopt['user_agent'];
 		$http_args['timeout'] = $scrapeopt['timeout'];
-	
+		//print('making request content for <h5>'.$url.'</h5>');
 		$response = $this->scrape_remote_request($url, $cache_args, $http_args);
+		//var_dump($response);
 		if( !is_wp_error( $response ) ) {
 			$raw_html = $response['body'];
 			if( !empty($selector) ) {
@@ -117,45 +148,13 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				 } else {
 					 $err_str = $raw_html->get_error_message();
 				 }
-			} elseif( !empty($xpath) ) {
-				$raw_html = $this->scrape_get_html_by_xpath($raw_html, $xpath, $scrapeopt['output']);
-				 if( !is_wp_error( $raw_html ) ) {
-					 $filtered_html = $raw_html;
-				 } else {
-					 $err_str = $raw_html->get_error_message();
-				 }
-			} else {
-				$filtered_html = $raw_html;
 			}
 			if( !empty($err_str) ) {
-				if($scrapeopt['debug'] == '1') {
-					$header .= "\n Other options: ".print_r($scrapeopt, true)."-->\n";
-					$footer .= "\n Computing time: ".round(microtime(true) - $scrapeopt['request_mt'], 4)." seconds \n-->\n";
-				}
-				if ($scrapeopt['on_error'] == 'error_hide')
-					return $header.$footer;
-				if ($scrapeopt['on_error'] == 'error_show')
-					return $header.$err_str.$footer;
-				if ( !empty($scrapeopt['on_error']) )
-					return $header.$scrapeopt['on_error'].$footer;
+				//log error
 			}
-			if($scrapeopt['debug'] == '1') {
-				$header .= "\n Delivered thru: ".$response['headers']['source']."\n Scrape-N-Post options: ".print_r($scrapeopt, true)."-->\n";
-				//$header .= "\n Scrape-N-Post options: ".print_r($scrapeopt, true)."-->\n";
-				$footer .= "\n Computing time: ".round(microtime(true) - $scrapeopt['request_mt'], 4)." seconds \n-->\n";
-			}
-			return $header.$this->scrape_parse_filtered_html($filtered_html, $scrapeopt).$footer;
+			return $raw_html;
 		} else {
-			if($scrapeopt['debug'] == '1') {
-				$header .= "\n Other options: ".print_r($scrapeopt, true)."-->\n";
-				$footer .= "\n Computing time: ".round(microtime(true) - $scrapeopt['request_mt'], 4)." seconds \n-->\n";
-			}
-			if ($scrapeopt['on_error'] == 'error_hide')
-				return $header.$footer;
-			if ($scrapeopt['on_error'] == 'error_show')
-				return $header."Error fetching $url - ".$response->get_error_message().$footer;
-			if ( !empty($scrapeopt['on_error']) )
-				return $header.$scrapeopt['on_error'].$footer;
+			return "ERROR::".$response['response']['code'];
 		}
 	
 	}
@@ -168,7 +167,9 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	 * @param array $http_args Optional. Override the defaults.
 	 * @return WP_Error|array The response or WP_Error on failure.
 	 */
-	function scrape_remote_request($url, $cache_args = array(), $http_args = array()) {
+	function scrape_remote_request($url, $cache_args = array(), $http_args = array(),$retry_limit=3) {
+		//print('starting request <h5>'.$url.'</h5>');
+		//var_dump($http_args);
 		$default_cache_args = array(
 			'cache' => 60,
 			'on-error' => 'cache'
@@ -184,43 +185,27 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			$transient = md5($url);
 		}
 	
-		if ( false === ( $cache = get_transient($transient) ) || $cache_args['cache'] == 0 ) {
-			 $response = wp_remote_request($url, $http_args);
-			if( !is_wp_error( $response ) ) {
-				if($cache_args['cache'] != 0)
-					set_transient($transient, $response, $cache_args['cache'] * 60 );
-				@$response['headers']['source'] = 'WP_Http';
-				return $response;
-			} else {
-				return new WP_Error('scrape_remote_request_failed', $response->get_error_message());
-			}
+		
+		//print('doing request <h5>'.$url.'</h5>');
+		//var_dump($http_args);
+		$response = wp_remote_request($url, $http_args);
+		if( !is_wp_error( $response ) ) {
+			if($cache_args['cache'] != 0)
+				set_transient($transient, $response, $cache_args['cache'] * 60 );
+			@$response['headers']['source'] = 'WP_Http';
+			return $response;
 		} else {
-			$cache = get_transient($transient);
-			@$cache['headers']['source'] = 'Cache';
-			return $cache;
+			var_dump($response);
+			if($retry_limit>0){
+				sleep(2);
+				print('retrying');
+				return $this->scrape_remote_request($url,$cache_args,$http_args,$retry_limit-1);	
+			}
+			die();
+			return $response['response']['code'];
 		}
 	}
-	
-	/**
-	 * Get HTML from a web page using XPath query
-	 * @param string $raw_html Raw HTML
-	 * @param string $xpath XPath query
-	 * @param string $output html or text
-	 * @return string
-	 */
-	function scrape_get_html_by_xpath($raw_html, $xpath, $output = 'html'){
-		// Parsing request using JS_Extractor
-		require_once 'Extractor/Extractor.php';
-		$extractor = new JS_Extractor($raw_html);
-		$body = $extractor->query("body")->item(0);
-		if (!$result = $body->query($xpath)->item(0)->nodeValue)
-			return new WP_Error('scrape_get_html_by_xpath_failed', "Error parsing xpath: $xpath");
-		if($output == 'text')
-			return strip_tags($result);
-		if($output == 'html')
-			return $result;
-	}
-	
+
 	/**
 	 * Get HTML from a web page using selector
 	 * @param string $raw_html Raw HTML
@@ -241,190 +226,162 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		if( empty($output) )
 			return new WP_Error('scrape_get_html_by_selector_failed', "Error parsing selector: $selector");
 	}
+
 	
-	/**
-	 * Parse filtered content using options
-	 * @param string $filtered_html Filtered HTML using selector or xpath query
-	 * @param array $scrapeopt Options array
-	 * @return string
-	 */
-	function scrape_parse_filtered_html($filtered_html, $scrapeopt) {
-		$currcharset = get_bloginfo('charset');
-		if(!empty($scrapeopt['clear_regex']))
-			$filtered_html = preg_replace($scrapeopt['clear_regex'], '', $filtered_html);
-		if(!empty($scrapeopt['clear_selector']))
-			$filtered_html = str_replace($this->scrape_get_html_by_selector($filtered_html, $scrapeopt['clear_selector']), '', $filtered_html);
-		if(!empty($scrapeopt['replace_regex']))
-			$filtered_html = preg_replace($scrapeopt['replace_regex'], $scrapeopt['replace_with'], $filtered_html);
-		if(!empty($scrapeopt['replace_selector']))
-			$filtered_html = str_replace($this->scrape_get_html_by_selector($filtered_html, $scrapeopt['replace_selector']), $scrapeopt['replace_selector_with'], $filtered_html);
-		if(!empty($scrapeopt['basehref']))
-			$filtered_html = preg_replace('#(href|src)="([^:"]*)("|(?:(?:%20|\s|\+)[^"]*"))#','$1="'.$scrapeopt['basehref'].'$2$3',$filtered_html);
-		if(!empty($scrapeopt['striptags']))
-			$filtered_html = $this->scrape_strip_only($filtered_html, $scrapeopt['striptags']);
-		if(!empty($scrapeopt['removetags']))
-			$filtered_html = $this->scrape_strip_only($filtered_html, $scrapeopt['removetags'], true);
-		if(!empty($scrapeopt['htmldecode']))
-			$filtered_html = iconv($scrapeopt['htmldecode'], $currcharset, $filtered_html);
-		if(!empty($scrapeopt['callback']) && function_exists($scrapeopt['callback']))
-			$filtered_html = call_user_func($scrapeopt['callback'], $filtered_html);
-		return $filtered_html;
+	public $seen = array();
+	public $wanted = array();	
+	function get_all_urls($url, $depth = 5) {
+		$this->traverse_all_urls($url,$depth);
+		//var_dump($this->wanted);
+		return $this->wanted;
 	}
 	
-	/**
-	 * Strip specified tags
-	 * @param string $str
-	 * @param string/array $tags
-	 * @param bool $strip_content
-	 * @return string
-	 */
-	function scrape_strip_only($str, $tags, $strip_content = false) {
-		$content = '';
-		if(!is_array($tags)) {
-			$tags = (strpos($str, '>') !== false ? explode('>', str_replace('<', '', $tags)) : array($tags));
-			if(end($tags) == '') array_pop($tags);
+	function traverse_all_urls($url,  $depth = 5) {
+		global $_params,$scrape_core;
+		
+		if ( isset($this->seen["{$url}"]) 
+			 || $depth === 0 
+			 || strpos($url,'javascript:newWindow') !== false
+			 ) {
+			return;
 		}
-		foreach($tags as $tag) {
-			if ($strip_content)
-				 $content = '(.+</'.$tag.'(>|\s[^>]*>)|)';
-			 $str = preg_replace('#</?'.$tag.'(>|\s[^>]*>)'.$content.'#is', '', $str);
-		}
-		return $str;
-	}
+		//print('MARKING AS SEEN ==== '.$url);
+		$this->seen["{$url}"] = true;
 	
-	/**
-	 * Degug function
-	 * @return string
-	 */
-	function scrape_debug() {
-		$url_content = $this->scrape_get_content('http://google.com/','title','','on_error=error_show&cache=10&timeout=2');
-		if ( strpos($url_content,'Error ') !== false ) {
-			return 'Fatel error: Scrape-N-Post could not fetch content - may not function properly';
-		} else {
-			return false;
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public function get_all_urls($url,$lastdepth=0){
-		$limit=3;
-		$depth=$this->depth;
-		$this->currentUrl[$depth]=$url;
 		$urls = $this->get_urls($url);
-		
-		print("working on depth:".$this->depth." with a limit of ".$this->limit."</br>");
-		
-		if($this->depth < $this->limit){
-			print('loop start');
-			var_dump($urls);
-			$i=0;
-			foreach($urls as $link){
-				$newUrl=$this->normalize_url($link,$lastdepth);
-				if($newUrl!==false && !in_array($newUrl,$this->seen_urls)){
-					print("havn't seen <strong>".$newUrl."</strong><br/>");
-					$new_urls=$this->get_all_urls($newUrl,$lastdepth+1);
-					print("new urls from link</br>");
-					var_dump($new_urls);
-					if(!empty($new_urls) && $new_urls!=false){
-						$urls=array_unique(array_merge($urls,$new_urls));
+		//var_dump($urls);
+		foreach($urls as $href=>$obj ) {
+			if($obj['type']=='page'){
+				//print('<h3>ready with=>'.$depth.'::'.$href.'</h3>');
+				if (0 !== strpos($href, 'http')) {
+					$relative=false;
+					if(substr($href,0,1)!='/'){
+						$relative=true;
 					}
-					print("the merged final array</br>");
-					var_dump($urls);
-					
-					
-				}else{
-					echo "skipping link :: {$newUrl} <br/>";	
+					$path = '/' . ltrim($href, '/');
+
+					$parts = parse_url($url);
+					//var_dump($parts);
+					$href = $parts['scheme'] . '://';
+					if (isset($parts['user']) && isset($parts['pass'])) {
+						$href .= $parts['user'] . ':' . $parts['pass'] . '@';
+					}
+					$href .= $parts['host'];
+					if (isset($parts['port'])) {
+						$href .= ':' . $parts['port'];
+					}
+					if($relative){
+						$pathparts=explode('/',$parts['path']);
+						$last=end($pathparts);
+						if(strpos($last,'.')!==false){
+							array_pop($pathparts);
+						}
+						$urlpath=implode('/',$pathparts);
+						$href .= '/'.trim($urlpath, '/').'/'.trim($path, '/');
+						//print('<h3>relative built=>'.$href.'</h3>');
+					}else{
+						$href .= '/'.trim($path, '/');	
+						//print('<h3>non--relative built=>'.$href.'</h3>');
+					}
+					//print('<h3>built=>'.$href.'</h3>');
 				}
 			}
-			$this->depth=$depth+1;
-			if($i==0)$i++;
-		}else{
-			echo 'meet depth<br/>';
+			if(strpos($href,'.htm/')!==false){
+				die($href);
+			}
+			
+			
+			//$o_href=$href;
+			//print('<h4>here=>'.$depth.'::'.$href.'</h4>');
+			if (isset($this->seen["{$href}"]) && $this->seen["{$href}"]) {
+				//print('<h4>SAW=>'.$depth.'::'.$href.'</h4>');
+				continue;
+			}
+			
+			//var_dump($href);
+			//var_dump($obj);
+			if( $obj['type'] == "page" ){
+				$exist=$scrape_core->_is_exist('url',$href);
+				if(!$exist){
+					$this->add_queue(array(
+						'url'=>$href,
+						'type'=>$obj['type'],
+						'http_status'=>200
+					));
+				}
+				$this->wanted[$href]=$obj;
+				$this->traverse_all_urls($href,$depth - 1);
+			}
 		}
-		return $urls;
+		sleep( 1 );
+		echo $url;
 	}
-
 
 	public function get_urls($url){
 		global $scrape_data,$_params;
-		$page=$scrape_data->scrape_get_content($url, 'body');
-		
-		$doc = phpQuery::newDocument($page);
 
+		$page=$scrape_data->scrape_get_content($url, 'body');
+		if($page=="ERROR::404"){
+			var_dump($url);
+			die();
+		}
+		$doc = phpQuery::newDocument($page);
 		$as = pq('a');
 		$urls=array();
 		foreach($as as $a) {
-			$url=pq($a)->attr('href');
-			$url=$this->normalize_url_format($url);
-			if(	$this->is_localurl($url) ) {
+			$link_url=pq($a)->attr('href');
+			//$link_url=$this->normalize_url_format($link_url);
+			if(!empty($link_url)){
 				$type='page';
-				if($this->is_fileurl($url)){
+				if(!$this->is_localurl($link_url)){
+					$type='external';
+				}elseif($this->is_fileurl($link_url)){
 					$type='file';
-				}elseif($this->is_email($url)){
+				}elseif($this->is_email($link_url)){
 					$type='email';
-				}elseif($this->is_anchor($url)){
+				}elseif($this->is_anchor($link_url)){
 					$type='anchor';
 				}
-				$urls[]=$url;
-			} else {
-				echo "offesite url {$url}<br/>";
+				//$link_url=$this->normalize_url($link_url);
+				$urls["{$link_url}"]=array('type'=>$type);
 			}
 		}
-		$this->seen_urls[]=$url;
 		return $urls;
+		//if(!empty($page)){}die('had nothing');
 	}
 	
 	/*
 	* take @param $url and insure it's a fully qualified URL 
 	* NOTE: this only does local domains
 	*/	
-	public function normalize_url($url,$depth=0){
-		if(!$this->is_localurl($url) 
-			|| strpos($url,'mailto:')!==false 
-			|| strpos($url,'.pdf')!==false 
-			|| $url=='/' )
-				return false;
-				
+	public function normalize_url($url){
+		if(!$this->is_localurl($url))return $url;
+		if($this->is_email($url))return $url;
+		if($this->is_anchor($url))return $url;
 		$baseurl=str_replace('http://'.$this->rootUrl,'',$url);
-		print('$baseurl');var_dump($baseurl);
-		
-		
 		if(substr($baseurl,0,1)!='/'){
 			if(strpos($baseurl,'/')!==false ){
 				 $baseparts=explode('/',$baseurl); 
 				 $file = end ($baseparts);
-				 print('strpos($baseurl,\'/\')!==false $file');var_dump($file);
 			}else{
 				$file =$baseurl;
-				print('$baseurl=>file');var_dump($file);
 			}
 			$newbaseurl='http://'.$this->rootUrl;
-			print('$newbaseurl');var_dump($newbaseurl);
 			if($file){
-				$fileparts=explode( $file, $this->currentUrl[$depth]);
-				$newbaseurl = $fileparts[0];
-				print('if($file) $newbaseurl');var_dump($newbaseurl);
+				//$fileparts=explode( $file, $this->currentUrl[$depth]);
+				//$newbaseurl = $fileparts[0];
 			}
 			$url=trim($newbaseurl,'/').'/'.trim($file,'/');
-			print('if(!=\'/\')) final $url');var_dump($url);
 		}else{
 			$url='http://'.$this->rootUrl.$baseurl;
-			print('if(==\'/\')) final $url');var_dump($url);
 		}
 		$url=$this->normalize_url_format($url);
 		return $url;	
 	}
 	/*
 	* corrects any oddities of @param $url 
-	* EX: 'HtTp://User:Pass@www.ExAmPle.com:80/Blah' becomes 'http://User:Pass@www.example.com:80/Blah'
+	* EX: 'HtTp://User:Pass@www.ExAmPle.com:80/Blah' becomes
+	* 'http://User:Pass@www.example.com:80/Blah'
 	*/	
 	public function normalize_url_format($url){
 		$url=preg_replace(
@@ -448,7 +405,16 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	* test if @param $url is a file
 	*/
 	public function is_fileurl($url=false){
-		return false;
+		if(	$url === false
+			|| (strpos($url,'.pdf')===false 
+				&& strpos($url,'.jpg')===false 
+				&& strpos($url,'.gif')===false
+				&& strpos($url,'.png')===false
+				&& strpos($url,'.css')===false
+				&& strpos($url,'.js')===false)
+			)
+			return false;
+		return true;
 	}
 	/*
 	* test if @param $url is an email
@@ -464,6 +430,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	* test if @param $url is an email
 	*/
 	public function is_anchor($url=false){
+		if(substr($url,0,1) == '#')return true;
 		return false;
 	}
 	/*
@@ -471,7 +438,7 @@ if ( ! class_exists( 'scrape_data' ) ) {
 	*/
 	public function is_localurl($url){
 		if( substr($url,0,4) == 'http'
-			&& substr($url,0,count($this->rootUrl)-1) != $this->rootUrl
+			&& strpos($url,$this->rootUrl)===false
 			)
 			return false;
 		return true;
