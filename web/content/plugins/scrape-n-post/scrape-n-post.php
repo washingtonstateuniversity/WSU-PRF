@@ -18,13 +18,8 @@ define('SCRAPE_CACHE_PATH', SCRAPE_PATH . 'cache/');
 define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
 
 /* things still to do
-[ ]-remove the use themes templates inlue of per template css path link
-[ ]-must be able to sort on optional items like tax/type etc
-[•]-cache the pdfs on md5 of (tmp-ops)+(lastpost-date)+(query)
-[•]-provide more areas to controll
-[x]-make the index
-[ ]-create ruls for the bookmarking
-[ ]-create log/debug page
+[•]-Add webshot for previews of the urls
+[ ]-cronjob support for active crawl and snync
 */
 if ( ! class_exists( 'scrapeNpostLoad' ) ) {
 	$scrape_core = NULL;
