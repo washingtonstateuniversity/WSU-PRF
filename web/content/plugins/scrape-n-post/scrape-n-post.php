@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Scrape-N-Post
-Version: 0.1
+Version: 0.1.1
 Plugin URI: #
 Description: Import content form your old site with easy
 Author: Jeremy Bass
@@ -10,7 +10,7 @@ Author URI: #
 
 define('SCRAPE_NAME', 'Scrape-N-Post');
 define('SCRAPE_BASE_NAME', 'scrape-n-post');
-define('SCRAPE_VERSION', '0.1');
+define('SCRAPE_VERSION', '0.1.1');
 define('SCRAPE_URL', plugin_dir_url(__FILE__));
 define('SCRAPE_PATH', plugin_dir_path(__FILE__));
 define('SCRAPE_CACHE_PATH', SCRAPE_PATH . 'cache/');

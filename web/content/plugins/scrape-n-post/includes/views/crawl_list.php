@@ -16,9 +16,9 @@ if(isset($urls)){
     <form id="scrape_form" method="post" action="<?php echo $option_url;?>">
 		<label>Url <input type="url" name="scrape_url" /> </label>
      
-        <input type="submit" id="scrape-findlinks" name="scrape_findlinks" class="button-primary" value="<?php echo _e('Crawl for links'); ?>">
+        
         <input type="submit" id="scrape-findlinks" name="scrape_test_crawler" class="button-primary" value="<?php echo _e('Test Crawler'); ?>">
-       
+       	<input type="submit" id="scrape-findlinks" name="scrape_findlinks" class="button" value="<?php echo _e('Crawl for links'); ?>">
     </form>
   </div><div class="clr"></div>
 </div>

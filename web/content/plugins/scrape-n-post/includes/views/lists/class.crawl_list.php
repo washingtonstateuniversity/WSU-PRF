@@ -93,12 +93,13 @@ class crawl_list extends WP_List_Table {
         $arr_params = array( 'url' => $item->url, 'scrape_action' => 'crawlhere' );
         $crawlherelink = add_query_arg($arr_params);
 		
-        $actions    = array(
-            'topost' => ($item->post_id==NULL || $item->post_id==0)?'<a href="' . $topostlink . '">Make Post</a>':"",
-            'ignore' => '<a href="' . $ignorelink . '">Ignore</a>',
-            'crawlhere' => '<a href="' . $crawlherelink . '">Crawl</a>',
-			'view' => '<a href="' . $item->url . '" target="_blank">View</a>'
-        );
+		if($item->post_id==NULL || $item->post_id==0){
+			$actions['topost']='<a href="' . $topostlink . '">Make Post</a>';
+			$actions['ignore']='<a href="' . $ignorelink . '">Ignore</a>';
+		}
+		$actions['crawlhere']='<a href="' . $crawlherelink . '">Crawl</a>';
+		$actions['view']='<a href="' . $item->url . '" target="_blank">View</a>';
+
         return sprintf('<strong>%1$s</strong> %2$s', $item->url, $this->row_actions($actions));
     }
 
@@ -116,7 +117,7 @@ class crawl_list extends WP_List_Table {
 			
 			$actions    = array(
 				'reimport' => '<a href="' . $reimportlink . '">Reimport Post</a>',
-				'detach' => '<a href="' . $detachlink . '">Detact URL Relation</a>'
+				'detach' => '<a href="' . $detachlink . '">Detach URL Relation</a>'
 			);
 		}else{
 			$actions=array();

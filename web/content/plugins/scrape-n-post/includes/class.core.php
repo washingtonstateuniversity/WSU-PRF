@@ -20,7 +20,8 @@ if ( ! class_exists( 'scrape_core' ) ) {
 
 			if (is_admin()) {
 				include(SCRAPE_PATH . '/includes/phpQuery.php');
-				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_data::	
+				include(SCRAPE_PATH . '/includes/class.templates.php');// Include scrape_data::	
+				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_actions::	
 				include(SCRAPE_PATH . '/includes/class.output.php');// Include scrape_output::
 				include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
@@ -51,10 +52,13 @@ if ( ! class_exists( 'scrape_core' ) ) {
 		 */
 		public function _add_table() {
 			global $wpdb,$scrape_data;
-			// Construct query
+			
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			
+			// Construct queue		
 			$table_name = $wpdb->prefix . "scrape_n_post_queue";
 			$sql        = "
-			DROP TABLE IF EXISTS `{$table_name}`;
+			#DROP TABLE IF EXISTS `{$table_name}`;
 			CREATE TABLE `{$table_name}`  (
 				`target_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
 				`post_id` MEDIUMINT(9),
@@ -70,8 +74,24 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			UNIQUE KEY id (target_id)
 			);";
 			// Import wordpress database library
-			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			dbDelta($sql);
+			
+			// Construct templates		
+			$table_name = $wpdb->prefix . "scrape_n_post_crawler_templates";
+			$sql        = "
+			#DROP TABLE IF EXISTS `{$table_name}`;
+			CREATE TABLE `{$table_name}`  (
+				`template_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+				`pattern` MEDIUMINT(9),
+				`template_name` varchar(50) NOT NULL,
+				`template_description` text,
+				`create_by` mediumint(9) NOT NULL,
+				`create_date` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			UNIQUE KEY id (template_id)
+			);";
+			// Import wordpress database library
+			dbDelta($sql);			
+			
 			// Save version
 			add_option('scrape_db_version', SCRAPE_VERSION);
 			// Add plugin option holder

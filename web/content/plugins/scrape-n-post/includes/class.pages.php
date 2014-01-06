@@ -68,8 +68,37 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			add_menu_page(SCRAPE_NAME, SCRAPE_NAME, 'manage_options', SCRAPE_BASE_NAME, array( $this, 'option_page' ), SCRAPE_URL . 'images/nav-icon.png');
 			// Register sub-menu
 			add_submenu_page(SCRAPE_BASE_NAME, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
-	
+			add_submenu_page(SCRAPE_BASE_NAME, _('Crawler Templates'), _('Crawler Templates'), 'manage_options', 'scrape-crawler-templates', array( $this, 'template_list_page' ));
 		}
+	
+	
+	
+    /*
+     * Display "Template List" page
+     */
+    public function template_list_page() {
+		global $scrape_templates;
+        // Include list class
+        include(SCRAPE_PATH . '/includes/views/lists/class.template_list.php');
+        $wp_list_table = new template_list();
+        $wp_list_table->prepare_items();
+		
+        // Check if edit action is performed
+        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'edit') {
+            $data['on_edit'] = $scrape_templates->get_template($_GET['template']);
+            $data['message'] = $this->get_message();
+            // Display template form
+            $this->view(SCRAPE_PATH . '/includes/views/template.php', $data);
+        } else {
+            ob_start();
+            $wp_list_table->display();
+            $data['table']   = ob_get_clean();
+            $data['message'] = $this->get_message();
+            // Display template list
+            $this->view(SCRAPE_PATH . '/includes/views/template_list.php', $data);
+        }
+    }
+	
 	
 		/*
 		 * Display "Crawler" pages
