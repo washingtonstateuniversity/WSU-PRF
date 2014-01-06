@@ -92,6 +92,16 @@ class catpdf_core {
         // Add plugin option holder
         $options = $catpdf_data->get_options();
         add_option('catpdf_options', $options, '', 'yes');
+		// Define and create required directories
+		$required_dir = array(
+			'htmlfragments' => SCRAPE_PATH . '/cache/html',
+			'pdf' => SCRAPE_PATH . '/cache/pdf'
+		);
+		foreach ($required_dir as $dir)
+			if( !is_dir($dir) ) @mkdir($dir, 0777);
+		
+		
+		
     }
 	/*
      * Set option defaults
