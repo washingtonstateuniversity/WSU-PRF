@@ -42,8 +42,18 @@
       </div>
       
       
-      
-      
+	<div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Add posts on crawl" ); ?>  </label>
+          <select name="add_post_on_crawl">
+            <option <?php selected('1', $scrape_options['add_post_on_crawl']); ?> value="1"> <?php _e('Yes');?> </option>
+            <option <?php selected('0', $scrape_options['add_post_on_crawl']); ?> value="0"> <?php _e('No');?> </option>
+          </select>
+        </div>
+        <div class="note"> <span>(
+          <?php _e("This can take a bit, make sure php ini is set up for long running scripts"); ?>
+          )</span> </div>
+	</div>       
       
 	<div class="field-wrap">
         <div class="field">

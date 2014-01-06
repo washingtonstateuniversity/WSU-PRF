@@ -20,7 +20,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				'timeout' => 2,
 				'time_limit'=>300,
 				'memory_limit'=>'-1',
-				'xdebug_fix'=>1
+				'xdebug_fix'=>1,
+				'add_post_on_crawl'=>0
 			));	
 			return $plugin_option;
 		}
@@ -92,6 +93,10 @@ if ( ! class_exists( 'scrape_data' ) ) {
 						'type'=>$obj['type'],
 						'http_status'=>200
 					));
+					$scrape_options = get_option('scrape_options');
+					if($scrape_options['add_post_on_crawl']){
+						$scrape_actions->make_post($href);
+					}
 				}
 				$this->wanted[$href]=$obj;
 				$this->traverse_all_urls($href,$depth - 1);
@@ -103,7 +108,8 @@ if ( ! class_exists( 'scrape_data' ) ) {
 
 	public function get_urls($url){
 		global $scrape_data,$_params;
-		$page=wp_remote_retrieve_body( wp_remote_get($url) );
+		$res = wp_remote_get($url);
+		$page=wp_remote_retrieve_body( $res );
 		if(empty($page)){
 			$page=$scrape_data->scrape_get_content($url, 'body');
 		}
