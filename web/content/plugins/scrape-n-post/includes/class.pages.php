@@ -14,14 +14,17 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 	
 		
 		function __construct() {
-			global $_params;
+			global $_params,$scrape_actions;
 			if (is_admin()) {
 				if (isset($_params)) {
 					if (isset($_params['scrape_save_option'])) {// Check if option save is performed
 						add_action('init', array( $this, 'update_options' ));// Add update option action hook
 					}
 					if (isset($_params['scrape_findlinks'])) {// Check if pdf export is performed
-						add_action('init', array( $this, 'findlinks' ));// Add export hook
+						add_action('init', array($scrape_actions, 'findlinks' ));// Add export hook
+					}
+					if (isset($_params['scrape_test_crawler'])) {// Check if pdf export is performed
+						add_action('init', array($scrape_actions, 'test_crawler' ));// Add export hook
 					}
 				}
 				add_action('admin_init', array( $this, 'admin_init' ));
@@ -85,20 +88,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			$this->view(SCRAPE_PATH . '/includes/views/crawl_list.php', $data);
 		}
 	
-		public function findlinks() {
-			global $wpdb, $scrape_output,$scrape_data, $_params;
-			
-			$options = $scrape_data->get_options();
-	
-			$url=$_params['scrape_url'];
-			$scrape_data->rootUrl = parse_url($url, PHP_URL_HOST);
-			//var_dump($url);
-			$urls = $scrape_data->get_all_urls($url,$options['crawl_depth']);
-			//var_dump($urls);
-			die("going to build the link array");
-	
-			$this->download_page();
-		}
+
 
 		public function url_to_post() {
 			global $scrape_data;
@@ -159,6 +149,7 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 				return $message;
 			}
 		}
+
 		/*
 		 * Return query filter
 		 * @file - string

@@ -17,7 +17,8 @@ if(isset($urls)){
 		<label>Url <input type="url" name="scrape_url" /> </label>
      
         <input type="submit" id="scrape-findlinks" name="scrape_findlinks" class="button-primary" value="<?php echo _e('Crawl for links'); ?>">
-       <p class="submit"></p>
+        <input type="submit" id="scrape-findlinks" name="scrape_test_crawler" class="button-primary" value="<?php echo _e('Test Crawler'); ?>">
+       
     </form>
   </div><div class="clr"></div>
 </div>
@@ -25,12 +26,7 @@ if(isset($urls)){
 <div id="catpdf-wrap" class="wrap">
   <div class="icon32" id="icon-tools"><br>
   </div>
-  <h2>
-    <?php _e('Crawler found urls'); ?>
-    <a class="add-new-h2" href="<?php menu_page_url( 'catpdf-add-template' , true );?>">
-    <?php _e( 'Add New' );?>
-    </a></h2>
-  <?php if( isset($message) && $message!='' ) echo $message; ?>
+  <h2><?php _e('Crawler Quque found urls'); ?></h2>
   <form method="post">
     <?php echo $table;?>
   </form>

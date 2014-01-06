@@ -151,36 +151,36 @@ class crawl_list extends WP_List_Table {
 	* @todo post for _params but note url is the id on perpose
     */
     function process_bulk_action() {
-        global $scrape_data,$_param;
+        global $scrape_actions,$_param;
         if ('ignore' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
 					//add ignore flag
-                    //$scrape_data->update_queue($url);
+                    //$scrape_actions->update_queue($url);
                 }
             }
         }
         if ('topost' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
-					$scrape_data->make_post($url,array());
+					$scrape_actions->make_post($url,array());
                 }
             }
         }
         if ('reimport' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
-					//$scrape_data->make_post($url);
+					//$scrape_actions->make_post($url);
 					
 					//add change import data
-                    //$scrape_data->update_queue($url);
+                    //$scrape_actions->update_queue($url);
                 }
             }
         }	
         if ('detach' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
-					$scrape_data->detach_post($url);
+					$scrape_actions->detach_post($url);
                 }
             }
         }		
@@ -193,27 +193,27 @@ class crawl_list extends WP_List_Table {
     * Process action performed
     */
     function process_link_action() {
-        global $scrape_data;
-        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'ignore') {
+        global $scrape_actions,$_params;
+        if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'ignore') {
 			//add ignore flag
-            $scrape_data->ignore_url();
+            $scrape_actions->ignore_url();
         }
-        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'topost') {
-			$scrape_data->make_post();
+        if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'topost') {
+			$scrape_actions->make_post();
         }
-        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'crawlhere') {
+        if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'crawlhere') {
 			//$scrape_data->make_post($_GET['url']);
 			
 			//add change import data
 			//$scrape_data->update_queue($_GET['url']);
         }
-        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'reimport') {
+        if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'reimport') {
 			//$scrape_data->make_post($_GET['url']);
 			
 			//add change import data
 			//$scrape_data->update_queue($_GET['url']);
         }
-        if (isset($_GET['scrape_action']) && $_GET['scrape_action'] == 'detach') {
+        if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'detach') {
 			//remove post id
 			$scrape_data->detach_post();
         }
@@ -224,23 +224,23 @@ class crawl_list extends WP_List_Table {
 	* @todo reduce sql
     */
     function prepare_items() {
-        global $wpdb, $_wp_column_headers;
+        global $wpdb, $_wp_column_headers,$scrape_actions,$_params;
         $screen = get_current_screen();
         $this->process_bulk_action();
         $this->process_link_action();
         $query   = "SELECT * FROM " . $wpdb->prefix . "scrape_n_post_queue";
 		if(isset($_GET['ignore'])){
-			$query .= ' WHERE `ignore`='.mysql_real_escape_string($_GET['ignore']).' ';
+			$query .= ' WHERE `ignore`='.mysql_real_escape_string($_params['ignore']).' ';
 		}
-        $orderby = !empty($_GET["orderby"]) ? mysql_real_escape_string($_GET["orderby"]) : 'ASC';
-        $order   = !empty($_GET["order"]) ? mysql_real_escape_string($_GET["order"]) : '';
+        $orderby = !empty($_params["orderby"]) ? mysql_real_escape_string($_params["orderby"]) : 'ASC';
+        $order   = !empty($_params["order"]) ? mysql_real_escape_string($_params["order"]) : '';
         if (!empty($orderby) & !empty($order)) {
             $query .= ' ORDER BY ' . $orderby . ' ' . $order;
         }
 
         $totalitems = $wpdb->query($query);
         $perpage    = 50;
-        $paged      = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
+        $paged      = !empty($_params["paged"]) ? mysql_real_escape_string($_params["paged"]) : '';
         if (empty($paged) || !is_numeric($paged) || $paged <= 0) {
             $paged = 1;
         }
