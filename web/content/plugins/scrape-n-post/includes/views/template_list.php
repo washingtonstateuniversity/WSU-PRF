@@ -3,7 +3,7 @@
   </div>
   <h2>
     <?php _e('Manage Templates'); ?>
-    <a class="add-new-h2" href="<?php menu_page_url( 'catpdf-add-template' , true );?>">
+    <a class="add-new-h2" href="<?php menu_page_url( 'scrape-add-template' , true );?>">
     <?php _e( 'Add New' );?>
     </a></h2>
   <?php if( isset($message) && $message!='' ) echo $message; ?>

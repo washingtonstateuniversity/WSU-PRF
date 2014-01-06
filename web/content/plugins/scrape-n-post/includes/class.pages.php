@@ -69,9 +69,19 @@ if ( ! class_exists( 'scrape_pages' ) ) {
 			// Register sub-menu
 			add_submenu_page(SCRAPE_BASE_NAME, _('Crawl'), _('Crawl'), 'manage_options', 'scrape-crawler', array( $this, 'crawler_page' ));
 			add_submenu_page(SCRAPE_BASE_NAME, _('Crawler Templates'), _('Crawler Templates'), 'manage_options', 'scrape-crawler-templates', array( $this, 'template_list_page' ));
+			add_submenu_page(SCRAPE_BASE_NAME, _('Add Template'), _('Add Template'), 'manage_options', 'scrape-add-template', array( $this, 'add_crawler_template_page' ));
+			
 		}
 	
-	
+    /*
+     * Display "Add" page
+     */
+    public function add_crawler_template_page() { // short forward
+		global $scrape_templates;
+        $data            = array();
+        $data['message'] = $this->get_message();
+        $this->view(SCRAPE_PATH . '/includes/views/template.php', $data);
+    }	
 	
     /*
      * Display "Template List" page
