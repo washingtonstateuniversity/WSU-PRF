@@ -143,8 +143,12 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			}
 			$raw_html = wp_remote_get($url);//$scrape_data->scrape_get_content($id, 'html');
 			//var_dump($raw_html);
-			if($raw_html=="ERROR::404"){
-				var_dump($url); die(); //should be a message no? yes!
+			if(is_a($raw_html, 'WP_Error') || $raw_html=="ERROR::404"){
+				$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Failed '.print_r($raw_html))
+					);
+				//var_dump($url); die(); //should be a message no? yes!
 			}
 			$currcharset = get_bloginfo('charset');
 
