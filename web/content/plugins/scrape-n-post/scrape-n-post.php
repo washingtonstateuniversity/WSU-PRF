@@ -18,8 +18,8 @@ define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
 
 /* things still to do
 [ ]-Needs to set a intermediary on url to post
-[ ]-add on crawl post creation
-[ ]-make page that build the mapping for the post creation
+[X]-add on crawl post creation
+[•]-make page that build the mapping for the post creation-going to be templates
 [ ]-Put in the AJAX stuff
 [•]-Add webshot for previews of the urls
 [ ]-POST/GET to $_param validation
