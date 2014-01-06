@@ -108,7 +108,7 @@ class crawl_list extends WP_List_Table {
     */
     function column_post_id($item) {
 		if($item->post_id>0){
-			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'reimport' );
+			$arr_params = array( 'post_id' => $item->post_id,'url' => $item->target_id, 'scrape_action' => 'reimport' );
 			$reimportlink   = add_query_arg($arr_params);
 			
 			$arr_params = array( 'url' => $item->target_id, 'scrape_action' => 'detach' );
@@ -170,10 +170,7 @@ class crawl_list extends WP_List_Table {
         if ('reimport' === $this->current_action()) {
             if (count($_param['url']) > 0) {
                 foreach ($_param['url'] as $url) {
-					//$scrape_actions->make_post($url);
-					
-					//add change import data
-                    //$scrape_actions->update_queue($url);
+					$scrape_actions->reimport_post($url);
                 }
             }
         }	
@@ -208,14 +205,11 @@ class crawl_list extends WP_List_Table {
 			//$scrape_data->update_queue($_GET['url']);
         }
         if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'reimport') {
-			//$scrape_data->make_post($_GET['url']);
-			
-			//add change import data
-			//$scrape_data->update_queue($_GET['url']);
+			$scrape_actions->reimport_post();
         }
         if (isset($_params['scrape_action']) && $_params['scrape_action'] == 'detach') {
 			//remove post id
-			$scrape_data->detach_post();
+			$scrape_actions->detach_post();
         }
     }
 	

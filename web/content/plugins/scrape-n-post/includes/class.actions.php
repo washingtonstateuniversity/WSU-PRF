@@ -72,24 +72,52 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			$scrape_pages->foward('scrape-crawler',$scheme='http');
 			//needs message
 		}
-		
-		public function url_to_post($post_id=NULL,$target_id=NULL) {
-			global $wpdb,$scrape_core,$_params;
+		public function reimport_post($target_id=NULL) {
+			global $wpdb,$scrape_core,$_params,$scrape_pages;
 			if( $target_id==NULL && !isset($_params['url']) ){
 				 return; // do message
 			}else{
 				$id = $target_id==NULL ? $_params['url'] : $target_id;
 			}
+			$table_name = $wpdb->prefix . "scrape_n_post_queue";
+			$row = $wpdb->get_var( $wpdb->prepare(
+					"SELECT url FROM {$table_name} WHERE target_id=%d",
+					 $id
+				 ) );
+			 if( !is_wp_error( $row ) ) {
+				$url = $row; 
+			 }
+
+			if( !isset($_params['post_id']) ){
+				 return; // do message
+			}else{
+				$post_id = $_params['post_id'];
+			}
+			$this->make_post($url, $arr = array('ID'=>$post_id));
+		}		
+		public function url_to_post($post_id=NULL,$target_id=NULL) {
+			global $wpdb,$scrape_core,$_params;
+			if( $target_id==NULL && !isset($_params['url']) ){
+				$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Failed to recived a proper url to work with after reciving the remote content.')
+					);
+				return; // do message
+			}else{
+				$id = $target_id==NULL ? $_params['url'] : $target_id;
+			}
 			
 			if( $post_id==NULL && !isset($_params['post_id']) ){
-				 return; // do message
+				$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Failed to recived a proper post id to work with after reciving the remote content.')
+					);
+				return; // do message
 			}else{
 				$post_id = $post_id==NULL ? $_params['post_id'] : $post_id;
 			}
 			
-			$where         = array(
-				'target_id' => $id 
-			);
+			$where         = array( 'url' => $id );
 			$arr['post_id'] = $post_id;
 			$arr['last_checked'] = current_time('mysql');
 			$table_name    = $wpdb->prefix . "scrape_n_post_queue";
@@ -102,26 +130,60 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 	
 	
 		public function make_post($target_id=NULL, $arr = array()){
-			global $wpdb, $current_user,$scrape_data,$_params;
+			global $wpdb, $current_user,$scrape_core,$scrape_data,$_params;
 			
 			if( $target_id==NULL && !isset($_params['url']) ){
+				$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Failed to recived a proper post id to work with before getting the remote content.')
+					);
 				 return; // do message
 			}else{
-				$id = $target_id==NULL ? $_params['url'] : $target_id;
+				$url = $target_id==NULL ? $_params['url'] : $target_id;
 			}
-			
-			$page = $scrape_data->scrape_get_content($id, 'html');
-			if($page=="ERROR::404"){
+			$raw_html = wp_remote_get($url);//$scrape_data->scrape_get_content($id, 'html');
+			//var_dump($raw_html);
+			if($raw_html=="ERROR::404"){
 				var_dump($url); die(); //should be a message no? yes!
 			}
-			$doc = phpQuery::newDocument($page);
-			$title = pq('h2:first')->text();
-			$content = pq('body')->remove('h3:first')->remove('p:first')->remove('h2:first')->remove('p:first')->html();
-			$catName = pq('p:first')->html();
+			$currcharset = get_bloginfo('charset');
+
+			$doc = phpQuery::newDocumentHTML($raw_html['body'], $currcharset);
+			phpQuery::selectDocument($doc);
+				
+			//NOTE WHAT IS GOIGN TO BE DONE IS A EVAL FOR A PATTERN
+			//remove placeholder
+
+			$title = pq('html')->find('title');
+			$title = $title->text();
+			if($title==""){ $title = pq('#siteID')->find('h1:first')->text(); }
+			if($title==""){ $title = pq('h2:first')->text(); }
+			//var_dump($title);
+
 			//should applie paterens by option
-			$catarea = explode('<BR>',$catName);
+			$catName = pq('p:first')->html();
+			$catarea = explode('<br>',$catName);
 			$catName = trim($catarea[0]);
+			//var_dump($catName);
+			
+
+			$content = pq('html')->find('div#main:eq(0)')->html();
+			if($content==""){
+				pq('body')->find('h3:first')->remove();
+				pq('body')->find('p:first')->remove();
+				pq('body')->find('h2:first')->remove();
+				pq('body')->find('p:first')->remove();
+				$doc->document->saveXML();
+				$content = trim(pq('body')->html());
+			}//var_dump($content);
+
+			//die();
+			
+
+			
 	
+			//EOF PATTERN AREA
+			
 			
 			// Get user info
 			$current_user = get_userdata( get_current_user_id());
@@ -131,16 +193,18 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			if($author_id<=0)die('user not found');
 			
 			$cat_ID = 0;
-			$catSlug = sanitize_title_with_dashes($catName);
-			if ($cat = get_term_by('slug', $catSlug,'category')){
-				$cat_ID = $cat->term_id;
-			}else{
-				wp_insert_term($catName, 'category', array(
-					'description' => '',
-					'slug' => $catSlug
-				));	
+			if($catName!=""){
+				$catSlug = sanitize_title_with_dashes($catName);
 				if ($cat = get_term_by('slug', $catSlug,'category')){
 					$cat_ID = $cat->term_id;
+				}else{
+					wp_insert_term($catName, 'category', array(
+						'description' => '',
+						'slug' => $catSlug
+					));	
+					if ($cat = get_term_by('slug', $catSlug,'category')){
+						$cat_ID = $cat->term_id;
+					}
 				}
 			}
 			
@@ -158,9 +222,36 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			
 			$arrs = array_merge($complied,$arr);
 			//good so far let make the post
-			$post_id = wp_insert_post($arrs);
+			if(isset($arrs['ID'])){
+				$post_id = wp_update_post( $arrs );
+				if( !is_wp_error($post_id) ) {
+					$scrape_core->message = array(
+						'type' => 'updated',
+						'message' => __('Updated post')
+					);
+				}else{
+					$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Post error '.$post_id->get_error_message())
+					);	
+				}
+					
+			}else{
+				$post_id = wp_insert_post($arrs);	
+				if( !is_wp_error($post_id) ) {
+					$scrape_core->message = array(
+						'type' => 'updated',
+						'message' => __('Adding Post')
+					);
+				} else {
+					$scrape_core->message = array(
+						'type' => 'error',
+						'message' => __('Post error '.$post_id->get_error_message())
+					);
+				}
+			}
 			//all good let tie the post to the url
-			$this->url_to_post($post_id,$id);
+			$this->url_to_post($post_id,$url);
 		}
 	
 		public function crawl_from($url=NULL) {

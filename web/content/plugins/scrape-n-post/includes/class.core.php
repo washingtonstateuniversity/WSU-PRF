@@ -19,12 +19,12 @@ if ( ! class_exists( 'scrape_core' ) ) {
 			$_params = $_REQUEST; // this needs to get validated and noonced and what not
 
 			if (is_admin()) {
-				
+				include(SCRAPE_PATH . '/includes/phpQuery.php');
 				include(SCRAPE_PATH . '/includes/class.actions.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.output.php');// Include scrape_output::
 				include(SCRAPE_PATH . '/includes/class.data.php');// Include scrape_data::	
 				include(SCRAPE_PATH . '/includes/class.pages.php');// Include scrape_pages::
-				include(SCRAPE_PATH . '/includes/phpQuery.php');
+				
 
 				$options = $scrape_data->get_options(); // after _param validation just in case
 				//seems that if xdebug is in use then it'll kill something at 100 when it shouldn't have

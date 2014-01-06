@@ -17,6 +17,7 @@ define('SCRAPE_CACHE_PATH', SCRAPE_PATH . 'cache/');
 define('SCRAPE_CACHE_URL', SCRAPE_URL . 'cache/');
 
 /* things still to do
+[ ]-Needs to set a intermediary on url to post
 [•]-Add webshot for previews of the urls
 [ ]-POST/GET to $_param validation
 [ ]-cronjob support for active crawl and snync
