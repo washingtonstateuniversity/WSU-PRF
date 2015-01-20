@@ -1,0 +1,486 @@
+/*
+Theme Name: WSU Spine
+Theme URI: http://web.wsu.edu/spine
+Author: WSU University Communications
+Author URI: http://web.wsu.edu
+Description: Binding together the story of Washington State University.
+Version: 0.18.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: light
+*/
+html {
+	background-repeat: no-repeat;
+	background-position: center;
+	}
+
+#jacket {
+	overflow: hidden;
+	}
+
+main {
+	background-repeat: no-repeat;
+	background-position: left top;
+	}
+
+.opensansy main {
+	font-family: 'Open Sans', 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+	}
+
+/* Figures and Images */
+
+figure {
+	position: relative;
+	}
+
+figcaption {
+	padding: 5px 0;
+	}
+
+.alignleft {
+	float: left;
+	margin: 0 1em 1em 0;
+	}
+
+.alignright {
+	float: right;
+	margin: 0 0 1em 1em;
+	}
+
+.aligncenter {
+	display: block;
+	margin: 1em auto;
+	}
+
+figure.aligncenter figcaption {
+	text-align: center;
+	}
+
+.size-lt-large .alignleft,
+.size-lt-large .alignright {
+	clear: both;
+	float: none;
+	margin: 1em 0 1em 0;
+	}
+
+/** Default Gallery Styles */
+.gallery {
+	margin: auto;
+	}
+
+.gallery .gallery-item {
+	float: left;
+	margin-top: 10px;
+	margin-left: 10px;
+	text-align: center;
+	}
+
+.gallery img {
+	border: 2px solid #cfcfcf;
+	}
+
+.gallery .gallery-caption {
+	margin-left: 0;
+	}
+
+html {
+	background-position: center top;
+	background-repeat: no-repeat;
+	}
+
+.has-background-image main {
+	position: relative;
+	background-color: transparent;
+	}
+
+.featured-image {
+	width: 100%;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 400px;
+	display: block;
+	z-index: 0;
+	}
+
+.featured-image img {
+	width: 100%;
+	height: auto;
+	border: none;
+	display: none;
+	}
+
+/* Pagers */
+.previously-nextly {
+	padding-top: 10px;
+	padding-bottom: 30px;
+	}
+.previously-nextly .previously {
+	float: left;
+	}
+.previously-nextly .nextly {
+	text-align: right;
+	float: right;
+	}
+.previously-nextly .previously a:before {
+	content: "\00AB\00A0";
+	display: inline-block;
+	}
+.previously-nextly .nextly a:after {
+	content: "\00A0\00BB";
+	display: inline-block;
+	}
+.archive-footer .pager {
+	text-align: center;
+}
+
+/* Spine Candidates */
+.unbound,
+.rebound {
+	box-sizing: border-box;
+	}
+
+/* Articles
+------------------------------------------------------- */
+main article header h2 {
+	margin-bottom: 0px;
+	}
+.article-header hgroup.source,
+.article-header .hgroup.source {
+	text-transform: uppercase;
+	padding: 0px 0px 5px 0px;
+	font-size: .9em;
+	color: rgba(0,0,0,0.5);
+	}
+figure.article-thumbnail {
+	float: right;
+	margin: 0 0 5px 10px;
+}
+
+/*  Block Level */
+dl dt {
+	font-weight: bold;
+	}
+dl dt,
+dl dd {
+	display: inline-block;
+	padding-right: .3em;
+	}
+
+/* Article Headers */
+
+.h1-header + section.pad-top .column,
+.h1-header + section.pad .column,
+.h1-header + section .padded-top,
+.h1-header + section .padded {
+	padding-top: 0px;
+	}
+
+time .day, time .month, time .year {
+	font-weight: bold;
+	}
+article header time:before {
+	content: "Published on ";
+	}
+article header time:after {
+	content: attr(data-default);
+	}
+article header time.article-date-modified:before {
+	content: "Updated on ";
+	}
+article header time .day::before {
+	content: " ";
+	}
+article header time .day::after {
+	content: ", ";
+	}
+article header cite a {
+	color: rgba(0,0,0,0.5);
+	font-weight: bold;
+	}
+article header cite::before {
+	content: " by ";
+	}
+article footer dl dt::after {
+	content: ": ";
+	}
+article footer dl dd::after {
+	content: ", ";
+	}
+article footer dl dd:nth-last-of-type(1)::after {
+	content: "";
+	}
+article footer {
+	color: rgba(128,128,128,0.6);
+	margin-top: 5px;
+	padding-top: 5px;
+	border-top: 1px rgba(127,127,127,0.2) solid;
+	}
+article footer a {
+	color: rgba(128,128,128,0.5);
+	}
+article footer a:hover {
+	color: rgba(128,128,128,1);
+	}
+.article-footer .categorized dt:after,
+.article-footer .tagged dt:after {
+	content: attr(data-default);
+	}
+
+/* Admin Bar */
+@media (min-width: 990px) {
+.admin-bar #spine #glue {
+	margin-top: 32px;
+	}
+}
+
+@media (max-width: 989px) {
+body.admin-bar {
+    margin-top: -32px !important;
+    padding-bottom: 32px !important;
+}
+#wpadminbar {
+    top: auto !important;
+    bottom: 0 !important;
+    position: fixed !important;
+}
+#wpadminbar .quicklinks>ul>li {
+    position:relative;
+}
+#wpadminbar .ab-top-menu>.menupop>.ab-sub-wrapper {
+    bottom:32px;
+    box-shadow: none;
+}
+}
+
+@media (max-width: 780px) {
+
+body.admin-bar {
+    margin-top: -46px !important;
+    padding-bottom: 46px !important;
+}
+#wpadminbar .ab-top-menu>.menupop>.ab-sub-wrapper {
+    bottom:46px;
+}
+
+}
+
+/** ---------------------------------------------------------------------------
+ * Begin banner and slideshow styles from upstream Make theme
+ *
+ * These can be overwritten by our own styles, but are grouped together
+ * at the end of this document for easier comparison to the upstream project
+ * when troubleshooting or implementing new changes.
+ * ----------------------------------------------------------------------------
+*/
+
+.builder-banner-overlay, .builder-section-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .5);
+}
+
+@media screen and (min-width: 800px) {
+	.builder-banner-overlay, .builder-section-overlay {
+		background-color: rgba(0, 0, 0, .4);
+	}
+}
+
+.builder-banner-overlay {
+	z-index: -1;
+}
+
+.builder-section-overlay {
+	z-index: 1;
+}
+
+.builder-banner-slide {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	height: 0;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+}
+
+.builder-banner-content {
+	font-size: 15px;
+	font-size: 1.5rem;
+	line-height: 1.35;
+	position: absolute;
+	right: 0;
+	left: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
+	margin-bottom: 0;
+	padding: 11px 96px;
+	padding: 1.1rem 9.6rem;
+	color: #fff;
+	text-shadow: 1px 0 8px rgba(0, 0, 0, .15);
+}
+
+@media screen and (min-width: 800px) {
+	.builder-banner-content {
+		font-size: 21px;
+		font-size: 2.1rem;
+		padding: 11px 128px;
+		padding: 0 12.8rem 0 12.8rem;
+	}
+}
+
+.builder-banner-content:after {
+	display: inline-block;
+	height: 100%;
+	content: "";
+	vertical-align: middle;
+}
+
+@media screen and (min-width: 800px) {
+	.content-position-none .builder-banner-content {
+		margin-right: auto;
+		margin-left: auto;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.content-position-left .builder-banner-content {
+		right: auto;
+		float: left;
+		width: 50%;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.content-position-right .builder-banner-content {
+		left: auto;
+		float: right;
+		width: 50%;
+	}
+}
+
+.builder-banner-inner-content {
+	display: inline-block;
+	width: 100%;
+	max-width: 98%;
+	vertical-align: middle;
+}
+.builder-banner-inner-content *:last-child {
+	margin-bottom: 0;
+}
+
+.builder-section-banner .cycle-pager {
+	font-size: 40px;
+	font-size: 4rem;
+	line-height: 1;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	text-align: center;
+	color: #eaecee;
+}
+
+.builder-section-banner .cycle-pager span {
+	cursor: pointer;
+}
+
+.builder-section-banner .cycle-pager .cycle-pager-active {
+	color: #b9bcbf;
+}
+
+.builder-section-banner .cycle-prev, .builder-section-banner .cycle-next {
+	position: absolute;
+	z-index: 999;
+	top: 50%;
+	cursor: pointer;
+}
+
+@media screen and (min-width: 800px) {
+	.builder-section-banner .cycle-prev, .builder-section-banner .cycle-next {
+		opacity: .6;
+	}
+}
+
+.builder-section-banner .cycle-prev:before, .builder-section-banner .cycle-next:before {
+	font-family: Genericons;
+	font-size: 34px;
+	font-size: 3.4rem;
+	line-height: 1;
+	position: relative;
+	top: -34px;
+	top: -3.4rem;
+	color: #eaecee;
+}
+
+@media screen and (min-width: 800px) {
+	.builder-section-banner:hover .cycle-prev, .builder-section-banner:hover .cycle-next, .builder-section-banner:focus .cycle-prev, .builder-section-banner:focus .cycle-next {
+		opacity: 1;
+	}
+}
+
+.builder-section-banner .cycle-prev:before {
+	left: 32px;
+	content: "\f430";
+}
+
+.builder-section-banner .cycle-next {
+	right: 0;
+}
+
+.builder-section-banner .cycle-next:before {
+	right: 32px;
+	content: "\f429";
+}
+
+.ttfmake-shortcode-slider .cycle-prev:before {
+	top: -12px;
+	top: -1.2rem;
+}
+
+/* University Center Objects */
+article.wsuwp_uc_person {
+	clear: left;
+}
+
+.post-type-archive-wsuwp_uc_person figure.article-thumbnail {
+	clear: left;
+	float: left;
+	margin: 0 10px 5px 0;
+}
+
+.single-wsuwp_uc_person figure.article-thumbnail {
+	float: left;
+	margin: 0 0 5px 0;
+}
+
+.post-type-archive-wsuwp_uc_person .article-title {
+	padding-top: 0;
+}
+
+.wsuwp-uc-entities,
+.wsuwp-uc-people,
+.wsuwp-uc-projects,
+.wsuwp-uc-publications {
+	float: left;
+	width: 33%;
+}
+
+.wsuwp_uc_person .article-body,
+.wsuwp_uc_entity .article-body,
+.wsuwp_uc_project .article-body,
+.wsuwp_uc_publication .article-body {
+	clear: both;
+}
+
+.wsuwp_uc_person .article-footer,
+.wsuwp_uc_entity .article-footer,
+.wsuwp_uc_project .article-footer,
+.wsuwp_uc_publication .article-footer {
+	clear: left;
+}
