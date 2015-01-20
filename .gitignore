@@ -1,2 +1,10 @@
 .DS_Store
 .idea
+*/_notes
+dwsync.xml
+ 
+/wordpress
+wp-config.php
+
+*/connection_images
+wp-content/db.php
