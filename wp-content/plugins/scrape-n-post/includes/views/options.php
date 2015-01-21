@@ -17,10 +17,22 @@
           <input type="text" name="crawl_depth" id="crawl_depth"  value="<?php echo $scrape_options['crawl_depth']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
-          <?php _e("Set the number to the deth you whish to crawl a site.  If the site is big 100-200 is a good choice.  Make sure you have the php max-* limits set to account for a deep crawl before running."); ?>
+          <?php _e("Set the number to the depth you whish to crawl a site.  If the site is big 100-200 is a good choice.  Make sure you have the php max-* limits set to account for a deep crawl before running."); ?>
           )</span> </div>
       </div>
-
+	  
+	<div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Add posts on crawl" ); ?>  </label>
+          <select name="add_post_on_crawl">
+            <option <?php selected('1', $scrape_options['add_post_on_crawl']); ?> value="1"> <?php _e('Yes');?> </option>
+            <option <?php selected('0', $scrape_options['add_post_on_crawl']); ?> value="0"> <?php _e('No');?> </option>
+          </select>
+        </div>
+        <div class="note"> <span>(
+          <?php _e("This can take a bit, make sure php ini is set up for long running scripts"); ?>
+          )</span> </div>
+	</div>  
 
       <div class="field-wrap">
         <div class="field">
@@ -33,27 +45,58 @@
       </div>
       <div class="field-wrap">
         <div class="field">
-          <label> <?php _e( "Timeout (in seconds)"); ?> </label>
+          <label> <?php _e( "Page Timeout (in seconds)"); ?> </label>
           <input type="text" name="timeout" id="scrape_timeout"  value="<?php echo $scrape_options['timeout']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
           <?php _e("Default timeout interval in seconds for cURL or Fopen. Larger interval might slow down your page."); ?>
           )</span> </div>
       </div>
-      
-      
-	<div class="field-wrap">
+       <div class="field-wrap">
         <div class="field">
-          <label> <?php _e( "Add posts on crawl" ); ?>  </label>
-          <select name="add_post_on_crawl">
-            <option <?php selected('1', $scrape_options['add_post_on_crawl']); ?> value="1"> <?php _e('Yes');?> </option>
-            <option <?php selected('0', $scrape_options['add_post_on_crawl']); ?> value="0"> <?php _e('No');?> </option>
-          </select>
+          <label> <?php _e( "Limit pages scraped"); ?> </label>
+          <input type="text" name="limit_scraps" id="scrape_limit_scraps"  value="<?php echo $scrape_options['limit_scraps']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
-          <?php _e("This can take a bit, make sure php ini is set up for long running scripts"); ?>
+          <?php _e("Default limit is infinite, but this could cause issues, one way to get around a server that is not ok with it's pages being crawled is to do short runs."); ?>
           )</span> </div>
-	</div>       
+      </div>     
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Scraping interval (in seconds)"); ?> </label>
+          <input type="text" name="interval" id="scrape_interval"  value="<?php echo $scrape_options['interval']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit is 1, but this could cause issues.  To slow it down, just increse the number.  5 should be more then enough to please any server."); ?>
+          )</span> </div>
+      </div>      
+	  
+	  
+	  
+	  
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Retry on failed scrape interval (in seconds)"); ?> </label>
+          <input type="text" name="retry_interval" id="scrape_retry_interval"  value="<?php echo $scrape_options['retry_interval']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit is 2"); ?>
+          )</span> </div>
+      </div>  
+	  
+        <div class="field-wrap">
+        <div class="field">
+          <label> <?php _e( "Retry on failed scrape Limit"); ?> </label>
+          <input type="text" name="retry_limit" id="scrape_retry_limit"  value="<?php echo $scrape_options['retry_limit']; ?>" class="small-text code" />
+        </div>
+        <div class="note"> <span>(
+          <?php _e("Default limit of retries is 3"); ?>
+          )</span> </div>
+      </div>  
+
+	  
+	  
+     
       
 	<div class="field-wrap">
         <div class="field">
@@ -70,10 +113,10 @@
        <div class="field-wrap">
         <div class="field">
           <label> <?php _e( "Timeout (in seconds)"); ?> </label>
-          <input type="text" name="time_limit" id="scrape_time_limit"  value="<?php echo $scrape_options['time_limit']; ?>" class="small-text code" />
+          <input type="text" name="timeout_limit" id="scrape_timeout_limit"  value="<?php echo $scrape_options['timeout_limit']; ?>" class="small-text code" />
         </div>
         <div class="note"> <span>(
-          <?php _e("Over write [if possible], php's time_limit"); ?>
+          <?php _e("Over write [if possible], php's execution time limit"); ?>
           )</span> </div>
       </div>     
       
