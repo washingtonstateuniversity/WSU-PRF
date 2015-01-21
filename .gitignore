@@ -6,5 +6,7 @@ dwsync.xml
 /wordpress
 wp-config.php
 
+~*
+
 */connection_images
 wp-content/db.php
