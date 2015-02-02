@@ -192,8 +192,8 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		 * @global class $scrape_data
 		 * @global array $_params
 		 * 
-		 * @param int $post_id
 		 * @param int $target_id
+		 * @param array $arr
 		 *
 		 * @access public
 		 */	
@@ -220,37 +220,42 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 			}
 			$currcharset = get_bloginfo('charset');
 
+
+			
+			$scrape_profile = $scrape_data->get_scraping_profile();
+
+
 			$doc = phpQuery::newDocumentHTML($raw_html['body'], $currcharset);
 			phpQuery::selectDocument($doc);
 				
 			//NOTE WHAT IS GOIGN TO BE DONE IS A EVAL FOR A PATTERN
 			//remove placeholder
 
-			$title = pq('html')->find('title');
-			$title = $title->text();
-			if($title==""){ $title = pq('#siteID')->find('h1:first')->text(); }
-			if($title==""){ $title = pq('h2:first')->text(); }
-			//var_dump($title);
-
-			//should applie paterens by option
-			$catName = pq('p:first')->html();
-			$catarea = explode('<br>',$catName);
-			$catName = trim($catarea[0]);
-			//var_dump($catName);
-			
-
-			$content = pq('html')->find('div#main:eq(0)')->html();
-			if($content==""){
-				pq('body')->find('h3:first')->remove();
-				pq('body')->find('p:first')->remove();
-				pq('body')->find('h2:first')->remove();
-				pq('body')->find('p:first')->remove();
-				$doc->document->saveXML();
-				$content = trim(pq('body')->html());
-			}//var_dump($content);
-
-			//die();
-			
+				$title = pq('html')->find('title');
+				$title = $title->text();
+				if($title==""){ $title = pq('#siteID')->find('h1:first')->text(); }
+				if($title==""){ $title = pq('h2:first')->text(); }
+				//var_dump($title);
+	
+				//should applie paterens by option
+				$catName = pq('p:first')->html();
+				$catarea = explode('<br>',$catName);
+				$catName = trim($catarea[0]);
+				//var_dump($catName);
+				
+	
+				$content = pq('html')->find('div#main:eq(0)')->html();
+				if($content==""){
+					pq('body')->find('h3:first')->remove();
+					pq('body')->find('p:first')->remove();
+					pq('body')->find('h2:first')->remove();
+					pq('body')->find('p:first')->remove();
+					$doc->document->saveXML();
+					$content = trim(pq('body')->html());
+				}//var_dump($content);
+	
+				//die();
+				
 
 			
 	
@@ -279,10 +284,11 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 					}
 				}
 			}
+
 			
 			// Create post object
 			$complied = array(
-				'post_type' => 'wsu_policy', // yes don't hard code in final   
+				'post_type' => $options['post_type'], // yes don't hard code in final   
 				'post_title' => $title,
 				'post_content' => $content,
 				'post_status' => 'draft',
@@ -291,7 +297,6 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 				'post_category' => array($cat_ID),
 				'post_author' => $author_id,
 			);	
-			
 			$arrs = array_merge($complied,$arr);
 			//good so far let make the post
 			if(isset($arrs['ID'])){
@@ -339,7 +344,7 @@ if ( ! class_exists( 'scrape_actions' ) ) {
 		public function crawl_from($url=NULL) {
 			global $_params,$scrape_core;
 			if(isset($_params['url'])){
-				$options = get_option( 'scrape_options', array('crawl_depth'=>5) );
+				$options = get_option( 'scrape_options', array('crawl_depth'=>5) ); //@todo bring this option in line with the abstracted
 				$depth = $options['depth']; 
 				$this->traverse_all_urls($_params['url'],$depth);
 			}
