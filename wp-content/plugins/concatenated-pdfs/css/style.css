@@ -35,8 +35,13 @@
 	margin-left: 15px;
 	font-weight: normal !important;
 }
-#catpdf-wrap .field-wrap .field #cat, #catpdf-wrap .field-wrap .field #author, #catpdf-wrap .field-wrap .field #status, #catpdf-wrap .field-wrap .field #visibility {
+#catpdf-wrap .field-wrap .field #cat, #catpdf-wrap .field-wrap .field #author, #catpdf-wrap .field-wrap .field #status, #catpdf-wrap .field-wrap .field #visibility{
 	min-width: 150px;
+	max-width: 95%;
+}
+
+#catpdf_form select {
+	max-width: 95%;
 }
 #catpdf-wrap .field-wrap iframe {
 	background: #FFF;
@@ -166,9 +171,11 @@
 
 .useful{float:right;}
 
+.catform{}
 
+#single_post_generation{display:none;}
+#single_post_generation.active{display:block;}
 
-
-
-
-
+.note.block{}
+.field-wrap .dashicons.dashicons-editor-help{ float:right;}
+.note.block .note_block{clear:right;display:none;}

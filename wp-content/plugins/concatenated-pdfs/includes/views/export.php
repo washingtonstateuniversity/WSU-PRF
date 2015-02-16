@@ -28,14 +28,14 @@
            <div class="wd200 fl">
             <label><?php _e( "Tags" ); ?></label>
             <?php echo $select_tags; ?>
-            <input class="all-btn sept-mar" type="button" value="Select All">
+            
           </div>       
         
         
           <div class="wd200 fl">
             <label><?php _e( "Category" ); ?></label>
             <?php echo $select_cats; ?>
-            <input class="all-btn sept-mar" type="button" value="Select All">
+            
           </div>
           <div class="wd200 fl">
             <label><?php _e( "Author" ); ?></label>

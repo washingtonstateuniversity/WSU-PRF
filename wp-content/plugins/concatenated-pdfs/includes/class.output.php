@@ -40,12 +40,12 @@ class catpdf_output {
 
 
 
-//temp remove asap
-public function getTitle($post){
-	setup_postdata($post);
-	$item = get_the_title();
-	return $item;
-}
+	//temp remove asap
+	public function getTitle($post){
+		setup_postdata($post);
+		$item = get_the_title();
+		return $item;
+	}
 
 
 
@@ -58,26 +58,33 @@ public function getTitle($post){
      * @type - string
 	 * @TODO move out to template class
      */
-    public function custruct_template($type = NULL) {
+    public function construct_template($type = NULL) {
         global $catpdf_templates,$_params,$catpdf_data,$posts;
-		$id		= isset($_GET['catpdf_dl'])?$_GET['catpdf_dl']:NULL;
-		$posts 	= $catpdf_data->query_posts($id);
+		$id		= isset($_params['catpdf_dl'])?$_params['catpdf_dl']:NULL;
 
-        $this->template = $catpdf_templates->get_current_tempate($type);		
-		$template_sections = $catpdf_templates->get_template_sections();
+		$posts 	= array(get_post($id));
+		//var_dump($posts);
+		
+        $this->template = $catpdf_templates->get_current_tempate($type);
+		//var_dump($this->template);
+		
+		$template_sections = $catpdf_templates->get_default_render_order();
+		//var_dump($template_sections);
+		
 		$html = "";
 		$i=1;
 		$c=count($template_sections);
 		foreach($template_sections as $code=>$section){
-			$sectionhtml=call_user_func(array($catpdf_templates, 'get_section_'.$code));
+			$sectionhtml= call_user_func( array( $catpdf_templates, 'get_section_'.$code ) );
 			//var_dump($sectionhtml);
-			$html.= ($sectionhtml?$sectionhtml:"").($i<$c?"<i class='page-break'></i>":"");
+			$html.= ($sectionhtml?$sectionhtml:"").($i<$c?"\n\n<i class='page-break'></i>\n\n":"");
 			$i++;
 		}
-		//"<i class='page-break'></i>"
 
         $html = $this->head . $html .$this->foot;
-		$this->logHtmlOutput($html);
+		if($log=true){//@todo
+			$this->logHtmlOutput($html);
+		}
         return $html;
     }
 	
@@ -97,11 +104,11 @@ public function getTitle($post){
      * Return html structure
      */
     public function _html_structure() {
-		global $_params, $dompdf;
+		global $_params, $dompdf, $catpdf_data;
 		
 		if (empty($this->template)) return false; 
 		
-        $options   = get_option('catpdf_options');
+        $options   = $catpdf_data->get_options();
 		$unit="px";
 		$bodycolor="#F0F0F0";		//@@!!OPTION REPLACE
 		
@@ -121,21 +128,25 @@ public function getTitle($post){
 		$pageh=$this->pointtopixelConvertion(CPDF_Adapter::$PAPER_SIZES[$_params['papersize']][3]);
         
 		$template    = $this->template;
-		$this->title       = $this->buildFileName($template,$options);
+		
+		$this->title = $this->buildFileName($template,$options);
 		$pageheader  = $this->filter_shortcodes('pageheader');
 		$pagefooter  = $this->filter_shortcodes('pagefooter');//$this->filter_shortcodes('pagefooter');
 
 		
 		/* there should be a base html template? */
-		$head_html = '<!DOCTYPE html>';
-        $head_html .= '<html>';
-        $head_html .= '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-        $head_html .= '<title>' . $this->title . '</title>';
-        if (isset($options['enablecss']) && $options['enablecss'] == 'on') {
-            $head_html .= '<link type="text/css" rel="stylesheet" href="' . get_stylesheet_uri() . '">';
+		$head_html = "<!DOCTYPE html>\n";
+        $head_html .= "<html>\n";
+        $head_html .= "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />\n";
+        $head_html .= '<title>' . $this->title . "</title>\n";
+		
+		$head_html_style_sheets = "";
+		
+        if (isset($options['single']['enablecss']) && $options['single']['enablecss'] == 'on') {
+            $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . get_stylesheet_uri() . "'/>\n";
         }
-        $head_html .= '<link type="text/css" rel="stylesheet" href="' . PDF_STYLE . '">';
-        $head_html_tag = '</head>';
+        $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . PDF_STYLE . "'/>\n";
+        $head_html_closing_tag = "</head>\n";
 		
 		//calculated values needed for the pdf
 		$footSkip=($footHeight+$footSep);//equal to bottom:{VAL}px
@@ -146,36 +157,31 @@ public function getTitle($post){
 		
 		$page_padding="{$pageHeadMargin}{$unit} {$pagerightMargin}{$unit} {$pageFootMargin}{$unit} {$pageleftMargin}{$unit}";
 		
-		$bodyOpenTag = '<body>';
-		$header_section = '<div id="head_area"><div class="wrap">'.$pageheader.'</div></div>';
-		$footer_section = '<div id="foot_area"><div class="wrap">'.$pagefooter.'</div></div>';
+		$bodyOpenTag = "<body>\n";
+		$header_section = "<div id='head_area'>\n<div class='wrap'>${pageheader}</div>\n</div>\n";
+		$footer_section = "<div id='foot_area'>\n<div class='wrap'>${pagefooter}</div>\n</div>\n";
 		
 		//sets up the globals for the rendered inline php 
-		$indexscriptglobals='<script type="text/php">
-			$GLOBALS["i"]=1;
-			$GLOBALS["indexpage"]=0;
-			$GLOBALS["chapters"] = array();
-		</script>';
-$script="";
+		$indexscriptglobals='<script type="text/php"> $GLOBALS["i"]=1; $GLOBALS["indexpage"]=0; $GLOBALS["chapters"] = array(); </script>';
+		$script="";
 		
 		//set up the base style that make it easy to fomate it.
-        $head_style = '<!-- built from the php and are important to 
-							try not to write over if possiable -->
-		<style>
-			html,body { background-color:'.$bodycolor.'; position: relative; }
-			@page{}
-			#head_area{ position:fixed;left:'.$pageleftMargin.$unit.';top:'.$topMargin.$unit.';height:'.$headHeight.$unit.'; width:'.$textBoxingWidth.$unit.'; }
-			#head_area .wrap{position:relative; width:100%; height:'.$headHeight.$unit.';}
-			#foot_area{ position:fixed;left:'.$pageleftMargin.$unit.';bottom:'.$bottomMargin.$unit.';height:'.$footHeight.$unit.';width:'.$textBoxingWidth.$unit.';}
-			#foot_area .wrap{position:relative; width:100%; height:'.$footHeight.$unit.';}
-			body {padding:'.$page_padding.';}/*note that the body is used as our sudo "page" it is our saffal base*/
-			i.page-break {page-break-after: always;border: 0;}
-			' . strip_tags($options['customcss']) . '
-		</style>';
-
+        $head_style = '<!-- built from the php and are important to try not to write over if possible -->
+	<style>
+		html,body { background-color:'.$bodycolor.'; position: relative; }
+		/*@page{}*/
+		#head_area{ left:'.$pageleftMargin.$unit.'; top:'.$topMargin.$unit.'; height:'.$headHeight.$unit.'; /*width:'.$textBoxingWidth.$unit.';*/ }
+		#head_area .wrap{ height:'.$headHeight.$unit.';}
+		#foot_area{ left:'.$pageleftMargin.$unit.'; bottom:'.$bottomMargin.$unit.'; height:'.$footHeight.$unit.'; /*width:'.$textBoxingWidth.$unit.';*/ }
+		#foot_area .wrap{ height:'.$footHeight.$unit.'; }
+		body {padding:'.$page_padding.';} /*note that the body is used as our sudo "page" it is our saffal base*/
+		
+		' . strip_tags($options['single']['customcss']) . ' 
+	</style>';
         $this->head  = $head_html
+						.$head_html_style_sheets
 						.$head_style
-						.$head_html_tag
+						.$head_html_closing_tag
 						.$bodyOpenTag
 						.$header_section
 						.$footer_section
@@ -219,9 +225,9 @@ $script="";
 	}
 	//page_script seems to need to be oneline?
 	$pdf->page_script(\'$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }\');
-</script>';
-        $bodyCloseTag='</body>';
-		$htmlCloseTag='</html>';
+</script>'."\n";
+        $bodyCloseTag="</body>\n";
+		$htmlCloseTag="</html>\n";
 					
 		$bottomHtml = $indexer
 					.$bodyCloseTag
@@ -234,19 +240,22 @@ $script="";
 	 * needs to be reworked
 	 * also move to class.shortcuts
      */
-    public function filter_shortcodes($tmp_type=NULL) {
+    public function filter_shortcodes($tmp_type=NULL,$html=null) {
 		if($tmp_type==NULL) return false;
-        $items         = array(
-			'body' => array_keys(shortcode::get_template_shortcodes('body')),
-			'loop' => array_keys(shortcode::get_template_shortcodes('loop')),
-		);
+
         $template      = $this->template;
+		//var_dump($template);
         $pattern       = get_shortcode_regex();
 
-		$arr = isset($items[$tmp_type])?$items[$tmp_type]:$items['body'];
-		$tmp_sec = "template_{$tmp_type}";
-		$tmp = $template->$tmp_sec;
-
+		$arr = array_keys(shortcode::get_template_shortcodes(!empty($tmp_type)?$tmp_type:'body')); //? was ? isset($items[$tmp_type])?$items[$tmp_type]:$items['body'] into get_template_shortcodes
+		if($html==null){
+			$tmp_sec = "template_{$tmp_type}";
+			$tmp = $template->$tmp_sec;
+		}else{
+			$tmp = $html;	
+		}
+		//var_dump($tmp_type);
+		//var_dump($arr);
         preg_match_all('/' . $pattern . '/s', $tmp, $matches);
         $html = $tmp;
         foreach ($arr as $code) {
@@ -256,6 +265,8 @@ $script="";
                 }
             }
         }
+		//var_dump($html);
+		//if(!in_array($tmp_type,array('pageheader','pagefooter')))die();
         return $html;
     }
 
@@ -288,10 +299,25 @@ $script="";
 		} //out put error message
 	}
 	public function cachePdf($file,$contents){
-		$file = CATPDF_CACHE_PATH.$file;
+		$file = CATPDF_CACHE_PATH.trim(trim($file,'/'));
 		return file_put_contents($file, $contents);
-	}	
-
+	}
+	public function is_cached($filename){
+		$file = CATPDF_CACHE_PATH.trim(trim($filename,'/'));
+		return file_exists($file);
+	}
+	public function merge_pdfs($mergeList,$output_file){
+		if(count($mergeList)>1){
+			$PDFMerger = new PDFMerger;
+			foreach($mergeList as $file){
+				$PDFMerger->addPDF(CATPDF_CACHE_PATH.'merging_stage/'.$file, 'all');//'1, 3, 4'//'1-2'
+			}
+			$PDFMerger->merge('file', CATPDF_CACHE_PATH.trim(trim($output_file,'/')));
+		}else{
+			$this->cachePdf($output_file,file_get_contents(CATPDF_CACHE_PATH.'merging_stage/'.$mergeList[0]))	;
+		}
+		
+	}
 
 
 

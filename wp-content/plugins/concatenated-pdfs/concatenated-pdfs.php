@@ -19,6 +19,14 @@ define('PDF_STYLE', CATPDF_URL . 'css/pdf_style.css');
 define('CATPDF_CACHE_PATH', CATPDF_PATH . 'cache/');
 define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
 
+
+	/**
+	 * The slug used to register the catpdf key used for meta data and such.
+	 *
+	 * @cons string
+	 */
+	define('CATPDF_KEY', 'wsuwp_catpdf');
+
 /* things still to do
 [ ]-POST/GET to $_param validation
 [ ]-remove the use themes templates inlue of per template css path link

@@ -19,17 +19,24 @@ body{}
 #page_numbers #pn_text{}
 #page_numbers #pn_number{}
 */
+#head_area{position:fixed; overflow:hidden;}
+#head_area .wrap{position:relative; width:100%; border-bottom:2px solid #6A6A6A;}
 
-#head_area .wrap{border-bottom:2px solid #6A6A6A;}
-#foot_area .wrap{border-top:2px solid #6A6A6A;}
+			/*#head_area{ left:15px;top:15px;height:50px; width:-30px; }
+			#head_area .wrap{ height:50px;}*/
+
+
+#foot_area{position:fixed;overflow:hidden;}
+#foot_area .wrap{position:relative; width:100%;border-top:2px solid #6A6A6A;}
 /*fun note on the head/foot warp is that doing height=100% goes the whole page 
  there is room to play just note that there are defaults*/
 
 
 
 /* DEFAULTS */
-html, body{ margin: 0; padding: 0; border: 0; font-family: sans-serif; text-align: justify;}
-table { border-collapse: collapse; border-spacing: 0; }
+html, body{ margin: 0; padding: 0; border: 0; font-family: sans-serif; text-align: justify;background-color:transparent;}
+table { border-collapse: collapse; border-spacing: 0; border: 1px solid #535353; background-color:transparent; }
+tr,td,th { border: 1px solid #535353; padding:2px 4px;}
 strong{ font-weight:bold;}
 h1{font-size:20pt;}
 h2{font-size:16pt;}
@@ -37,10 +44,13 @@ h3{font-size:14pt;}
 h4{font-size:12pt;}
 p{font-size:12pt;}
 
+i.page-break {page-break-after: always;border: 0;}
 
 .content-wrapper {
 	padding: 20px;
-	background: #FFF;
+	/*background: #FFF;*/
+	background-color:transparent;
+	overflow:hidden;
 	/*border: 1px solid #c5c5c5;
 	margin: 15px;*/
 }
@@ -75,13 +85,13 @@ h1.CoverTitle {
 
 #catpdf_index{padding:0px 75px;}
 
-#catpdf_index .indexed_chapter{width:100%;}
-#catpdf_index .indexed_chapter tr{}
-#catpdf_index .indexed_chapter td{}
+#catpdf_index .indexed_chapter{width:100%; border:none;}
+#catpdf_index .indexed_chapter tr{border:none;}
+#catpdf_index .indexed_chapter td{border:none;}
 
 #catpdf_index .indexed_chapter .chapter{width:5%; text-align:right;}
 #catpdf_index .indexed_chapter .text{}
-#catpdf_index .indexed_chapter .segment{border-bottom:1px dotted #494949;}
+#catpdf_index .indexed_chapter td.segment{border-bottom:1px dotted #494949;}
 #catpdf_index .indexed_chapter .pagenumber{width:3%; text-align:left;}
 
 #catpdf_index h2{font-size:20px !important;font-weight:bold !important; border-bottom:1px solid #585755;}
@@ -96,6 +106,15 @@ h1.CoverTitle {
 #site_info{margin-left:5px;display:inline-block;}
 #site_info_name{font-size:20px; font-weight:bold;}
 #site_info_tag{font-size:12px; font-style:italic;}
-#logo{float:left;height:50px;}
+#logo{float:left;height:50px;width:180px;}
 #site_tag{position:absolute; top:12.5px; right:12.5px;text-align: right;width:auto;font-size:12px;}
+
+.indexed_chapter {}
+.indexed_chapter td.chapter{width:15%; text-align:right;}
+.indexed_chapter td.text{width:25%; text-align:left;>}
+.indexed_chapter td.segment{text-align:right;}
+.indexed_chapter td.pagenumber{width:5%; text-align:left;}
+
+.size1{font-size:7px;}
+.size2{font-size:9px;}
 

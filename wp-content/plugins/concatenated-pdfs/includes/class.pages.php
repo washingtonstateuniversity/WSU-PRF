@@ -25,10 +25,11 @@ class catpdf_pages {
 			add_action('admin_init', array( $this, 'admin_init' ));
 			add_action('admin_menu', array( $this, 'admin_menu' ));
 		}
-        if (isset($_GET['catpdf_dl'])) {// Check if post download is performed
+		
+        if (isset($_params['catpdf_dl'])) {// Check if post download is performed
             add_action('init', array( $this, 'download_post' ));// Add download action hook
         }
-        if (isset($_GET['catpdf_post_dl'])) {// Check if single post download is performed
+        if (isset($_params['catpdf_post_dl']) && $_params['catpdf_post_dl']=="true") {// Check if single post download is performed
             add_action('init', array( $this, 'download_posts' ));// Add download action hook
         }
     }
@@ -39,11 +40,9 @@ class catpdf_pages {
 		global $wp_scripts;
         // Enque style and script		
         wp_enqueue_script('jquery-ui-core');
-        wp_enqueue_script('jquery-ui-datepicker', CATPDF_URL.'js/ui/jquery.ui.datepicker.js', array('jquery'), '1.9.0', 'all');
-		wp_enqueue_style('jquery-ui-datepicker', CATPDF_URL.'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
-		
-        wp_enqueue_script('jquery-ui-tabs', CATPDF_URL.'js/ui/jquery.ui.tabs.js', array('jquery'), '1.9.0', 'all');		
-		wp_enqueue_style('jquery-ui-tabs', CATPDF_URL.'css/ui/jquery.ui.all.css', false, '1.9.0', 'all');
+		wp_enqueue_script('jquery-effects-core'); 
+        wp_enqueue_script('jquery-ui-datepicker');
+        wp_enqueue_script('jquery-ui-tabs');
 		// get registered script object for jquery-ui
 		$ui = $wp_scripts->query('jquery-ui-core');
 	 
@@ -123,11 +122,7 @@ class catpdf_pages {
             'hide_empty' => '0'
         );
         $options               = get_option('catpdf_options');
-        // Construct category dropdown
-        $select_cats           = wp_dropdown_categories(array(
-            'echo' => 0,
-            'hierarchical' => 1
-        ));
+
 		
 		$post_types      = get_post_types(array(
             'public'   => true,
@@ -140,16 +135,41 @@ class catpdf_pages {
 		$select_types.='</select>';
 
 
-		$select_tags= '<select name="tags[]" multiple="multiple" class="postform" >';
-		foreach ($post_types  as $post_type ) {
-			$select_tags.='<option value="'. $post_type.'"  class="level-0" >'. $post_type. '</option>';
+		$args = array();
+		$tags = get_tags( $args );
+		if(!empty($tags)){
+			$select_tags= '<select name="tags[]" multiple="multiple" class="tagform" >';
+			
+			foreach ( $tags  as $tag ) {
+				$select_tags.='<option value="'. $tag->term_id.'"  class="level-0" >'. $tag->name. '</option>';
+			}
+			$select_tags.='</select><input class="all-btn sept-mar" type="button" value="Select All" />';
+		}else{
+			$select_tags="<h5>Currently there are no taged posts.</h5>";
 		}
-		$select_tags.='</select>';
-
-		
 		
         $select_cats           = str_replace("name='cat' id=", "name='cat[]' multiple='multiple' id=", $select_cats);
         $select_cats           = str_replace("<option", '<option ', $select_cats);
+		
+		$args = array();
+		$cats = get_categories( $args );
+		if(!empty($cats)){
+			$select_cats= '<select name="cat[]" multiple="multiple" class="catform" >';
+			
+			foreach ( $cats  as $cat ) {
+				$select_cats.='<option value="'. $cat->term_id.'" title="'. $cat->name. '" class="level-0" >'. $cat->name. '</option>';
+			}
+			$select_cats.='</select><input class="all-btn sept-mar" type="button" value="Select All" />';
+		}else{
+			$select_cats="<h5>Currently there are no categorized posts.</h5>";
+		}/* past, look to remove if no match needed       // Construct category dropdown
+        $select_cats           = wp_dropdown_categories(array(
+            'echo' => 0,
+            'hierarchical' => 1
+        ));*/		
+		
+		
+		
         // Construct user dropdown
         $select_author         = wp_dropdown_users(array(
             'id' => 'author',
@@ -184,7 +204,7 @@ class catpdf_pages {
     public function update_options() {
 		global $_params;
         $options = $_params;
-        update_option('catpdf_options', $options);
+        update_option('catpdf_options', json_encode($options));
     }
     /*
      * Display "Option" page
@@ -192,7 +212,12 @@ class catpdf_pages {
     public function option_page() {
 		global $catpdf_templates,$catpdf_data;
         // Set options
-        $data['options']   = $catpdf_data->get_options();
+		$options = $catpdf_data->get_options();
+
+        $data['options']   = $options;
+		$data['dompdf_options'] = $catpdf_data->get_options();
+		$data['sizes']   = array('letter' => $catpdf_data->paper_sizes['letter']) + $catpdf_data->paper_sizes;
+		$data['media_types'] = array("screen","tty","tv","projection","handheld","print","braille","aural","speech","all");
         // Get templates
         $data['templates'] = $catpdf_templates->get_template();
         // Display option form
@@ -212,12 +237,19 @@ class catpdf_pages {
 		$cached=false;//add check
         if(!$cached){
 			$dompdf->set_paper($_params['papersize'], $_params['orientation']);
-			$content     = $catpdf_output->custruct_template();
+			$content     = $catpdf_output->construct_template();
+			
 			$dompdf->load_html($content);
+			if( isset($_dompdf_warnings) ){
+				var_dump( $_dompdf_warnings ); die();
+			}
+			
 			$dompdf->render();
 			$pdf = $dompdf->output();//store it for output
 			//$dompdf->stream();
+			
 			$prettyname = trim($catpdf_output->title) . ".pdf";
+			
 			if( $catpdf_output->cachePdf($file,$pdf) ){
 				$catpdf_output->sendPdf($file,$prettyname);
 			}else{
@@ -242,7 +274,7 @@ class catpdf_pages {
         $post  = $param_arr;
         
 		$dompdf->set_paper((isset($_GET['paper_size'])) ? urldecode($_GET['paper_size']) : 'letter', (isset($_GET['paper_orientation'])) ? urldecode($_GET['paper_orientation']) : 'portrait');
-		$content     = $catpdf_output->custruct_template();
+		$content     = $catpdf_output->construct_template();
 		
         $dompdf->load_html($content);
         
@@ -253,19 +285,44 @@ class catpdf_pages {
      * Download single post pdf
      */
     public function download_post() {
-        global $dompdf, $catpdf_output,$post;
+        global $dompdf, $PDFMerger, $catpdf_output,$post,$catpdf_data,$_params;
+		//die('here');
         $id          = $_GET['catpdf_dl'];
-        $post        = $catpdf_output->query_posts($id);
+       	$posts 	= array(get_post($id));
 
-        $single      = $post[0];
-        $filenmae    = preg_replace('/[^a-z0-9]/i', '_', $single->post_title);
-        $content     = $catpdf_output->custruct_template('single');
-		$dompdf->set_paper('letter', 'portrait');
-        $dompdf->load_html($content);
-        
-        $dompdf->render();
-        $dompdf->stream(trim($filenmae) . ".pdf");
+        $single      = $posts[0];
+		//var_dump();die();
+        $filename    = preg_replace('/[^a-z0-9]/i', '_', $single->post_title)."-".md5( implode(',',$_params) ) . ".pdf";	
+        if(!$catpdf_output->is_cached($filename)){
+			$content     = $catpdf_output->construct_template('single');
+			//var_dump($content);die();
+			$dompdf = new DOMPDF();
+			$dompdf->set_paper('letter', 'portrait');
+			$dompdf->load_html($content);
+			if( isset($_dompdf_warnings) ){
+				var_dump( $_dompdf_warnings ); die();
+			}
+			$dompdf->render();
+			$pdf = $dompdf->output();//store it for output	
+			
+			if($catpdf_output->cachePdf('merging_stage/'.$filename,$pdf)){
+				$mergeList[]=$file;				
+				$i++;
+			}
+			if(count($mergeList)>0){
+				$catpdf_output->merge_pdfs($mergeList,$filename);
+				$catpdf_output->sendPdf($filename);
+			}else{
+				echo "failed";	
+			}
+		}else{
+			$catpdf_output->sendPdf($filename);	
+		}
     }
+
+
+
+
 
 
 

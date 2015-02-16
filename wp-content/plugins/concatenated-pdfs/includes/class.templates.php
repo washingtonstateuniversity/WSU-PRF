@@ -30,7 +30,16 @@ class catpdf_templates {
 		}  
     }
 
-
+	public function get_default_render_order(){
+		$sections = array(
+			'cover'=>"",
+			'index'=>"",
+			'content'=>"",
+			'appendix'=>"",
+		);
+		return $sections;
+	}
+	
 	public function get_default_template_sections(){
 		$sections = array(
 			'cover'=>"",
@@ -50,41 +59,29 @@ class catpdf_templates {
 	
 	public function get_section_content(){	
 		global $catpdf_output;
+		
 		$catpdf_output->_html_structure();
 		$content 		= $catpdf_output->filter_shortcodes('body');
-		$contentHtml	= "<div id='catpdf_content'>{$content}</div>";	
-		return $content;
+		$contentHtml	= "<div id='catpdf_content'>{$content}</div>\n";	
+		//var_dump($contentHtml);die();
+		return $contentHtml;
 	}	
 	public function get_section_cover(){
-		$cover			= "<h1 class='CoverTitle'>Cover Letter</h1>";
-		$coverHtml 		= "<div id='catpdf_cover'>{$cover}</div>";	
+		$cover			= "<h1 class='CoverTitle'>Cover Letter</h1>\n";
+		$coverHtml 		= "<div id='catpdf_cover'>{$cover}</div>\n";	
 		return $coverHtml;
 	}
 	
 	public function get_section_index(){
-		global $posts;
-		$index='<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>';
-		$index.= "<h2>Table of Contents</h2>";
-		$index.= "";
-		$c=1;
-		foreach($posts as $post){
-			$index.="<table class='indexed_chapter'>
-  <tbody>
-    <tr>
-      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{chapter{$c}}</td>
-      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{text{$c}}</td>
-      <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
-      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{page{$c}}</td>
-    </tr>
-  </tbody>
-</table>
-";
-			$c++;
-		}
-		$index.= "";
-		$index.="</div>";
-		$index.='<script type="text/php"> $pdf->close_object(); </script>';
+		global $posts,$catpdf_output;
+		$index='<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>'."\n";
+		$table = $this->resolve_template("index-table.php");
+		$index.=$catpdf_output->filter_shortcodes('index',$table);
+		$index.='<script type="text/php">$pdf->close_object(); </script>'."\n";
 		$indexHtml="<div id='catpdf_index'>{$index}</div>";
+		
+		//var_dump($indexHtml);die();
+		
 		return $indexHtml;
 	}	
 	public function get_section_appendix(){	
@@ -104,13 +101,20 @@ class catpdf_templates {
 	* set template object
 	*/
 	public function set_current_tempate($type=NULL){
-		global $_params,$catpdf_templates;
-		$curr_temp = $_params['template'];
-        if ($type == 'single') {
-            $options   = get_option('catpdf_options');
-            $curr_temp = $options['dltemplate'];
-        }
-        if ($curr_temp == 'def') {
+		global $_params,$catpdf_templates,$catpdf_data;
+		$curr_temp = isset($_params['template'])?$_params['template']:null;
+		
+		$options   = $catpdf_data->get_options();
+		
+		if($curr_temp==null){
+			if ($type == 'single') {
+				$curr_temp = $options['single']['dltemplate'];
+			}else{
+				$curr_temp = $options['concat']['dltemplate'];
+			}
+		}
+
+        if ($curr_temp == 'default') {
             $template = $catpdf_templates->get_default_template();
         } else {
             $template = $catpdf_templates->get_template($curr_temp);
@@ -118,59 +122,36 @@ class catpdf_templates {
 		$this->current_template = $template;
 	}
 
-
+	public function resolve_template($file){
+		$html = "";
+		if ( $overridden_template = locate_template( $file ) ) {
+			// locate_template() returns path to file
+			// if either the child theme or the parent theme have overridden the template
+			$html = file_get_contents( $overridden_template );
+		} else {
+			// If neither the child nor parent theme have overridden the template,
+			// we load the template from the 'templates' sub-directory of the directory this file is in
+			$html = file_get_contents( CATPDF_PATH . '/templates/'.$file );
+		}
+		return $html;
+	}
 
     /*
      * Return default template structure
      */
-    public function custruct_default_template($type = 'all') {
+    public function construct_default_template($type = 'all') {
         $temp         = array();
         $temp['name'] = 'Default';
-		
-		
-		
+
 		// Construct template loop
-		$pageheadertemplate = '<div id="site_info_block">
-<img src="http://images.wsu.edu/index-images/bg-header.jpg" id="logo" />
-<div id="site_info"><span id="site_info_name">[site_title]</span><br/><span id="site_info_tag">[site_tagline]</span></div>
-</div>
-<div id="site_tag">[date_today]<br/>[site_url link=true]</div>';
-		$pagefootertemplate = '[page_numbers label="PAGE" separator="/"]';
-		
-		
-        if ($type == 'single') {
-            // Construct template loop
-            $looptemplate = '<div class="post single">';
-            $looptemplate .= '<h2>[title]</h2>';
-            $looptemplate .= '<div class="meta"><p>Posted on <strong>[date]</strong> by <strong>[author]</strong></p></div>';
-            $looptemplate .= '<p>[content]</p>';
-            $looptemplate .= '<div class="taxonomy">[category label="Posted in:"] | [tags label="Tagged:"] | With [comments_count] comments</div>';
-            $looptemplate .= '</div>';
-            // Construct template body
-            $bodytemplate = '<div class="content-wrapper">';
-            $bodytemplate .= '[loop]';
-            $bodytemplate .= '</div>';
-        } else {
-            // Construct template loop
-            $looptemplate = '<div class="content-wrapper"><div class="post">';
-            $looptemplate .= '<h1>[title]</h1>';
-			$looptemplate .= '<h2>[category label="Posted in:"]</h2>';
-			$looptemplate .= '<h3>[tags label="Tagged:"]</h3>';
-			$looptemplate .= '<h4>version [version_count] <span>([revision_count] revisions)<span></h4>';
-            $looptemplate .= '<div class="meta"><p>Posted on <strong>[date]</strong> by <strong>[author]</strong></p></div>';
-            $looptemplate .= '[content]';
-            $looptemplate .= '</div></div><i class="page-break"></i>';
-            // Construct template body
-            $bodytemplate = '';
-            $bodytemplate .= '<!--<div class="pdf-header">';
-            $bodytemplate .= '<h1>Post List</h1>';
-            $bodytemplate .= '<h2>[site_title]</h2>';
-            $bodytemplate .= '<h3>[site_tagline]</h3>';
-            $bodytemplate .= '[from_date label="From:"] [to_date label="To:"]';
-            $bodytemplate .= '</div>-->';
-            $bodytemplate .= '<div>[loop]</div>';
-            $bodytemplate .= '';
-        }
+		$pageheadertemplate = $this->resolve_template("pageheadertemplate.php");
+		$pagefootertemplate = $this->resolve_template("pagefootertemplate.php");
+
+		// Construct template loop
+		$looptemplate = $this->resolve_template($type."-loop.php");
+		// Construct template body
+		$bodytemplate = $this->resolve_template($type."-body.php");
+
         $temp['loop'] = $looptemplate;
         $temp['body'] = $bodytemplate;
 		$temp['pageheader'] = $pageheadertemplate;
@@ -182,9 +163,9 @@ class catpdf_templates {
      */
     public function get_default_template() {
         if (isset($_GET['catpdf_dl'])) {
-            $default_template = $this->custruct_default_template('single');
+            $default_template = $this->construct_default_template('single');
         } else {
-            $default_template = $this->custruct_default_template();
+            $default_template = $this->construct_default_template();
         }
         $arr = array();
         $arr = array(

@@ -9,6 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class shortcode {
     public $single;
+	public $current_index_row=array();
+	
+	
     function __construct() {
         if (is_admin() || isset($_GET['catpdf_dl']) || isset($_GET['catpdf_post_dl'])) {
             $this->register_template_shortcodes();
@@ -21,32 +24,38 @@ class shortcode {
     * Return array
 	* @attr
 	*/
-	public static function build_shortcodes(){
+	public static function build_shortcodes(){ //this is a temp way
 		$shortcodes = array(
-			'loop'=> array('dis'=>__('Loop'),'function'=>'loop_func'),
-			'site_title'=> array('dis'=>__('Site Title'),'function'=>'site_title_func'),
-			'site_tagline'=>array('dis'=> __('Site Tagline'),'function'=>'site_tagline_func'),
-			'site_url'=> array('dis'=>__('Site URL'),'function'=>'site_url_func'),
-			'date_today'=> array('dis'=>__('Date Today'),'function'=>'date_today_func'),
-			'from_date'=> array('dis'=>__('Date(From)'),'function'=>'from_date_func'),
-			'to_date'=> array('dis'=>__('Date(To)'),'function'=>'to_date_func'),
-			'categories'=> array('dis'=>__('Categories'),'function'=>'categories_func'),
-			'post_count'=>array('dis'=> __('Post Count'),'function'=>'post_count_func'),
-			'title'=> array('dis'=>__('Title'),'function'=>'title_func'),
-			'excerpt'=> array('dis'=>__('Excerpt'),'function'=>'excerpt_func'),
-			'content'=> array('dis'=>__('Content'),'function'=>'content_func'),
-			'permalink'=> array('dis'=>__('Permalink'),'function'=>'permalink_func'),
-			'date'=> array('dis'=>__('Date'),'function'=>'date_func'),
-			'author'=> array('dis'=>__('Author'),'function'=>'author_func'),
-			'author_photo'=> array('dis'=>__('Author Photo'),'function'=>'author_photo_func'),
-			'author_description'=> array('dis'=>__('Author Description'),'function'=>'author_description_func'),
-			'status'=> array('dis'=>__('Status'),'function'=>'status_func'),
-			'featured_image'=> array('dis'=>__('Featured Image'),'function'=>'featured_image_func'),
-			'category'=> array('dis'=>__('Category'),'function'=>'category_func'),
-			'tags'=> array('dis'=>__('Tags'),'function'=>'tags_func'),
-			'comments_count'=> array('dis'=>__('Comments Count'),'function'=>'comments_count_func'),
-			'version_count'=> array('dis'=>__('Number of versions'),'function'=>'version_count_func'),
-			'page_numbers'=> array('dis'=>__('Page Numbering block'),'function'=>'page_numbers_func')
+			'loop'=> array('dis'=>__('Loop')),
+			'site_title'=> array('dis'=>__('Site Title')),
+			'site_tagline'=>array('dis'=> __('Site Tagline')),
+			'site_url'=> array('dis'=>__('Site URL')),
+			'date_today'=> array('dis'=>__('Date Today')),
+			'from_date'=> array('dis'=>__('Date(From)')),
+			'to_date'=> array('dis'=>__('Date(To)')),
+			'categories'=> array('dis'=>__('Categories')),
+			'post_count'=>array('dis'=> __('Post Count')),
+			'title'=> array('dis'=>__('Title')),
+			'excerpt'=> array('dis'=>__('Excerpt')),
+			'content'=> array('dis'=>__('Content')),
+			'permalink'=> array('dis'=>__('Permalink')),
+			'date'=> array('dis'=>__('Date')),
+			'author'=> array('dis'=>__('Author')),
+			'author_photo'=> array('dis'=>__('Author Photo')),
+			'author_description'=> array('dis'=>__('Author Description')),
+			'status'=> array('dis'=>__('Status')),
+			'featured_image'=> array('dis'=>__('Featured Image')),
+			'category'=> array('dis'=>__('Category')),
+			'tags'=> array('dis'=>__('Tags')),
+			'comments_count'=> array('dis'=>__('Comments Count')),
+			'version_count'=> array('dis'=>__('Number of versions')),
+			'page_numbers'=> array('dis'=>__('Page Numbering block')),
+			'index_loop'=>array('dis'=>__('The loop of the index items')),
+			'index_row'=>array('dis'=>__('An index item')),
+			'index_row_chapter'=>array('dis'=>__('chapter of an index item')),
+			'index_row_text'=>array('dis'=>__('text of an index item')),
+			'index_row_segment'=>array('dis'=>__('segment of an index item')),
+			'index_row_page'=>array('dis'=>__('page # of an index item')),
 		);
 		return $shortcodes;
 	}
@@ -60,42 +69,57 @@ class shortcode {
     public function register_template_shortcodes() {
         $shortcodes = shortcode::build_shortcodes();
 		foreach($shortcodes as $code=>$props){
-			add_shortcode($code, array( $this, $props['function'] ));
+			$_func = $code.'_func';
+			if( method_exists($this,$_func) ){
+				add_shortcode($code, array( $this, $_func ));
+			}
 		}
     }
 	
-	public static function get_template_shortcodes($template='body'){
-		switch($template){
-			case 'body':
-				$shortcodes = shortcode::build_shortcodes();
-				$usingCodes = array(
+	public static function get_template_section_shortcodes($template='body'){
+		//would be pulled from a reg
+		$registered_codes = array(
+			'body' => array(
 					'loop','site_title','site_tagline','site_url','date_today',
 					'from_date','to_date','categories','post_count','page_numbers'
-				);
-				$returning = array();
-				foreach($shortcodes as $code=>$props){
-					if(in_array($code,$usingCodes)){
-						$returning[$code]= $props['dis'];
-					}
-				}
-				return $returning;
-				break;
-			case 'loop':
-				$shortcodes = shortcode::build_shortcodes();
-				$usingCodes = array(
+				),
+			'loop' => array(
 					'title','excerpt','content','permalink',
 					'date','author','author_photo','author_description',
 					'status','featured_image','category','tags','comments_count','version_count'
-				);
-				$returning = array();
-				foreach($shortcodes as $code=>$props){
-					if(in_array($code,$usingCodes)){
-						$returning[$code]= $props['dis'];
-					}
-				}
-				return $returning;
-				break;
+				),
+			'pageheader' => array(
+				'site_title','site_tagline','site_url','date_today','title',
+				'from_date','to_date','categories','post_count','page_numbers'
+			),
+			'pagefooter' => array(
+				'site_title','site_tagline','site_url','date_today','title',
+				'from_date','to_date','categories','post_count','page_numbers'
+			),
+			'index' => array(
+				'index_loop',
+			),
+			'index_loop' => array(
+				'index_row',
+			),
+			'index_row' => array(
+				'index_row_chapter','index_row_text','index_row_segment','index_row_page',
+			),
+		);
+		if (isset( $registered_codes[$template] ) ) return $registered_codes[$template];
+		return array();
+	}
+
+	public static function get_template_shortcodes($template='body'){
+		$shortcodes = shortcode::build_shortcodes();
+		$usingCodes = shortcode::get_template_section_shortcodes($template);
+		$returning = array();
+		foreach($shortcodes as $code=>$props){
+			if(in_array($code,$usingCodes)){
+				$returning[$code]= $props['dis'];
+			}
 		}
+		return $returning;
 	}
 	
 	
@@ -109,7 +133,8 @@ class shortcode {
     public function apply_download_button($atts) {
         $link                  = '';
         $text                  = (isset($atts['text'])) ? $atts['text'] : 'Download';
-        $atts['catpdf_post_dl'] = 'true';
+		$target                = (isset($atts['target'])) ? $atts['target'] : '_blank';
+        $atts['catpdf_post_dl']= (isset($atts['catpdf_post_dl'])) ? $atts['catpdf_post_dl'] : 'true';
         if (count($atts) > 0) {
             foreach ($atts as $key => $att) {
                 $atts[$key] = urlencode($att);
@@ -118,8 +143,12 @@ class shortcode {
         if (isset($atts['text'])) {
             unset($atts['text']);
         }
+        if (isset($atts['target'])) {
+            unset($atts['target']);
+        }		
+
         $dllink = add_query_arg($atts);
-        $link   = sprintf('<a href="%1$s">%2$s</a>', $dllink, $text);
+        $link   = sprintf('<a href="%1$s" target="%3$s" title="%2$s">%2$s</a>'."\n", $dllink, $text, $target);
         return $link;
     }
 	
@@ -134,10 +163,92 @@ class shortcode {
 			'label' => '{PTx}',
 			'separator' => '{P#S}'
 		), $atts));
-		$block='<div id="page_numbers"><span id="pn_text">'.$label.'</span><span id="pn_number">{P#}'.$separator.'{PT#}</span></div>';
+		$block='<div id="page_numbers"><span id="pn_text">'.$label.'</span><span id="pn_number">{P#}'.$separator.'{PT#}</span></div>'."\n";
         return $block;
     }	
 	
+	
+    /*
+    * Return page numbering block
+    */
+    public function index_func($atts) {
+		$block='[index_row]';
+	/*	
+						'index_loop'=>array('dis'=>__('The loop of the index items')),
+			'index_row'=>array('dis'=>__('An index item')),
+			'index_row_chapter'=>array('dis'=>__('chapter of an index item')),
+			'index_row_text'=>array('dis'=>__('text of an index item')),
+			'index_row_segment'=>array('dis'=>__('segment of an index item')),
+			'index_row_page'=>array('dis'=>__('page # of an index item')),		
+		
+<?php
+$index.= "";
+$c=1;
+foreach($posts as $post){
+?>
+<table class='indexed_chapter'>
+  <tbody>
+    <tr>
+      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{chapter{$c}}</td>
+      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{text{$c}}</td>
+      <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
+      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{page{$c}}</td>
+    </tr>
+  </tbody>
+</table>
+<?php
+	
+}
+?>
+		
+		*/
+		
+		
+        return $block;
+    }	
+	public function index_loop_func($atts) {
+		global $posts,$catpdf_output,$catpdf_templates,$current_index_row;
+		$c=1;
+		foreach($posts as $post){
+			$current_index_row=array(
+				"chapter"=>"chapter ${c}",
+				"text"=>"text ${c}",
+				"segment"=>"segment ${c}",
+				"page"=>"page ${c}",
+			);
+			$block.=$catpdf_output->filter_shortcodes("index_row",$catpdf_templates->resolve_template("index-table-row.php"));
+			$c++;
+		}
+		//var_dump($block);
+		return $block;
+	}
+	
+
+
+	public function index_row_chapter_func($atts) {
+		global $current_index_row;
+		$block = $current_index_row["chapter"];
+		return $block;
+	}
+
+	public function index_row_text_func($atts) {
+		global $current_index_row;
+		$block = $current_index_row["text"];
+		return $block;
+	}
+
+	public function index_row_segment_func($atts) {
+		global $current_index_row;
+		$block = $current_index_row["segment"];
+		return $block;
+	}
+
+	public function index_row_page_func($atts) {
+		global $current_index_row;
+		$block = $current_index_row["page"];
+		return $block;
+	}
+
     /*
     * Return post content
     */
@@ -149,8 +260,8 @@ class shortcode {
         $item = get_the_content();
 		$title = get_the_title();
 			$indexerscript='
-<script type="text/php"> $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "'.$title.'"; $GLOBALS["i"]=$i+1; } </script>
-';
+<script type="text/php"> if(isset($GLOBALS["i"])){ $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "'.$title.'"; $GLOBALS["i"]=$i+1;} } </script>
+'."\n";
 			$indexedcontent=$indexerscript.$item;
 			$item=$indexedcontent;
         return $item;

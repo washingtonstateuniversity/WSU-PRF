@@ -181,7 +181,7 @@
               </div>
               <div class="clr"></div>
               <div class="note"> <span>(
-                <?php _e("Custruct this template's body part. "); ?>
+                <?php _e("construct this template's body part. "); ?>
                 )</span> </div>
             </div>
           </div>
@@ -223,7 +223,7 @@
               </div>
               <div class="clr"></div>
               <div class="note"> <span>(
-                <?php _e("Custruct this template's loop part. "); ?>
+                <?php _e("construct this template's loop part. "); ?>
                 )</span> </div>
             </div>
           </div>

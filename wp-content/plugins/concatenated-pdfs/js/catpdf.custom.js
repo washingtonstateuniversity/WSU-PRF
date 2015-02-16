@@ -47,10 +47,44 @@ jQuery(document).ready(function() {
 		trigger_usage(tar);
 	});
 	
+	jQuery(".field-wrap .help").on('click',function(e){
+		e.preventDefault();
+		var self = jQuery(this);
+		var block = self.closest('.field-wrap').find('.note_block');
+		if(block.is(".active")){
+			block.slideUp(250,"easeOutQuint",function(){ block.removeClass("active"); });	
+		}else{
+			block.slideDown(500,"easeOutQuint",function(){ block.addClass("active"); });	
+		}
+	});
+	
+	jQuery("#postdl").on("click",function(){
+		var self = jQuery(this);
+		var block = jQuery("#single_post_generation");
+		if( self.is(":checked") ){
+			block.slideDown(500,"easeOutQuint",function(){ block.addClass("active"); });
+		}else{
+			block.slideUp(250,"easeOutQuint",function(){ block.removeClass("active"); });
+		}
+	});
 	
 	
-	
-	
+	jQuery(".alter_all").on("click",function(e){
+		var self = jQuery(this);
+		var parent = self.closest('.select_area');
+		var checkboxes = parent.find('[type="checkbox"]');
+		if(self.is('.ALL_ON')){
+			self.removeClass("ALL_ON").addClass('ALL_OFF');
+			checkboxes.removeAttr("checked");
+			self.removeAttr("checked");
+			parent.find('.select.block label span').text("Select");
+		}else{
+			self.addClass("ALL_ON").removeClass('ALL_OFF');
+			checkboxes.attr("checked",true);
+			self.attr("checked",true);
+			parent.find('.select.block label span').text("Deselect");
+		}
+	});
 	
 	
 });
