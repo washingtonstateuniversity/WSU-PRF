@@ -132,6 +132,7 @@ class catpdf_pages {
         $data['select_cats']   = $select_cats;
         $data['select_author'] = $select_author;
 
+		$data['styles'] = array('default' => "default") + $catpdf_templates->get_styles();
         $data['select_sizes']  = array('letter' => $catpdf_data->paper_sizes['letter']) + $catpdf_data->paper_sizes;
         $data['select_ors']    = $catpdf_data->paper_orientation;
 		$data['media_types']   = $catpdf_data->media_types;

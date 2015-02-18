@@ -61,6 +61,32 @@
       </div>
 	  
 	  <h3>PDF attributes</h3>
+	  
+	  
+		<div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
+			<div class="field">
+			<?php if(!empty($styles)): ?>
+				<label><?=_e( "Default Style to use" )?> </label>
+				<select name="style" id="style" >
+					<?php foreach($styles as $name): ?>
+					<option <?=selected($options['style'],$name)?>><?=$name?></option>
+					<?php endforeach;?>
+				</select>
+			<?php else: ?>
+				<h4>the theme you have chossen has no styles to choose from at this time.</h4>
+			<?php endif; ?>
+			</div>
+			<div class="note block"><div class="note_block"><?=_e("You may override the default templates to build parts of the PDFs by adding a folder in your theme folder named ")?><code>concatenated-pdfs</code><?=_e(".  If you put a folder with in that theme override, that folder name is your style that you can choose to use.  It will use the first one found.  The fallback progrssion is as follows:")?> <i>(<?=_e("NOTE: this is an example theme of 'spine' in use with a style of 'bbmp' for cover.php")?>)</i>
+			<ol>
+				<li><b>wp-content/themes/spine/concatenated-pdfs/bbmp/</b>cover.php <i>-(look here first)</i></li>
+				<li><b>wp-content/themes/spine/concatenated-pdfs/</b>cover.php <i>-(if not in `bbmp/` look here)</i></li>
+				<li><b>wp-content/plugins/concatenated-pdfs/templates/</b>cover.php <i>-(default used if nothign loaded)</i></li>
+			</ol>
+			</div></div>
+		</div>
+	  
+	  
+	  
       <div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
         <div class="field">
 
