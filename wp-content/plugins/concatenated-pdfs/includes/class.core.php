@@ -67,97 +67,13 @@ class catpdf_core {
 			}
 		}
     }
-	/*----------------------
-	 NOTICE: this area needs to be redone
-	------------*/
-				/*
-				 * Initialize install
-				 */
-				public function install_init() {
-					// Add database table
-					$this->_add_table();
-					// Insert default datas
-					$this->_insert_defaults();
-				}
-				/*
-				 * Add template table
-				 */
-				public function _add_table() {
-					global $wpdb,$catpdf_data;
-					// Construct query
-					$table_name = $wpdb->prefix . "catpdf_template";
-					$sql        = "
-					CREATE TABLE `{$table_name}`  (
-						`template_id` mediumint(9) NOT NULL AUTO_INCREMENT,
-						`template_name` varchar(50) NOT NULL,
-						`template_description` text,
-						`template_loop` text,
-						`template_body` text,
-						`template_pageheader` text,
-						`template_pagefooter` text,
-						`create_by` mediumint(9) NOT NULL,
-						`create_date` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-					UNIQUE KEY id (template_id)
-					);";
-					// Import wordpress database library
-					require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-					dbDelta($sql);
-					// Save version
-					add_option('catpdf_db_version', CATPDF_VERSION);
-					// Add plugin option holder
-					$options = $catpdf_data->get_options();
-					add_option('catpdf_options', $options, '', 'yes');
-					// Define and create required directories
-					$required_dir = array(
-						'htmlfragments' => SCRAPE_PATH . '/cache/html',
-						'pdf' => SCRAPE_PATH . '/cache/pdf'
-					);
-					foreach ($required_dir as $dir)
-						if( !is_dir($dir) ) @mkdir($dir, 0777);
-					
-					
-					
-				}
-				/*
-				 * Set option defaults
-				 */
-				public function _insert_defaults() {
-					global $catpdf_templates;
-					// Check if default template exist
-					if (!$this->_is_exist('template_name', 'Sample Template')) {
-						// Get default template
-						$default_template = $catpdf_templates->construct_default_template();
-						// Set up data
-						$data             = array(
-							'template_name' => 'Sample Template',
-							'template_loop' => $default_template['loop'],
-							'template_body' => $default_template['body'],
-							'template_pageheader' => $default_template['pageheader'],
-							'template_pagefooter' => $default_template['pagefooter'],
-							
-						);
-						// Insert template
-						$catpdf_templates->add_this($data);
-					}
-				}
-				
-				/*
-				 * Check if entry already exist
-				 * @column - string
-				 * @value - string
-				 */
-				private function _is_exist($column = '', $value = '') {
-					global $wpdb;
-					$table_name = $wpdb->prefix . "catpdf_template";
-					$result     = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE " . $column . " = '" . $value . "'");
-					if (count($result) > 0) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-		
-	/*-------------------------*/
+	/**
+	 * Initialize install
+	 */
+	public function install_init() {
+		// Insert default datas
+		$this->_insert_defaults();
+	}
 	/**
 	 * Add meta boxes used to capture pieces of information for the profile.
 	 *
@@ -180,8 +96,9 @@ class catpdf_core {
 	}
 
 	/**
+     *
 	 * Display a meta box of the captured html.  This is just displaying the post content, so it's 
-	 * not really the meta of the post, but it'll work for our needs
+	 * not really the meta of the post, but it'll work for our needs.
 	 *
 	 * @global class $scrape_core
 	 *
@@ -224,8 +141,8 @@ class catpdf_core {
 	 */
 	public function save( $post_id ) {
 		
-		/*
-		 * We need to verify this came from the our screen and with proper authorization,
+		/**
+     	 * We need to verify this came from the our screen and with proper authorization,
 		 * because save_post can be triggered at other times.
 		add this in later
 		
@@ -267,8 +184,10 @@ class catpdf_core {
 	}
 		
 				
-    /*
+    /**
      * Returns download button link
+	 *
+	 * @return string
      */
     public function apply_post_download_button($content) {
         if ($GLOBALS['post']->post_type == 'post') {

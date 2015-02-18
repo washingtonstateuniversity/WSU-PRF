@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
-<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-<title>concatenated-pdfs-02-13-2015</title>
-<link type='text/css' rel='stylesheet' href='http://dev.policies.wsu.edu/wp-content/themes/WSUWP-spine-parent-theme-master/style.css'/>
+<meta charset='UTF-8' />
+<title>concatenated-pdfs-02-18-2015</title>
+<link type='text/css' rel='stylesheet' href='http://dev.policies.wsu.edu/wp-content/themes/theme-policies.wsu.edu/style.css'/>
 <link type='text/css' rel='stylesheet' href='http://dev.policies.wsu.edu/wp-content/plugins/concatenated-pdfs/css/pdf_style.css'/>
 <!-- built from the php and are important to try not to write over if possible -->
 	<style>
-		html,body { background-color:#F0F0F0; position: relative; }
+		html,body { /*background-color:#F0F0F0;*/ position: relative; }
 		/*@page{}*/
-		#head_area{ left:15px; top:15px; height:50px; /*width:-30px;*/ }
+		#head_area{ left:15px; top:15px; height:50px; /*width:786px;*/ }
 		#head_area .wrap{ height:50px;}
-		#foot_area{ left:15px; bottom:15px; height:45px; /*width:-30px;*/ }
+		#foot_area{ left:15px; bottom:15px; height:45px; /*width:786px;*/ }
 		#foot_area .wrap{ height:45px; }
 		body {padding:80px 15px 70px 15px;} /*note that the body is used as our sudo "page" it is our saffal base*/
 		
@@ -18,28 +18,38 @@
 	</style></head>
 <body>
 <div id='head_area'>
-<div class='wrap'><div id="site_info_block">
-	<img src="http://images.wsu.edu/images/WSU-Logo-Primary_RGB--180x50.png" id="logo" alt=""/>
-	<!--http://repo.wsu.edu/spine/develop/marks/wsu-signature-horizontal.svg--><!--http://images.wsu.edu/index-images/bg-header.jpg-->
-	<div id="site_info">
-		<span id="site_info_name">policies.wsu.edu</span>
-		<br/>
-		<span id="site_info_tag">Just another WordPress site</span>
+<div class='wrap'>
+
+	<div id="site_info_block">
+		<img src="http://images.wsu.edu/images/WSU-Logo-Primary_RGB--180x50.png" id="logo" alt=""/>
+		<div id="site_info">
+			<span id="site_info_name">policies.wsu.edu</span>
+			<br/>
+			<span id="site_info_tag">Just another WordPress site</span>
+		</div>
 	</div>
-</div>
-<div id="site_tag">February 13,2015<br/><a href='http://dev.policies.wsu.edu'>http://dev.policies.wsu.edu</a></div></div>
+	<div id="site_tag">February 18,2015<br/><a href='http://dev.policies.wsu.edu'>http://dev.policies.wsu.edu</a></div></div>
 </div>
 <div id='foot_area'>
-<div class='wrap'><div id="page_numbers"><span id="pn_text">PAGE</span><span id="pn_number">{P#}/{PT#}</span></div>
+<div class='wrap'>
+<div id="page_numbers"><span id="pn_text">PAGE</span><span id="pn_number">{P#}/{PT#}</span></div>
 </div>
 </div>
-<script type="text/php"> $GLOBALS["i"]=1; $GLOBALS["indexpage"]=0; $GLOBALS["chapters"] = array(); </script><div id='catpdf_cover'><h1 class='CoverTitle'>Cover Letter</h1>
+
+<script type="text/php"> $GLOBALS["i"]=1; $GLOBALS["indexpage"]=0; $GLOBALS["chapters"] = array(); </script>
+
+<div id='catpdf_cover'>
+<!-- Note that CoverTitle is a default, and removal mean you must add your own css in.  -->
+<h1 class='CoverTitle'>Cover Letter</h1>
 </div>
 
 
 <i class='page-break'></i>
 
-<div id='catpdf_index'><script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>
+
+<div id='catpdf_index'>
+
+<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>
 <h2>Table of Contents</h2>
 <table class='indexed_chapter'>
   <tbody>
@@ -52,955 +62,48 @@
   </tbody>
 </table>
 
+
 <script type="text/php">$pdf->close_object(); </script>
+
 </div>
+
 
 <i class='page-break'></i>
 
-<div id='catpdf_content'><div class="content-wrapper">
-	<div class="post single">
-	<h2>Payroll and Personnel Records</h2>
-	<div class="meta">
-		<p>Posted on <strong>February 13,2015</strong> by <strong>jeremy.bass</strong></p>
+
+<div id='catpdf_content'>
+
+	<div>
+		
+		<div class="content-wrapper">
+			<div class="post">
+				<h1>Hello world!</h1>
+				<h2>Posted in:Uncategorized</h2>
+				<h3></h3>
+				<h4>version 0 <span>([revision_count] revisions)</span></h4>
+				<div class="meta">
+					<p>Posted on <strong>January 20,2015</strong> by <strong>jeremy.bass</strong></p>
+				</div>
+				
+<script type="text/php"> if(isset($GLOBALS["i"])){ $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "Hello world!"; $GLOBALS["i"]=$i+1;} } </script>
+
+Welcome to WordPress. This is your first post. Edit or delete it, then start blogging!
+			</div>
+		</div>
+		<i class="page-break"></i>
 	</div>
-	
-<script type="text/php"> if(isset($GLOBALS["i"])){ $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "Payroll and Personnel Records"; $GLOBALS["i"]=$i+1;} } </script>
-
-<h3>Washington State University<br/>
-BUSINESS POLICIES AND PROCEDURES MANUAL<br/><hr /></h3>
-
-
-
-
-
-
-
-
-<table >
-  <tr>
-    <td colspan="6">
-      <p >Title<br/><b>Payroll and Personnel Records</b></p>
-    </td>
-  </tr>
-  <tr><td><p ><b>Record Series Title--Function/Purpose</b></p></td>
-<td><p ><b>Location<br/>
-(*Official Copy)</b></p></td>
-<td><p ><b>Cutoff</b></p></td>
-<td><p ><b>Retention<br/>
-Period</b></p></td>
-<td><p ><b>Disposition<br/>
-Authority No.</b></p></td>
-<td><p ><b>Remarks</b></p></td>
-</tr>
-  
-  
-  <tr><td >ANNUAL REVIEW OF FACULTY<br/>
-Evaluation of job performance.</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Dean<br/><br/><br/>
-Department</span></td>
-<td  ><span class="size2">termination of employment<br/><br/>
-fiscal year<br/><br/><br/>
-fiscal year</span></td>
-<td  ><span class="size2">6 yrs<br/><br/><br/><br/>
-3 yrs<br/><br/><br/>
-3 yrs</span></td>
-<td  >
-<span class="size2">11-12-63535<br/><br/><br/><br/></span>
-<font size="-2">Secondary copy under<br/>
-11-12-63535<br/><br/>
-Secondary copy under<br/>
-11-12-63535</span>
-</td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >APPLICATIONS/RESUMES RECEIVED--NOT SOLICITED OR INTERVIEWED<br/>
-Any non-solicited request for job consideration, not interviewed.</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">date of document</span></td> 
-<td  ><span class="size2">6 mos</span></td> 
-<td  ><span class="size2">GS 03022</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td  >APPOINTING AUTHORITY FOR FACULTY, ADMINISTRATIVE PROFESSIONAL, 
-AND CLASSIFIED EMPLOYEES<br/>
-Letters of delegation to employees who are authorized to sign employment 
-forms.</td>
-<td  ><span class="size2">Human Resource Services* (OPR)<br/><br/>
-President<br/><br/>
-Department</span></td>
-<td  ><span class="size2">until superseded<br/><br/><br/><br/>
-until superseded<br/><br/>
-until superseded</span></td>
-<td  ><span class="size2">6 yrs<br/><br/><br/><br/><br/>
-0 yrs<br/><br/>
-0 yrs</span></td>
-<td  >
-<span class="size2">11-12-63537<br/><br/><br/><br/></span>
-<br/><font size="-2">Secondary copy under<br/>
-11-12-63537<br/><br/>
-Secondary copy under<br/>
-11-12-63537<br/></span>
-</td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >COMMUTE TRIP REDUCTION DOCUMENTATION<br/>
-University Commute Trip Reduction Program administration documentation, 
-including bonus voucher certification forms, registration forms, 
-incentives, parking tracking files, and other records pertaining 
-to the program, as applicable to the campus.</td>
-<td  ><span class="size2">Campus Parking Services Office*</span></td>
-<td  ><span class="size2">fiscal year</span></td>
-<td  ><span class="size2">6 yrs</span></td>
-<td  ><span class="size2">GS 03037</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >COURSE EVALUATION SUMMARIES<br/>
-Compilation of appraisals and comments from individual 
-course/instructor evaluations.</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">fiscal year</span></td> 
-<td  ><span class="size2">3 yrs</span></td> 
-<td  ><span class="size2">11-12-63538</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >COURSE/INSTRUCTOR EVALUATIONS<br/>
-A record of individual student or participant evaluations of 
-content and presentation of a course.</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">fiscal year</span></td> 
-<td  ><span class="size2">1 yr</span></td> 
-<td  ><span class="size2">11-12-63540</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >DAILY ACTIVITY REPORTS, TIME CLOCK CARDS, AND ALTERNATIVE 
-TIME/PIECE RECORDS<br/>
-Used by positive pay employees to record hours of work or completed 
-pieces. An individual record may be either a Daily Activity Report, 
-a time clock card, or a Human Resource Services approved alternative 
-time/piece record.</td>
-<td  ><span class="size2">Department* (OPR)</span></td> 
-<td  ><span class="size2">fiscal year</span></td> 
-<td  ><span class="size2">6 yrs</span></td> 
-<td  ><span class="size2">11-12-63541</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >DEPARTMENT'S EMPLOYEE FILE<br/>
-Provides a secondary copy of employee personnel record folders for department 
-reference. May include copies of applications, resumes, employment contracts, 
-training documentation, safety-related documentation, memoranda, and other 
-documents related to personnel history of University employees.  <br/>
-(NOTE:  Human Resource Services holds the official copy of the Personnel Record 
-Folders for University employees.)</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">termination of employment</span></td>
-<td  ><span class="size2">2 yr</span></td> 
-<td  ><span class="size2">11-12-63542</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >DEPARTURE NOTICE<br/>
-Notifies the Radiation Safety Office and/or Environmental Health and Safety 
-Office of an impending departure of a user of hazardous and/or radioactive 
-chemicals or materials.</td>
-<td  ><span class="size2">Radiation Safety Office*<br/>
-or<br/>
-Environmental Health and Safety*<br/><br/>
-Department</span></td>
-<td  ><span class="size1">termination of employment<br/><br/><br/>
-termination of employment<br/><br/><br/>
-termination of employment</span></td>
-<td  ><span class="size2">2 yrs<br/><br/><br/><br/>
-2 yrs<br/><br/><br/>
-1 yr</span></td>
-<td  ><span class="size2">11-12-63544<br/><br/><br/><br/>
-11-12-63544<br/><br/><br/>
-11-12-63545</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYEE PERFORMANCE EVALUATION SUPPORTING DOCUMENTS<br/>
-Documentation gathered by an employee's supervisor in preparation for each employee's 
-performance evaluation. May include notes regarding training and employee development; 
-performance notes; job assignments; and other related documentation. Note: If this file 
-contains any secondary copies of documents found in the official Personnel Record Folder 
-(retained by HRS), reviewer may discard such copies when the administrative purpose has 
-been served.<br/><br/><i>Must be destroyed when evaluation is completed.</i>
-</td>
-<td  ><span class="size2">Reviewer</span></td> 
-<td  ><span class="size2">evaluation</span></td> 
-<td  ><span class="size2">0</span></td> 
-<td  ><span class="size2">GS 03024</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYEE PERFORMANCE EVALUATIONS<br/>
-Evaluations of classified employee work performance, prepared 
-by his or her supervisor on a regular schedule.</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Reviewer<br/><br/>
-Department</span></td>
-<td  ><span class="size2">next evaluation<br/><br/><br/>
-evaluation<br/><br/>
-evaluation</span></td>
-<td  ><span class="size2">3 yrs<br/><br/><br/><br/>
-3 yrs<br/><br/>
-3 yrs</span></td>
-<td  ><span class="size2">GS 03002<br/><br/><br/><br/>
-11-12-63546<br/><br/>
-11-12-63547</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYEE RECOGNITION/APPRECIATION CEREMONIES OR AWARDS<br/>
-A record of University- or department-wide employee recognition 
-efforts and events to include meeting minutes, plans, awards, 
-location, details of events and copies of expenditure records.</td>
-<td  ><span class="size2">Department*</span></td>
-<td  ><span class="size2">ceremony or award</span></td>
-<td  ><span class="size2">2 yrs</span></td>
-<td  ><span class="size2">GS 03021</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYEE RECRUITMENT FILES (SEARCH FILES)<br/>
-Documentation of the entire process used in recruiting and hiring 
-new employees, including applications. May include background 
-checks or criminal history records requests.</td>
-<td  ><span class="size2">Department*</span></td>
-<td  ><span class="size2">position filled</span></td>
-<td  ><span class="size2">3 yrs</span></td>        
-<td  ><span class="size2">GS 03012</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYEE TRAINING HISTORY FILES<br/>
-Records of an employee's training history, including employee's name and 
-identifying information, courses registered for and completed, and course 
-completion dates.  (May be retained in database format.)</td>
-<td  ><span class="size2">Human Resource Services*<br/>
-OR<br/>
-Department*</span></td>
-<td  ><span class="size2">termination of employment</span></td>
-<td  ><span class="size2">6 yrs</span></td>        
-<td  ><span class="size2">02-10-60463<br/>
-revision 1</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYMENT ELIGIBILITY VERIFICATION DOCUMENTS / I-9 FORMS<br/>
-Documents used to verify employment eligibility within the United States. May include 
-federal I-9 forms;passport copies; copies of valid driver's licenses; copies of 
-certificate of naturalization and supporting documentation.<br/>
-(See 8 CFR 274a.2.)</td>
-<td  ><span class="size1">Human Resource Services*</span></td>
-<td >
-<p ><span class="size1">date of hire</span></p>
-  
-  
-</td>
-<td  >
-<p><span class="size1">3 yrs</span>  </p>
-  
-  
-</td>
-<td  ><span class="size1">GS 03036</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EMPLOYMENT RECORD REQUEST (WSU 1238)<br/>
-To request leave and benefits records from former state employers.</td>
-<td  ><p><span class="size1">Human Resource Services* (OPR)
-<br/><br/></span><span class="size1">Department </span></p></td>
-<td  ><p><span class="size1">termination of employment
-<br/><br/>
-termination of employment</span></p></td>
-<td  ><p><span class="size1">6 yrs<br/><br/><br/>
-    0</span></p></td>
-<td  ><p><span class="size1">11-12-63550<br/><br/><br/>
-    11-12-63551</span></p></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EVALUATIONS/ADMINISTRATIVE AND PROFESSIONAL STAFF<br/>
-Provides a record of evaluation of an employee's performance, prepared 
-by his or her supervisor on a regular schedule.</td>
-<td  ><p><span class="size2">Human Resource Services*
-<br/><br/>
-Department</span></p></td>
-<td  ><p><span class="size2">evaluation<br/><br/><br/>
-evaluation</span></p></td>
-<td  ><p><span class="size2">3 yrs<br/><br/><br/>
-3 yrs</span></p></td>
-<td  ><p><span class="size2">GS 03002<br/><br/><br/>
-11-12-63552</span></p></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EXIT INTERVIEW, PERSONNEL<br/>
-Documentation of information gathered during an exit interview 
-with a terminating employee.</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">calendar year</span></td> 
-<td  ><span class="size2">6 yrs</span></td> 
-<td  ><span class="size2">GS 03040</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >EXPENSE ASSIGNMENT ACTION (WSU 1260)<br/>
-Used for temporary changes in account assignment of personnel charges.</td>
-<td  ><span class="size1">Position Control*<br/><br/>
-Payroll<br/><br/>
-Dean/Director<br/><br/>
-Department</span></td>
-<td  ><span class="size1">fiscal year<br/><br/>
- fiscal year<br/><br/>
-until superseded<br/><br/>
-until superseded</span></td>
-<td  ><span class="size1">2 yrs<br/><br/>
- 2 yrs<br/><br/>
-0<br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63553<br/><br/>
- 11-12-63554<br/><br/>
-11-12-63555<br/><br/>
-11-12-63556</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >GRADUATE FACULTY APPOINTMENT FILES<br/>
-Provides a record of department appointments of faculty members to 
-graduate faculty assignments. Files may include ballots, vita, and 
-Admittance to Graduate Faculty forms.</td>
-<td  ><span class="size2">Graduate School*<br/><br/><br/><br/>
-Department</span></td>
-<td  ><span class="size2">graduate faculty assignment ends<br/><br/>
-ballot outcome reported to Grad School</span></td>
-<td  ><span class="size2">1 yr<br/><br/><br/><br/>
-1 yr</span></td>
-<td  ><span class="size2">11-12-63557<br/><br/><br/><br/>
-11-12-63558</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td>HIPAA SECURITY AGREEMENT<br/>
-Provides a record of client confidentiality and security agreement signed 
-by health care personnel, e.g., clinic personnel.<br/> 
-(45CFR164.316(b)(2)(i))</td>
-<td  ><span class="size1">Department*</span></td>
-<td  ><span class="size1">termination of employment</span></td>
-<td  ><span class="size1">6 yrs</span></td> 
-<td  ><span class="size1">11-12-63559</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >LEAVE REPORT (WSU 1126)<br/>
-Used to record leave activity for faculty and administrative professional 
-personnel. <br/>
-NOTE: The record copy of this file is maintained by the employing department 
-until termination of employment. At termination of employment the file is 
-sent to HRS for audit. </td>
-<td  ><span class="size1">Payroll* (OPR)<br/>
-(pay-affecting only)<br/><br/>
-Human Resource Services*<br/><br/>
-Department*
-</span></td>
-<td  ><span class="size1">termination of employment<br/><br/>
- audit<br/><br/><br/>
-termination of employment</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
- 5 yrs<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63560<br/><br/><br/>
-11-12-63561<br/><br/><br/>
-11-12-63562</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >LEAVE REPORT FOR EXCEPTED CLASSIFIED EMPLOYEES (WSU 1300)<br/>
-Used to record attendance and leave for overtime-ineligible (excepted) 
-classified employees. The record copy of this file is maintained by the employing 
-department until termination of employment. At termination of employment the 
-file is sent to HRS for audit.</td>
-<td  ><span class="size1">Payroll* (OPR)<br/>
-(pay-affecting only)<br/><br/>
-Human Resource Services*<br/><br/>
-Department*</span></td>
-<td  ><span class="size1">termination of employment<br/><br/>
- audit<br/><br/><br/>
-termination of employment</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
- 5 yrs<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63563<br/><br/><br/>
- 11-12-63564<br/><br/><br/>
-11-12-63565</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >NONSERVICE PAY AUTHORIZATION (WSU 1314)<br/>
-Authorizes pay to WSU Fellows, trainees, interns or other nonservice 
-positions.</td>
-<td  ><span class="size2">Accounts Payable* (OPR)<br/><br/>
-Financial Aid<br/><br/>
-Department</span></td>
-<td  ><span class="size2">fiscal year<br/><br/><br/><br/>
- fiscal year<br/><br/>
-fiscal year</span></td>
-<td  ><span class="size2">6 yrs<br/><br/><br/><br/>
- 2 yrs<br/><br/>
-2 yrs</span></td>
-<td  ><span class="size2">11-12-63566<br/><br/><br/><br/>
-11-12-63567<br/><br/>
-11-12-63568</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PAYROLL DEDUCTION FORMS<br/>
-Used to authorize deductions from payroll.</td>
-<td  ><span class="size2">Department*</span></td>
-<td  ><span class="size2">last authorized deduction</span></td>
-<td  ><span class="size2">6 yrs</span></td>
-<td  ><span class="size2">11-12-63569</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PAYROLL EXPENDITURE AUDIT REPORT<br/>
-Department personnel download payroll expenses indicating status of 
-payroll records that will generate the next payroll.  Allows department 
-correction and Payroll followup.</td>
-<td  ><span class="size2">Payroll*<br/>
-(maintained on mainframe or tape)<br/><br/>
-Department</span></td>
-<td  ><span class="size2">calendar year<br/><br/><br/><br/>
-fiscal year</span></td>
-<td  ><span class="size2">4 yrs<br/><br/><br/><br/>
-2 yrs</span></td>
-<td  ><span class="size2">11-12-63570<br/><br/><br/><br/>
-11-12-63571</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL ACTION (WSU 1097)<br/>
-Used to authorize personnel transactions and communicate employment status 
-of appointed employees to Human Resource Services.</td>
-<td  ><span class="size1">Human Resource Services* (OPR)<br/><br/>
-Payroll<br/><br/><br/>
-Benefit Services<br/><br/><br/>
-Department</span></td>
-<td  ><span class="size1">termination of employment<br/><br/>
-termination of employment<br/><br/>
-termination of employment<br/><br/>
-until superseded</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
-6 yrs<br/><br/><br/>
-1 yr<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63572<br/><br/><br/>
-11-12-63573<br/><br/><br/>
-11-12-63574<br/><br/><br/>
-11-12-63575</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL COMPLAINTS SUPPORTING DOCUMENTS<br/>
-Backup information and documents used to prepare personnel 
-complaint reports filed against or by state employees.<br/>
-(NOTE: If the complaint is unsubstantiated, follow the retention 
-period in the following records series: Personnel Complaints, 
-Exonerated, Non-Represented Employees or Personnel Complaints, 
-Exonerated, Represented Employees.)</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Department</span></td> 
-<td  >
-<span class="size2">final determination</span><span class="size2"><br/><br/><br/>
-report filed</span>
-</td> 
-<td  ><span class="size2">2 yrs<br/><br/><br/><br/>
-2 yrs</span></td> 
-<td  ><span class="size2">11-12-63576<br/><br/><br/><br/>
-11-12-63576</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL COMPLAINTS, EXONERATED, NON-REPRESENTED EMPLOYEES<br/>
-Personnel complaints filed against or by non-represented state employees 
-in which the complaint proved to be unsubstantiated. <br/>
-Note: Information regarding employee misconduct that is determined to 
-be false and in all situations where the employee has been fully 
-exonerated of wrongdoing shall be promptly destroyed, unless the 
-employee requests that the information be retained, or it is related 
-to pending legal action or legal action is expected to result. (See 
-42.06.450 RCW.)  (This series does not include complaints related to 
-discrimination or harassment. Records of complaints of this nature 
-are retained by the Office for Equal Opportunity.)</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Department</span></td> 
-<td  ><span class="size2">fully exonerated</span></td> 
-<td  ><span class="size2">0</span></td> 
-<td  ><span class="size2">GS 03006</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL COMPLAINTS, UPHELD, NON-REPRESENTED EMPLOYEES<br/>
-Personnel complaints filed against or by non-represented state 
-employees. May include documentation, filing forms, backup 
-information, recommendations, resolutions, and related memoranda 
-and correspondence.<br/>
-NOTE: This series does not include complaints related to 
-discrimination or harassment. (Records of complaints of this 
-nature are retained by the Office for Equal Opportunity.)</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Department</span></td> 
-<td  ><span class="size2">final determination</span></td> 
-<td  ><span class="size2">6 yrs</span></td> 
-<td  ><span class="size2">GS 03005</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL COMPLAINTS, EXONERATED, REPRESENTED EMPLOYEES<br/>
-Personnel complaints filed against or by represented state employees 
-in which the complaint proved to be unsubstantiated. <br/>
-NOTE: Some collective bargaining agreements require complaints to be 
-removed from an employee's file upon exoneration, although the agency 
-is not required to dispose of the records at that time. This retention 
-schedule establishes the retention period for such records by the 
-agency. If the collective bargaining agreement covering the agency's 
-employees provides for a different retention period than this schedule, 
-the agency shall request approval of a unique schedule for those 
-records.<br/>
-(This records series does not include complaints related to discrimination 
-or harassment. Records of complaints of this nature are retained by the 
-Office for Equal Opportunity.)</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Department</span></td> 
-<td  ><span class="size2">final determination</span></td> 
-<td  ><span class="size2">3 yrs</span></td> 
-<td  ><span class="size2">GS 03043</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL COMPLAINTS, UPHELD, REPRESENTED EMPLOYEES<br/>
-Personnel complaints filed against or by represented state 
-employees. May include documentation, filing forms, backup 
-information, recommendations, resolutions, and related memoranda 
-and correspondence.<br/>
-NOTE: If the collective bargaining agreement covering the 
-agency's employees provides for a different retention period than 
-this schedule, the agency shall request approval of a unique 
-schedule for those records.<br/>
-(This records series does not include complaints related to discrimination 
-or harassment. Records of complaints of this nature are retained by the 
-Office for Equal Opportunity.)</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Department</span></td> 
-<td  ><span class="size2">final determination</span></td> 
-<td  ><span class="size2">6 yrs</span></td> 
-<td  ><span class="size2">GS 03044</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL RECORD FOLDERS<br/>
-Documentation related to an employee's University employment history, including: 
-application, resume, Biographical Data Sheets, position held, assignment(s), 
-Personnel Action Forms, attendance, leave, telecommuting agreements, employee 
-profiles, management development and performance plan, memoranda and 
-correspondence, professional leave documentation, and other documents relating 
-to the personnel history of a University employee.<br/>
-NOTE: At the end of the retention period, the following items are transferred 
-to the records series titled "Personnel Record Folders--Long-Term Retention," 
-DAN #11-12-63578: Appeals/hearings determinations, settlement agreements, 
-Biographical Data Sheets, discontinuation notices--final, faculty questionnaires, 
-presumption of resignation letters, resignation letters, resumes/vitae, 
-retirement letters, and tenure/promotion letters.</td>
-<td  ><span class="size1">Human Resource Services*</span></td> 
-<td  ><span class="size1">termination of employment</span></td> 
-<td  ><span class="size1">6 yrs</span></td> 
-<td  ><span class="size1">11-12-63577</span></td>
-<td  ><span class="size1">Essential</span></td>
-</tr>
-  
-  
-  <tr><td >PERSONNEL RECORD FOLDERS--LONG-TERM RETENTION*<br/>
-Documentation related to an employee's University employment history requiring 
-a longer retention period than that assigned to "Personnel Record Folders," 
-DAN #11-12-63577. May include: Appeals/hearings determinations, settlement 
-agreements, Biographical Data Sheets, discontinuation notices--final, faculty 
-questionnaires, presumption of resignation letters, resignation letters, 
-resumes/vitae, retirement letters, and tenure/promotion letters. </td>
-<td  ><span class="size1">Human Resource Services*</span></td> 
-<td  ><span class="size1">termination of employment</span></td> 
-<td  ><span class="size1">40 yrs</span></td> 
-<td  ><span class="size1">11-12-63578</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >POSITION ACTION/POSITION REVIEW REQUEST (WSU 1162)<br/>
-Records positions authorized, source of funds, related position attributes. 
-Used to request classification or reclassification and other changes in 
-position attributes.</td>
-<td  ><span class="size1">Position Control*<br/><br/>
-Human Resource Services<br/>
-(for PRRs)<br/><br/>
-Payroll<br/><br/>
-Dean/Director<br/><br/>
- Department</span></td>
-<td  ><span class="size1">fiscal year<br/><br/>
- abolish position<br/><br/><br/><br/>
-fiscal year<br/><br/>
-until superseded<br/><br/>
- until superseded</span></td>
-<td  ><span class="size1">2 yrs<br/><br/>
- 1 yr<br/><br/><br/><br/>
-2 yrs<br/><br/>
-0<br/><br/>
- 0 </span></td>
-<td  ><span class="size1">11-12-63579<br/><br/>
-11-12-63580<br/><br/><br/><br/>
-11-12-63581<br/><br/>
-11-12-63582<br/><br/>
-11-12-63583</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >POSITION DESCRIPTION (WSU 1360)<br/>
-Used to describe the job functions of a vacant position for reclassification purposes.</td>
-<td  ><p><span class="size1">Human Resource Services*<br/><br/>
-Position Control<br/><br/>
-Department
-</span></p></td> 
-<td  ><span class="size1">abolish position<br/><br/><br/>
-  fiscal year<br/><br/>
-  until superseded
-</span></td> 
-<td  ><span class="size1">1 yr<br/><br/><br/>
-  2 yrs<br/><br/>
-  0
-</span></td> 
-<td  ><span class="size1">11-12-63584<br/><br/><br/>
-  11-12-63585<br/><br/>
-  11-12-63586</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >POSITION IDENTIFYING DESCRIPTION CHANGES (WSU 1265)<br/>
-A record of changes in position description when that is the only action 
-required.</td>
-<td  ><span class="size1">Position Control*<br/><br/>
-Department</span></td>
-<td  ><span class="size1">until superseded<br/><br/>
-until superseded</span></td>
-<td  ><span class="size1">0<br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63587<br/><br/>
-11-12-63588</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >POSITION QUESTIONNAIRE<br/>
-Provides a description of the job functions of an employee seeking 
-position reclassification.</td>
-<td  ><span class="size1">Human Resource Services*<br/><br/>
-Department</span></td>
-<td  ><span class="size1">abolish position<br/><br/><br/>
-until superseded</span></td>
-<td  ><span class="size1">1 yr<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63589<br/><br/><br/>
-11-12-63590</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >POSITION ROSTER<br/>
-Record generated from Position Control files of department allocation.</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">fiscal year</span></td> 
-<td  ><span class="size2">2 yrs</span></td>
-<td  ><span class="size2">11-12-63591</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >POSITIVE PAY REPORT<br/>
-Documents previous pay period payments.</td>
-<td  ><span class="size2">Payroll*</span></td>
-<td  ><span class="size2">fiscal year</span></td> 
-<td  ><span class="size2">4 yrs</span></td>
-<td  ><span class="size2">11-12-63592</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >PRESENTATION/TRAINING DEVELOPMENT FILES<br/>
-A record of presentation or course material developed and gathered 
-for use in training. May include reference material, outlines, handouts, 
-notes, evaluations, overheads, videos, computerized presentations, etc.</td>
-<td  ><span class="size2">Department*</span></td> 
-<td  ><span class="size2">admin. purpose served</span></td> 
-<td  ><span class="size2">0</span></td>
-<td  ><span class="size2">11-12-63593</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >REQUEST FOR POSITIVE PAY REPORT (WSU 1256)<br/>
-Used to request pay for hours or pieces missed on Unit Pay Report.</td>
-<td  ><span class="size2">Payroll*<br/><br/>
-  Department
-</span></td>
-<td  ><p><span class="size2">fiscal year<br/><br/>
-  fiscal year
-</span></p></td> 
-<td  >
-<span class="size2">2</span><span class="size2"> yrs<br/><br/> 
-  2 yrs
-</span>
-</td>
-<td  >
-<span class="size2">11-12-63595<br/><br/></span>
-<font size="-2">Secondary copy under<br/>
-  11-12-63595</span>
-</td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >REQUEST FOR TEMPORARY SCHEDULE CHANGE<br/>
-Provides a record of employee requests for temporary schedule changes.<br/>
-NOTE: At termination of employment, this record series is submitted to HRS 
-along with the employee's Time Report file.</td>
-<td  ><span class="size1">Human Resource Services*<br/><br/>
-Department</span></td>
-<td  ><span class="size1">audit<br/><br/><br/>
-termination of employment</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63596<br/><br/><br/>
-11-12-63597 </span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >SHARED LEAVE--DONOR RECORDS<br/>
-Documentation of the receipt and return of shared leave. Includes donation 
-information. Also includes career shared leave. </td>
-<td  ><span class="size1">Human Resource Services*<br/><br/>
-Department </span></td>
-<td  ><span class="size1">termination of employment<br/><br/>
-no longer needed</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63598<br/><br/><br/>
-11-12-63599</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >SHARED LEAVE--RECIPIENT RECORDS<br/>
-Documentation of the receipt and return of shared leave. Includes donation 
-information. Also includes career shared leave. </td>
-<td  ><span class="size1">Human Resource Services*<br/><br/>
-Department</span></td>
-<td  ><span class="size1">termination of employment<br/><br/>
-no longer needed</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63600<br/><br/><br/>
-11-12-63601 </span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TEMPORARY EMPLOYEE DEPARTMENTAL FILES<br/>
-Documentation related to a temporary employee's departmental 
-employment history. Files include but are not limited to:  
-Conditions for Temporary Employment, Temporary Employment 
-Application (for individuals who are hired), and Temporary 
-Employee Orientation Checklist.</td>
-<td  ><span class="size1">Department*</span></td> 
-<td  ><span class="size1">termination of employment</span></td> 
-<td  ><span class="size1">1 yr</span></td>
-<td  ><span class="size1">11-12-63543</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TEMPORARY EMPLOYMENT APPLICATION--NOT HIRED (WSU 1251)<br/>
-Used by prospects to apply for temporary employment. (Candidate not hired 
-by WSU.)</td>
-<td  ><span class="size2">Department*</span></td>
-<td  ><span class="size2">position filled</span></td>
-<td  ><span class="size2">0</span></td>
-<td  ><span class="size2">11-12-63602</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TENURE/PROMOTION EVALUATION DOCUMENTS (denied candidates)<br/>
-Includes evaluations, ballots, and resumes used to determine award of 
-faculty tenure and/or promotion. Includes actual tenure and/or promotion 
-consideration as well as third-year and/or promotion review.</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Dean<br/><br/>
-Department</span></td>
-<td  ><span class="size2">termination of employment<br/><br/>
-denial<br/><br/>
-denial</span></td>
-<td  ><span class="size2">35 yrs<br/><br/><br/><br/>
- 3 yrs<br/><br/>
-3 yrs</span></td>
-<td  ><span class="size2">11-12-63603<br/><br/><br/><br/>
- 11-12-63604<br/><br/>
-11-12-63605</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TENURE/PROMOTION EVALUATION DOCUMENTS (successful candidates)<br/>
-Includes evaluations, ballots, and resumes used to determine award of 
-faculty tenure and/or promotion. Includes actual tenure and/or promotion 
-consideration as well as third-year and/or promotion review.</td>
-<td  ><span class="size2">Human Resource Services*<br/><br/>
-Dean<br/><br/>
-Department</span></td>
-<td  ><span class="size2">award<br/><br/><br/>
- award<br/><br/>
-award</span></td>
-<td  ><span class="size2">6 yrs<br/><br/><br/>
-3 yrs<br/><br/>
-3 yrs</span></td>
-<td  ><span class="size2">11-12-63606<br/><br/><br/>
-11-12-63607<br/><br/>
-11-12-63608</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TENURE/PROMOTION SUPPORT DOCUMENTS (denied candidates)<br/>
-May include manuscripts, artwork, slides, or other items used to determine 
-award of faculty tenure and/or promotion. Includes actual tenure and/or 
-promotion consideration as well as third-year and/or promotion review.<br/><i>May be returned to the dean and then to the candidate at the discretion of 
-Provost's Office.</i>
-</td>
-<td  ><span class="size2">Human Resource Services*</span></td> 
-<td  ><span class="size2">denial</span></td> 
-<td  ><span class="size2">6 yrs</span></td> 
-<td  ><span class="size2">11-12-63609</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td>TENURE/PROMOTION SUPPORT DOCUMENTS (successful candidates)<br/>
-May include manuscripts, artwork, slides, or other items used to determine 
-award of faculty tenure and/or promotion. Includes actual tenure and/or 
-promotion consideration as well as third-year and/or promotion review.<br/><i>Returned to the dean and then to the candidate after award.</i>
-</td>
-<td  ><span class="size2">Provost's Office*</span></td> 
-<td  ><span class="size2">award</span></td> 
-<td  ><span class="size2">0</span></td>
-<td  ><span class="size2">11-12-63610</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TIME REPORT (WSU 1010)<br/>
-Used to record attendance, leave, and overtime for overtime-eligible faculty, 
-administrative professional, and classified employees. NOTE: The record copy 
-of this file is maintained by the employing department until termination of 
-employment. At termination of employment the file is sent to HRS for audit. 
-</td>
-<td  ><span class="size1">Payroll* (OPR)<br/>
-(pay-affecting only)<br/><br/>
-Human Resource Services<br/><br/>
-Department*</span></td>
-<td  ><span class="size1">termination of employment<br/><br/>
- audit<br/><br/><br/>
-termination of employment</span></td>
-<td  ><span class="size1">6 yrs<br/><br/><br/>
- 5 yrs<br/><br/><br/>
-0</span></td>
-<td  ><span class="size1">11-12-63611<br/><br/><br/>
- 11-12-63612<br/><br/><br/>
-11-12-63613</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >TRAINING COURSE INFORMATION RECORDS<br/>
-Memoranda, flyers, announcements, catalogs, and other records related to 
-specific training courses including information on course content, program 
-registration, instructor, credits and hours.</td>
-<td  ><span class="size1">Department*</span></td> 
-<td  ><span class="size1">until superseded or obsolete</span></td>
-<td  ><span class="size1">0</span></td> 
-<td  ><span class="size1">GS 22001</span></td>
-<td> </td>
-</tr>
-  
-  
-  <tr><td >VOLUNTEER FILES<br/>
-Applications, agreements, L &amp; I forms, and other information pertaining to 
-volunteers.</td>
-<td  ><span class="size1">Department*</span></td> 
-<td  ><span class="size1">termination of service</span></td> 
-<td  ><span class="size1">6 yrs</span></td> 
-<td  ><span class="size1">GS 03017</span></td>
-<td  ><span class="size1">Essential</span></td>
-</tr>
-  
-</table>
-	<div class="taxonomy">Posted in:RECORDS |  | With 0 comments</div>
 </div>
-</div></div>
 
 
 <i class='page-break'></i>
 
-<div id='catpdf_appendix'><h1 class='CoverTitle'>appendix</h1></div>
+
+<div id='catpdf_appendix'>
+<!-- Note that CoverTitle is a default, and removal mean you must add your own css in.  -->
+<h1 class='CoverTitle'>appendix</h1>
+[appendix_loop]
+</div>
+
 <script type="text/php">
 	$bs = $GLOBALS["backside"]; // work to remove
 
@@ -1039,5 +142,22 @@ volunteers.</td>
 	//page_script seems to need to be oneline?
 	$pdf->page_script('$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }');
 </script>
-</body>
+<script type="text/javascript">
+app.beep(0);
+var inch = 92;
+		for (var p = 0; p < this.numPages; p++) { 
+		 // put a rectangle at .5 inch, .5 inch 
+		  var aRect = this.getPageBox( {nPage: p} ); 
+		  aRect[0] += .5*inch;// from upper left corner of page 
+		  aRect[2] = aRect[0]+.5*inch; // Make it .5 inch wide 
+		  aRect[1] -= .5*inch; 
+		  aRect[3] = aRect[1] - .5*inch; // and .5 inch high 
+		  var f = this.addField("p."+p, "text", p, aRect ); 
+		  f.textSize = 20;  // 20-pt type
+		  f.textColor = color.blue; // use whatever color you want
+		  f.strokeColor = color.white; 
+		  f.textFont = font.Helv; 
+		  f.value = String(p+1);  // page numbering is zero-based
+		  f.readonly = true; 
+		}</script></body>
 </html>

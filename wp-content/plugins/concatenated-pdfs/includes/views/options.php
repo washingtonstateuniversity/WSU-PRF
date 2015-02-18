@@ -182,6 +182,20 @@
 				</div>
 			</div>
 		</div>  
+		
+		
+		<div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
+			<div class="field">
+				<label><?=_e( "Media view rendered into pdf" )?> </label>
+				<select name="style" id="style" >
+					<?php foreach($styles as $name): ?>
+					<option <?=selected($options['style'],$name)?>><?=$name?></option>
+					<?php endforeach;?>
+				</select>
+			</div>
+			<div class="note block"><div class="note_block"><?=_e("Note, even though the generated pdf file is intended for print output, the desired content might be different (e.g. screen or projection view of html file).  Therefore allow specification of content here.")?>)</div></div>
+		</div>		
+		
 		<div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
 			<div class="field">
 				<label><?=_e( "Media view rendered into pdf" )?> </label>

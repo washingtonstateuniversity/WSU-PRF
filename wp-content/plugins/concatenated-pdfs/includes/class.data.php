@@ -8,7 +8,6 @@ class catpdf_data {
 
 
 	public function get_options(){
-		
 		$plugin_option_defaults=array(
 				'concat' => array(
 								'enablecss' => 1,
@@ -52,7 +51,6 @@ class catpdf_data {
 		
 		$plugin_option = (array)json_decode(get_option('catpdf_options',null));	
 		if($plugin_option!=null){
-			
 			$plugin_option['concat']=(array)$plugin_option['concat'];
 			$plugin_option['single']=(array)$plugin_option['single'];
 			//var_dump($plugin_option);
@@ -62,11 +60,46 @@ class catpdf_data {
 		}
 		return $plugin_option;
 	}
+	
+	
+	
 	/**
-	* Dimensions of paper sizes in points
-	*
-	* @var array;
-	*/
+	 * orientation of paper
+	 *
+	 * @var array;
+	 */
+	public $paper_orientation = array(
+		'portrait',
+		'landscape'
+	);
+
+
+	/**
+	 * media types to put the pdf in
+	 *
+	 * @var array;
+	 */
+	public $media_types = array(
+		"screen",
+		"tty",
+		"tv",
+		"projection",
+		"handheld",
+		"print",
+		"braille",
+		"aural",
+		"speech",
+		"all"
+	);
+
+	
+	
+	
+	/**
+     * Dimensions of paper sizes in points
+	 *
+	 * @var array;
+	 */
 	public $paper_sizes = array(
 		"4a0" => array(0,0,4767.87,6740.79),
 		"2a0" => array(0,0,3370.39,4767.87),
@@ -127,7 +160,7 @@ class catpdf_data {
 	);
 	public function getAllPostTypes(){ }
 
-    /*
+    /**
      * Get post data
      * @id - int
 	 * It's worth noting that any out put here will print into the pdf.  If the PDF can't be 
@@ -187,9 +220,11 @@ class catpdf_data {
 		
         return $posts_array;//$result->posts;
     }
-    /*
+    /**
      * Return query filter
-     * @where - string
+     * @param string $where
+	 *
+	 * @return string
      */
     public function filter_where($where = '') {
         global $_params;

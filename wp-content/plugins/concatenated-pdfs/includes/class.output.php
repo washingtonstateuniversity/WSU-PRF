@@ -53,17 +53,17 @@ class catpdf_output {
 
 
 
-    /*
+    /**
      * Return pdf content
      * @type - string
 	 * @TODO move out to template class
      */
     public function construct_template($type = NULL) {
-        global $catpdf_templates,$_params,$catpdf_data,$posts;
+        global $catpdf_templates,$_params,$catpdf_data,$posts,$post;
 		$id		= isset($_params['catpdf_dl'])?$_params['catpdf_dl']:NULL;
-
-		$posts 	= array(get_post($id));
-		//var_dump($posts);
+		
+		$posts 	= ($id>0) ? get_posts($post) : array(get_post($id));
+		var_dump($posts);
 		
         $this->template = $catpdf_templates->get_current_tempate($type);
 		//var_dump($this->template);
@@ -100,7 +100,7 @@ class catpdf_output {
 		
 	
 	
-    /*
+    /**
      * Return html structure
      */
     public function _html_structure() {
@@ -137,7 +137,7 @@ class catpdf_output {
 		/* there should be a base html template? */
 		$head_html = "<!DOCTYPE html>\n";
         $head_html .= "<html>\n";
-        $head_html .= "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />\n";
+        $head_html .= "<meta charset='UTF-8' />\n";
         $head_html .= '<title>' . $this->title . "</title>\n";
 		
 		$head_html_style_sheets = "";
@@ -146,6 +146,10 @@ class catpdf_output {
             $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . get_stylesheet_uri() . "'/>\n";
         }
         $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . PDF_STYLE . "'/>\n";
+		
+		
+		
+		
         $head_html_closing_tag = "</head>\n";
 		
 		//calculated values needed for the pdf
@@ -158,17 +162,17 @@ class catpdf_output {
 		$page_padding="{$pageHeadMargin}{$unit} {$pagerightMargin}{$unit} {$pageFootMargin}{$unit} {$pageleftMargin}{$unit}";
 		
 		$bodyOpenTag = "<body>\n";
-		$header_section = "<div id='head_area'>\n<div class='wrap'>${pageheader}</div>\n</div>\n";
-		$footer_section = "<div id='foot_area'>\n<div class='wrap'>${pagefooter}</div>\n</div>\n";
+		$header_section = "<div id='head_area'>\n<div class='wrap'>\n${pageheader}</div>\n</div>\n";
+		$footer_section = "<div id='foot_area'>\n<div class='wrap'>\n${pagefooter}</div>\n</div>\n";
 		
 		//sets up the globals for the rendered inline php 
-		$indexscriptglobals='<script type="text/php"> $GLOBALS["i"]=1; $GLOBALS["indexpage"]=0; $GLOBALS["chapters"] = array(); </script>';
+		$indexscriptglobals="\n".'<script type="text/php"> $GLOBALS["i"]=1; $GLOBALS["indexpage"]=0; $GLOBALS["chapters"] = array(); </script>'."\n";
 		$script="";
 		
 		//set up the base style that make it easy to fomate it.
         $head_style = '<!-- built from the php and are important to try not to write over if possible -->
 	<style>
-		html,body { background-color:'.$bodycolor.'; position: relative; }
+		html,body { /*background-color:'.$bodycolor.';*/ position: relative; }
 		/*@page{}*/
 		#head_area{ left:'.$pageleftMargin.$unit.'; top:'.$topMargin.$unit.'; height:'.$headHeight.$unit.'; /*width:'.$textBoxingWidth.$unit.';*/ }
 		#head_area .wrap{ height:'.$headHeight.$unit.';}
@@ -226,7 +230,26 @@ class catpdf_output {
 	//page_script seems to need to be oneline?
 	$pdf->page_script(\'$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }\');
 </script>'."\n";
-        $bodyCloseTag="</body>\n";
+
+$bodyCloseTag='<script type="text/javascript">
+app.beep(0);
+var inch = 92;
+		for (var p = 0; p < this.numPages; p++) { 
+		 // put a rectangle at .5 inch, .5 inch 
+		  var aRect = this.getPageBox( {nPage: p} ); 
+		  aRect[0] += .5*inch;// from upper left corner of page 
+		  aRect[2] = aRect[0]+.5*inch; // Make it .5 inch wide 
+		  aRect[1] -= .5*inch; 
+		  aRect[3] = aRect[1] - .5*inch; // and .5 inch high 
+		  var f = this.addField("p."+p, "text", p, aRect ); 
+		  f.textSize = 20;  // 20-pt type
+		  f.textColor = color.blue; // use whatever color you want
+		  f.strokeColor = color.white; 
+		  f.textFont = font.Helv; 
+		  f.value = String(p+1);  // page numbering is zero-based
+		  f.readonly = true; 
+		}</script>';
+        $bodyCloseTag.="</body>\n";
 		$htmlCloseTag="</html>\n";
 					
 		$bottomHtml = $indexer
@@ -234,7 +257,7 @@ class catpdf_output {
 					.$htmlCloseTag;		
         $this->foot = $bottomHtml;
     }
-    /*
+    /**
      * Return html with filtered shortcodes
      * @tmp_type - string
 	 * needs to be reworked
@@ -312,11 +335,12 @@ class catpdf_output {
 			foreach($mergeList as $file){
 				$PDFMerger->addPDF(CATPDF_CACHE_PATH.'merging_stage/'.$file, 'all');//'1, 3, 4'//'1-2'
 			}
-			$PDFMerger->merge('file', CATPDF_CACHE_PATH.trim(trim($output_file,'/')));
+			$PDFMerger->merge('file', CATPDF_CACHE_PATH.trim(trim($output_file),'/'));
 		}else{
-			$this->cachePdf($output_file,file_get_contents(CATPDF_CACHE_PATH.'merging_stage/'.$mergeList[0]))	;
+			if (!copy(CATPDF_CACHE_PATH.'merging_stage/'.$mergeList[0], CATPDF_CACHE_PATH.trim(trim($output_file),'/')) ) {
+				echo "failed to copy ".CATPDF_CACHE_PATH.'merging_stage/'.$mergeList[0]." to ". CATPDF_CACHE_PATH.'/'.$output_file."...\n";
+			}
 		}
-		
 	}
 
 

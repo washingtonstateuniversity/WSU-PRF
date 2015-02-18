@@ -20,10 +20,11 @@ class shortcode {
         }
     }
 	
-	/*
-    * Return array
-	* @attr
-	*/
+	/**
+     * All possible shortcodes for this plugin
+	 *
+	 * @return array
+	 */
 	public static function build_shortcodes(){ //this is a temp way
 		$shortcodes = array(
 			'loop'=> array('dis'=>__('Loop')),
@@ -62,8 +63,8 @@ class shortcode {
 
 
 
-    /*
-    * Register template shortcodes
+    /**
+     * Register template shortcodes
 	* should be a little more robust here... 
     */
     public function register_template_shortcodes() {
@@ -106,7 +107,9 @@ class shortcode {
 				'index_row_chapter','index_row_text','index_row_segment','index_row_page',
 			),
 		);
-		if (isset( $registered_codes[$template] ) ) return $registered_codes[$template];
+		if (isset( $registered_codes[$template] ) ){
+			return $registered_codes[$template];
+		}
 		return array();
 	}
 
@@ -123,13 +126,17 @@ class shortcode {
 	}
 	
 	
-/******************
-* Functions
-*******************/	
+/*******************
+ * Functions
+ *******************/	
 
-    /*
-    * Display download button
-    */
+    /**
+     * Display download button
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function apply_download_button($atts) {
         $link                  = '';
         $text                  = (isset($atts['text'])) ? $atts['text'] : 'Download';
@@ -155,55 +162,53 @@ class shortcode {
 	
 	
 	
-    /*
-    * Return page numbering block
-    */
+    /**
+     * Return page numbering block
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function page_numbers_func($atts) {
 		extract(shortcode_atts(array(
 			'label' => '{PTx}',
 			'separator' => '{P#S}'
 		), $atts));
 		$block='<div id="page_numbers"><span id="pn_text">'.$label.'</span><span id="pn_number">{P#}'.$separator.'{PT#}</span></div>'."\n";
+
+		
+		/* the best corse maybe to dynamicly fill in the numbers
+		http://asserttrue.blogspot.com/2011/04/script-for-putting-page-numbers-on-pdf.html#
+		var inch = 72;
+		for (var p = 0; p < this.numPages; p++) { 
+		 // put a rectangle at .5 inch, .5 inch 
+		  var aRect = this.getPageBox( {nPage: p} ); 
+		  aRect[0] += .5*inch;// from upper left corner of page 
+		  aRect[2] = aRect[0]+.5*inch; // Make it .5 inch wide 
+		  aRect[1] -= .5*inch; 
+		  aRect[3] = aRect[1] - .5*inch; // and .5 inch high 
+		  var f = this.addField("p."+p, "text", p, aRect ); 
+		  f.textSize = 20;  // 20-pt type
+		  f.textColor = color.blue; // use whatever color you want
+		  f.strokeColor = color.white; 
+		  f.textFont = font.Helv; 
+		  f.value = String(p+1);  // page numbering is zero-based
+		  f.readonly = true; 
+		}
+		*/
         return $block;
     }	
 	
 	
-    /*
-    * Return page numbering block
-    */
+    /**
+     * Return page numbering block
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function index_func($atts) {
 		$block='[index_row]';
-	/*	
-						'index_loop'=>array('dis'=>__('The loop of the index items')),
-			'index_row'=>array('dis'=>__('An index item')),
-			'index_row_chapter'=>array('dis'=>__('chapter of an index item')),
-			'index_row_text'=>array('dis'=>__('text of an index item')),
-			'index_row_segment'=>array('dis'=>__('segment of an index item')),
-			'index_row_page'=>array('dis'=>__('page # of an index item')),		
-		
-<?php
-$index.= "";
-$c=1;
-foreach($posts as $post){
-?>
-<table class='indexed_chapter'>
-  <tbody>
-    <tr>
-      <td class='chapter' width='15%' align='right' cellspacing='0' cellpadding='0' >{chapter{$c}}</td>
-      <td class='text' width='25%' align='left' cellspacing='0' cellpadding='0' >{text{$c}}</td>
-      <td class='segment' align='right' cellspacing='0' cellpadding='0' ></td>
-      <td class='pagenumber' width='5%' align='left' cellspacing='0' cellpadding='0' >{page{$c}}</td>
-    </tr>
-  </tbody>
-</table>
-<?php
-	
-}
-?>
-		
-		*/
-		
-		
         return $block;
     }	
 	public function index_loop_func($atts) {
@@ -224,34 +229,60 @@ foreach($posts as $post){
 	}
 	
 
-
+    /**
+     * Return chapter
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */	
 	public function index_row_chapter_func($atts) {
 		global $current_index_row;
 		$block = $current_index_row["chapter"];
 		return $block;
 	}
-
+    /**
+     * Return row text
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */	
 	public function index_row_text_func($atts) {
 		global $current_index_row;
 		$block = $current_index_row["text"];
 		return $block;
 	}
-
+    /**
+     * Return row segment
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */	
 	public function index_row_segment_func($atts) {
 		global $current_index_row;
 		$block = $current_index_row["segment"];
 		return $block;
 	}
-
+    /**
+     * Return row page number
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */	
 	public function index_row_page_func($atts) {
 		global $current_index_row;
 		$block = $current_index_row["page"];
 		return $block;
 	}
 
-    /*
-    * Return post content
-    */
+    /**
+     * Return post content
+	 *
+	 * @return string
+     */
     public function content_func() {
         global $post;
         $item = '';
@@ -266,9 +297,11 @@ foreach($posts as $post){
 			$item=$indexedcontent;
         return $item;
     }
-    /*
-    * Return post excerpt
-    */
+    /**
+     * Return post excerpt
+	 *
+	 * @return string
+     */
     public function excerpt_func() {
         global $post;
         $item = '';
@@ -277,20 +310,26 @@ foreach($posts as $post){
         $item = get_the_excerpt();
         return $item;
     }
-    /*
-    * Return post tags list
-    * @atts - array
-    */	
+    /**
+     * Return post tags list
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */	
 	public function version_count_func(){
 		global $post;
 		setup_postdata($post);
 		$revisions=wp_get_post_revisions(get_the_ID());
 		return count($revisions);
 	}
-    /*
-    * Return post tags list
-    * @atts - array
-    */
+    /**
+     * Return post tags list
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function tags_func($atts) {
         global $post;
         extract(shortcode_atts(array(
@@ -310,10 +349,13 @@ foreach($posts as $post){
         }
         return $item;
     }
-    /*
-    * Return post category list
-    * @atts - array
-    */
+    /**
+     * Return post category list
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function category_func($atts) {
         global $post;
         extract(shortcode_atts(array(
@@ -333,10 +375,13 @@ foreach($posts as $post){
         }
         return $item;
     }
-    /*
-    * Return post featured image
-    * @atts - array
-    */
+    /**
+     * Return post featured image
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function featured_image_func($atts) {
         global $post;
         $post = $this->single;
@@ -348,9 +393,11 @@ foreach($posts as $post){
         $item = get_the_post_thumbnail(get_the_ID(), $size);
         return $item;
     }
-    /*
-    * Return post status
-    */
+    /**
+     * Return post status
+	 *
+	 * @return string
+     */
     public function status_func() {
         global $post;
         $post = $this->single;
@@ -358,9 +405,11 @@ foreach($posts as $post){
         $item = get_post_status(get_the_ID());
         return $item;
     }
-    /*
-    * Return post author description
-    */
+    /**
+     * Return post author description
+	 *
+	 * @return string
+     */
     public function author_description_func() {
         global $post;
         $post = $this->single;
@@ -368,10 +417,13 @@ foreach($posts as $post){
         $item = get_the_author_description();
         return $item;
     }
-    /*
-    * Return post author photo
-    * @atts - array
-    */
+    /**
+     * Return post author photo
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function author_photo_func($atts) {
         global $post;
         extract(shortcode_atts(array(
@@ -382,9 +434,11 @@ foreach($posts as $post){
         $item = get_avatar(get_the_author_ID(), $size);
         return $item;
     }
-    /*
-    * Return post author
-	*/
+    /**
+     * Return post author
+	 *
+	 * @return string
+	 */
     public function author_func() {
         global $post;
         $post = $this->single;
@@ -392,10 +446,13 @@ foreach($posts as $post){
         $item = get_the_author();
         return $item;
     }
-    /*
-    * Return post date
-    * @atts - array
-    */
+    /**
+     * Return post date
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function date_func($atts) {
         global $post;
         extract(shortcode_atts(array(
@@ -406,17 +463,21 @@ foreach($posts as $post){
         $item = date($format, strtotime(get_the_date()));
         return $item;
     }
-    /*
-    * Return post permalink
-    */
+    /**
+     * Return post permalink
+	 *
+	 * @return string
+     */
     public function permalink_func() {
         $post = $this->single;
         $item = get_permalink(get_the_ID());
         return $item;
     }
-    /*
-    * Return post title
-    */
+    /**
+     * Return post title
+	 *
+	 * @return string
+     */
     public function title_func() {
         global $post;
         $post = $this->single;
@@ -424,9 +485,11 @@ foreach($posts as $post){
         $item = get_the_title();
         return $item;
     }
-    /*
-    * Return comment count
-    */
+    /**
+     * Return comment count
+	 *
+	 * @return string
+     */
     public function comments_count_func() {
         global $post, $structure;
         $post = $this->single;
@@ -434,9 +497,11 @@ foreach($posts as $post){
         $num = get_comments_number(0, 1, '%');
         return $num;
     }
-    /*
-    * Return loop html
-    */
+    /**
+     * Return loop html
+	 *
+	 * @return string
+     */
     public function loop_func() {
         global $catpdf_output,$posts;
         $item = '';
@@ -449,18 +514,23 @@ foreach($posts as $post){
         }
         return $item;
     }
-    /*
-    * Return found post count
-    */
+    /**
+     * Return found post count
+	 *
+	 * @return string
+     */
     public function post_count_func() {
         global $catpdf_core;
         $item = count($catpdf_core->posts);
         return $item;
     }
-    /*
-    * Return active categories
-    * @atts - array
-    */
+    /**
+     * Return active categories
+	 * 
+     * @param array $atts
+	 *
+	 * @return string
+     */
     public function categories_func($atts) {
         global $structure;
         extract(shortcode_atts(array(
@@ -475,23 +545,31 @@ foreach($posts as $post){
         }
         return substr($item, 0, -strlen($delimiter));
     }
-    /*
-    * Return site title
-    */
+    /**
+     * Return site title
+	 *
+	 * @return string
+     */
     public function site_title_func() {
         $item = get_bloginfo('name');
         return $item;
     }
-    /*
-    * Return site tagline
-    */
+    /**
+     * Return site tagline
+	 * 
+	 * @return string
+     */
     public function site_tagline_func() {
         $item = get_bloginfo('description');
         return $item;
     }
-    /*
-    * Return site url
-    */
+    /**
+     * Return site url
+	 * 
+     * @param array $atts
+	 * 
+	 * @return string
+     */
     public function site_url_func($atts) {
 		extract(shortcode_atts(array(
             'link' => false,
@@ -502,9 +580,13 @@ foreach($posts as $post){
 		$item = !$link ? $url : "<a href='{$url}'>{$text}</a>";
         return $item;
     }
-    /*
-    * Return today's date
-    */
+    /**
+     * Return today's date
+	 * 
+     * @param array $atts
+	 * 
+	 * @return string
+     */
     public function date_today_func($atts) {
         extract(shortcode_atts(array(
             'format' => 'F d,Y'
@@ -512,9 +594,13 @@ foreach($posts as $post){
         $item = date($format);
         return $item;
     }
-    /*
-    * Return filter from date
-    */
+    /**
+     * Return filter from date
+	 * 
+     * @param array $atts
+	 * 
+	 * @return string
+     */
     public function from_date_func($atts) {
         global $structure;
         extract(shortcode_atts(array(
@@ -527,9 +613,13 @@ foreach($posts as $post){
         }
         return $item;
     }
-    /*
-    * Return filter to date
-    */
+    /**
+     * Return filter to date
+	 * 
+     * @param array $atts
+	 * 
+	 * @return string
+     */
     public function to_date_func($atts) {
         global $structure;
         extract(shortcode_atts(array(

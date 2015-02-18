@@ -34,7 +34,8 @@ body{}
 
 
 /* DEFAULTS */
-html, body{ margin: 0; padding: 0; border: 0; font-family: sans-serif; text-align: justify;background-color:transparent;}
+html, body{ margin: 0; padding: 0; border: 0; font-family: sans-serif; text-align: justify;background-color:transparent;	background: #eff0f1;
+	background-color:#eff0f1;}
 table { border-collapse: collapse; border-spacing: 0; border: 1px solid #535353; background-color:transparent; }
 tr,td,th { border: 1px solid #535353; padding:2px 4px;}
 strong{ font-weight:bold;}
@@ -50,6 +51,8 @@ i.page-break {page-break-after: always;border: 0;}
 	padding: 20px;
 	/*background: #FFF;*/
 	background-color:transparent;
+	background: #eff0f1;
+	background-color:#eff0f1;
 	overflow:hidden;
 	/*border: 1px solid #c5c5c5;
 	margin: 15px;*/
@@ -106,7 +109,7 @@ h1.CoverTitle {
 #site_info{margin-left:5px;display:inline-block;}
 #site_info_name{font-size:20px; font-weight:bold;}
 #site_info_tag{font-size:12px; font-style:italic;}
-#logo{float:left;height:50px;width:180px;}
+#logo{float:left;height:45px;width:162px;}
 #site_tag{position:absolute; top:12.5px; right:12.5px;text-align: right;width:auto;font-size:12px;}
 
 .indexed_chapter {}

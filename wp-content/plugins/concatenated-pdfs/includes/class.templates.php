@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class catpdf_templates {
     public $title = '';
 	public $current_template = NULL;
+	public $current_style = '';
     function __construct() {
 		global $_params;
         if (is_admin()) {
@@ -42,17 +43,17 @@ class catpdf_templates {
 	
 	public function get_default_template_sections(){
 		$sections = array(
+			'content'=>"",
 			'cover'=>"",
 			'index'=>"",
-			'content'=>"",
 			'appendix'=>"",
 		);
 		return $sections;
 	}
 
-	/*
-	* @todo set this up to accept inserted parts
-	*/
+	/**
+     * @todo set this up to accept inserted parts
+	 */
 	public function get_template_sections(){
 		return $this->get_default_template_sections();
 	}
@@ -62,50 +63,91 @@ class catpdf_templates {
 		
 		$catpdf_output->_html_structure();
 		$content 		= $catpdf_output->filter_shortcodes('body');
-		$contentHtml	= "<div id='catpdf_content'>{$content}</div>\n";	
+		$contentHtml	= "\n<div id='catpdf_content'>\n{$content}\n</div>\n";	
 		//var_dump($contentHtml);die();
 		return $contentHtml;
 	}	
 	public function get_section_cover(){
-		$cover			= "<h1 class='CoverTitle'>Cover Letter</h1>\n";
-		$coverHtml 		= "<div id='catpdf_cover'>{$cover}</div>\n";	
+		$cover			= $this->resolve_template("cover.php");
+		$coverHtml 		= "\n<div id='catpdf_cover'>\n{$cover}\n</div>\n";	
 		return $coverHtml;
 	}
 	
 	public function get_section_index(){
 		global $posts,$catpdf_output;
-		$index='<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>'."\n";
+		$index="\n".'<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>'."\n";
 		$table = $this->resolve_template("index-table.php");
 		$index.=$catpdf_output->filter_shortcodes('index',$table);
-		$index.='<script type="text/php">$pdf->close_object(); </script>'."\n";
-		$indexHtml="<div id='catpdf_index'>{$index}</div>";
+		$index.="\n".'<script type="text/php">$pdf->close_object(); </script>'."\n";
+		$indexHtml="\n<div id='catpdf_index'>\n{$index}\n</div>\n";
 		
 		//var_dump($indexHtml);die();
 		
 		return $indexHtml;
 	}	
 	public function get_section_appendix(){	
-		$appendix			= "<h1 class='CoverTitle'>appendix</h1>";
-		$appendixHtml 		= "<div id='catpdf_appendix'>{$appendix}</div>";	
+		$appendix			= $this->resolve_template("appendix.php");
+		$appendixHtml 		= "\n<div id='catpdf_appendix'>\n{$appendix}\n</div>\n";	
 		return $appendixHtml;
 	}
 	
-	/*
-	* return template object
-	*/
+	/**
+     * return template object
+	 * 
+	 * @return object
+	 */
 	public function get_current_tempate($type=NULL){
 		if($this->current_template==NULL)$this->set_current_tempate($type);
 		return $this->current_template;
 	}
-	/*
-	* set template object
-	*/
+	
+	
+	public function get_styles(){
+		$path = get_stylesheet_directory() .'/concatenated-pdfs/';
+		$data = array();
+		$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($files as $file){
+			$file_name = array_pop ( explode("/",strval($file)) );
+			if ($file_name!="." && $file_name!=".."  && is_dir($file) === true){
+				$data[] = $file_name;
+			}
+		}
+		return $data;
+	}
+	
+	public function set_style($style=NULL){
+		global $_params,$catpdf_templates,$catpdf_data;
+		if($style==NULL){
+			$options   = $catpdf_data->get_options();
+			if( isset($options['style']) && $options['style']!="" ){
+				$this->current_style=$options['style'];
+			}
+		}else{
+			if( in_array( $style, $this->get_styles() ) ){
+				$this->current_style=$style;
+			}
+		}
+		
+	}
+	public function get_style($style=NULL){
+		global $_params,$catpdf_templates,$catpdf_data;
+		if($this->current_style==""){
+			$this->set_style( isset($_params['style'])?$_params['style']:null );
+		}
+		return $this->current_style;
+	}	
+	/**
+     * set template object
+	 */
 	public function set_current_tempate($type=NULL){
 		global $_params,$catpdf_templates,$catpdf_data;
+		
+		
+		$this->get_style();
+		
 		$curr_temp = isset($_params['template'])?$_params['template']:null;
-		
 		$options   = $catpdf_data->get_options();
-		
+
 		if($curr_temp==null){
 			if ($type == 'single') {
 				$curr_temp = $options['single']['dltemplate'];
@@ -124,7 +166,9 @@ class catpdf_templates {
 
 	public function resolve_template($file){
 		$html = "";
-		if ( $overridden_template = locate_template( $file ) ) {
+		$style = $this->current_style;
+		$overridden_template = get_stylesheet_directory() .'/concatenated-pdfs/'.( $style!="" && $style !="default" ? "$style/" : "" ).$file;
+		if ( file_exists($overridden_template) ) {
 			// locate_template() returns path to file
 			// if either the child theme or the parent theme have overridden the template
 			$html = file_get_contents( $overridden_template );
@@ -136,10 +180,14 @@ class catpdf_templates {
 		return $html;
 	}
 
-    /*
+    /**
      * Return default template structure
+	 *
+	 * @param string $type
+	 * 
+	 * @return array
      */
-    public function construct_default_template($type = 'all') {
+    public function construct_default_template($type = 'concat') {
         $temp         = array();
         $temp['name'] = 'Default';
 
@@ -158,8 +206,10 @@ class catpdf_templates {
 		$temp['pagefooter'] = $pagefootertemplate;
         return $temp;
     }
-    /*
+    /**
      * Return default template
+	 *
+	 * @return object
      */
     public function get_default_template() {
         if (isset($_GET['catpdf_dl'])) {
@@ -176,110 +226,6 @@ class catpdf_templates {
 			'template_pagefooter' => $default_template['pagefooter']
         );
         return (object) $arr;
-    }
-    /*
-     * Insert to template table
-     * @arr - array
-     */
-    public function add_this($arr = array()) {
-        global $wpdb, $current_user;
-        // Get user info
-        get_currentuserinfo();
-        $user               = $current_user;
-        // Insert data
-        $arr['create_date'] = current_time('mysql');
-        $arr['create_by']   = $user->ID;
-        $table_name         = $wpdb->prefix . "catpdf_template";
-        $rows_affected      = $wpdb->insert($table_name, $arr);
-    }
-    /*
-     * Update entry in template table
-     * @data - array
-     */
-    public function update_this($data = array()) {
-        global $wpdb,$catpdf_core,$_params;
-        $where         = array(
-            'template_id' => $_params['templateid']
-        );
-        $table_name    = $wpdb->prefix . "catpdf_template";
-        $rows_affected = $wpdb->update($table_name, $data, $where);
-    }
-
-    /*
-     * Return template data
-     * @id - string
-     */
-    public function get_template($id = NULL) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . "catpdf_template";
-        if ($id !== NULL) {
-            $sql      = $wpdb->prepare("SELECT * FROM " . $table_name . " WHERE template_id = %d;", $id);
-            $template = $wpdb->get_row($sql);
-        } else {
-            $template = $wpdb->get_results("SELECT * FROM " . $table_name);
-        }
-        return $template;
-    }
-    /*
-     * Add template
-     */
-    public function add_template() {
-		global $catpdf_core,$_params;
-        if ($_params['templatename'] != '') {
-            $data = array(
-                'template_name' => $_params['templatename'],
-                'template_loop' => $_params['looptemplate'],
-                'template_body' => $_params['bodytemplate'],
-				'template_pageheader' => $_params['pageheadertemplate'],
-				'template_pagefooter' => $_params['pagefootertemplate'],
-                'template_description' => $_params['description']
-            );
-            // Insert template
-            $this->add_this($data);
-            $catpdf_core->message = array(
-                'type' => 'updated',
-                'message' => __('Template saved.')
-            );
-        } else {
-            $catpdf_core->message = array(
-                'type' => 'error',
-                'message' => __('Please provide template name.')
-            );
-        }
-    }
-    /*
-     * Update template database entry
-     */
-    public function update_template() {
-		global $catpdf_core,$_params;
-        if ($_params['templatename'] != '') {
-            $data = array(
-                'template_name' => $_params['templatename'],
-                'template_description' => $_params['description'],
-                'template_body' => $_params['bodytemplate'],
-				'template_pageheader' => $_params['pageheadertemplate'],
-				'template_pagefooter' => $_params['pagefootertemplate'],
-                'template_loop' => $_params['looptemplate']
-            );
-            $this->update_this($data);
-            $catpdf_core->message = array(
-                'type' => 'updated',
-                'message' => __('Template updated.')
-            );
-        } else {
-            $catpdf_core->message = array(
-                'type' => 'error',
-                'message' => __('Please provide template name.')
-            );
-        }
-    }
-    /*
-     * Delete template entry
-     */
-    public function delete_template($id) {
-        global $wpdb;
-        $table_name = $wpdb->prefix . "catpdf_template";
-        $wpdb->query("DELETE FROM " . $table_name . " WHERE template_id = " . $id);
     }
 
 }
