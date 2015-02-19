@@ -216,10 +216,10 @@ class shortcode {
 		$c=1;
 		foreach($posts as $post){
 			$current_index_row=array(
-				"chapter"=>"chapter ${c}",
-				"text"=>"text ${c}",
-				"segment"=>"segment ${c}",
-				"page"=>"page ${c}",
+				"chapter"=>$c,
+				"text"=>$GLOBALS["chapters"][$c]["text"],
+				"segment"=>"",
+				"page"=>$GLOBALS["chapters"][$c]["page"],
 			);
 			$block.=$catpdf_output->filter_shortcodes("index_row",$catpdf_templates->resolve_template("index-table-row.php"));
 			$c++;
@@ -286,12 +286,22 @@ class shortcode {
     public function content_func() {
         global $post;
         $item = '';
-        $post = $this->single;
-        setup_postdata($post);
-        $item = get_the_content();
-		$title = get_the_title();
+        //$post = $this->single;
+        //setup_postdata($active_post);
+        $item = $post->post_content;
+		$title = $post->post_title;
 			$indexerscript='
-<script type="text/php"> if(isset($GLOBALS["i"])){ $i=$GLOBALS["i"]; if(!isset($GLOBALS["chapters"][$i])){ $GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();  $GLOBALS["chapters"][$i]["text"] = "'.$title.'"; $GLOBALS["i"]=$i+1;} } </script>
+<script type="text/php"> 
+	if(isset($GLOBALS["i"])){
+		$GLOBALS["i"]=1;
+	}
+	$i=$GLOBALS["i"];
+	if(!isset($GLOBALS["chapters"][$i]) && $GLOBALS["section"]=="content"){
+		$GLOBALS["chapters"][$i]["page"] = $pdf->get_page_number();
+		$GLOBALS["chapters"][$i]["text"] = "'.$title.'";
+		$GLOBALS["i"]=$i+1;
+	}
+</script>
 '."\n";
 			$indexedcontent=$indexerscript.$item;
 			$item=$indexedcontent;
@@ -304,11 +314,7 @@ class shortcode {
      */
     public function excerpt_func() {
         global $post;
-        $item = '';
-        $post = $this->single;
-        setup_postdata($post);
-        $item = get_the_excerpt();
-        return $item;
+        return $post->post_excerpt;
     }
     /**
      * Return post tags list
@@ -319,7 +325,7 @@ class shortcode {
      */	
 	public function version_count_func(){
 		global $post;
-		setup_postdata($post);
+		//setup_postdata($active_post);
 		$revisions=wp_get_post_revisions(get_the_ID());
 		return count($revisions);
 	}
@@ -337,8 +343,8 @@ class shortcode {
             'label' => ''
         ), $atts));
         $item = '';
-        $post = $this->single;
-        setup_postdata($post);
+        //$post = $this->single;
+        //setup_postdata($active_post);
         $posttags = get_the_tags();
         if ($posttags) {
             foreach ($posttags as $tag) {
@@ -363,9 +369,9 @@ class shortcode {
             'label' => ''
         ), $atts));
         $item = '';
-        $post = $this->single;
-        setup_postdata($post);
-        $cat_arr = (array) get_the_category(get_the_ID());
+        //$post = $this->single;
+        //setup_postdata($active_post);
+        $cat_arr = (array) get_the_category($post->ID);
         if (count($cat_arr) > 0) {
             foreach ($cat_arr as $arr) {
                 $item .= ucwords($arr->name) . $delimiter;
@@ -384,13 +390,13 @@ class shortcode {
      */
     public function featured_image_func($atts) {
         global $post;
-        $post = $this->single;
+        //$post = $this->single;
         extract(shortcode_atts(array(
             'size' => 'thumbnail'
         ), $atts));
         $item = '';
-        setup_postdata($post);
-        $item = get_the_post_thumbnail(get_the_ID(), $size);
+        //setup_postdata($active_post);
+        $item = get_the_post_thumbnail($post->ID, $size);
         return $item;
     }
     /**
@@ -400,10 +406,7 @@ class shortcode {
      */
     public function status_func() {
         global $post;
-        $post = $this->single;
-        setup_postdata($post);
-        $item = get_post_status(get_the_ID());
-        return $item;
+        return $post->post_status;
     }
     /**
      * Return post author description
@@ -412,8 +415,8 @@ class shortcode {
      */
     public function author_description_func() {
         global $post;
-        $post = $this->single;
-        setup_postdata($post);
+        //$post = $this->single;
+        //setup_postdata($active_post);
         $item = get_the_author_description();
         return $item;
     }
@@ -429,9 +432,9 @@ class shortcode {
         extract(shortcode_atts(array(
             'size' => '96'
         ), $atts));
-        $post = $this->single;
-        setup_postdata($post);
-        $item = get_avatar(get_the_author_ID(), $size);
+        //$post = $this->single;
+        //setup_postdata($active_post);
+        $item = get_avatar($post->post_author, $size);
         return $item;
     }
     /**
@@ -441,10 +444,7 @@ class shortcode {
 	 */
     public function author_func() {
         global $post;
-        $post = $this->single;
-        setup_postdata($post);
-        $item = get_the_author();
-        return $item;
+        return $post->post_author;
     }
     /**
      * Return post date
@@ -458,9 +458,9 @@ class shortcode {
         extract(shortcode_atts(array(
             'format' => 'F d,Y'
         ), $atts));
-        $post = $this->single;
-        setup_postdata($post);
-        $item = date($format, strtotime(get_the_date()));
+       	//$post = $this->single;
+        //setup_postdata($active_post);
+        $item = date($format, strtotime($post->post_modified));
         return $item;
     }
     /**
@@ -469,8 +469,9 @@ class shortcode {
 	 * @return string
      */
     public function permalink_func() {
-        $post = $this->single;
-        $item = get_permalink(get_the_ID());
+		global $post;
+        //$post = $this->single;
+        $item = get_permalink($post->ID);
         return $item;
     }
     /**
@@ -480,10 +481,7 @@ class shortcode {
      */
     public function title_func() {
         global $post;
-        $post = $this->single;
-        setup_postdata($post);
-        $item = get_the_title();
-        return $item;
+        return $post->post_title;
     }
     /**
      * Return comment count
@@ -491,9 +489,9 @@ class shortcode {
 	 * @return string
      */
     public function comments_count_func() {
-        global $post, $structure;
-        $post = $this->single;
-        setup_postdata($post);
+        global $post;
+        //$post = $this->single;
+        //setup_postdata($active_post);
         $num = get_comments_number(0, 1, '%');
         return $num;
     }
@@ -503,16 +501,11 @@ class shortcode {
 	 * @return string
      */
     public function loop_func() {
-        global $catpdf_output,$posts;
+        global $catpdf_templates,$catpdf_output,$post;
         $item = '';
-        if (count($posts) > 0) {
-            foreach ($posts as $post) {
-                $this->single = $post;
-				$postHtml = $catpdf_output->filter_shortcodes('loop');
-                $item .= $postHtml;
-            }
-        }
-        return $item;
+        $this->single = $post;
+		$postHtml = $catpdf_output->filter_shortcodes('loop',$catpdf_templates->resolve_template('concat-loop.php'));
+        return $postHtml;
     }
     /**
      * Return found post count

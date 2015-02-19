@@ -11,4 +11,4 @@
 				[content]
 			</div>
 		</div>
-		<i class="page-break"></i>
+		

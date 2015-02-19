@@ -13,6 +13,10 @@ class catpdf_output {
     public $post = array();
     public $title = '';
 	public $head = NULL;
+	
+	public $header_part = NULL;
+	public $footer_part = NULL;
+	
     function __construct() {
 		
     }
@@ -49,7 +53,20 @@ class catpdf_output {
 
 
 
-
+	public function prep_output_objects(){
+		global $catpdf_templates,$_params,$catpdf_data,$posts,$post_query_arr,$catpdf_output;
+		$id		= isset($_params['catpdf_dl'])?$_params['catpdf_dl']:NULL;
+		
+		//var_dump($post);
+		$posts 	= ($id>0) ? array(get_post($id)) : get_posts($post_query_arr) ;
+		
+		$pageheader  = $catpdf_output->filter_shortcodes('pageheader',$catpdf_templates->resolve_template("pageheadertemplate.php"));
+		$pagefooter  = $catpdf_output->filter_shortcodes('pagefooter',$catpdf_templates->resolve_template("pagefootertemplate.php"));
+		$header_section = "<div id='head_area'>\n<div class='wrap'>\n${pageheader}</div>\n</div>\n";
+		$footer_section = "<div id='foot_area'>\n<div class='wrap'>\n${pagefooter}</div>\n</div>\n";					
+		$catpdf_output->header_part = $header_section;
+		$catpdf_output->footer_part = $footer_section;
+	}
 
 
 
@@ -62,8 +79,9 @@ class catpdf_output {
         global $catpdf_templates,$_params,$catpdf_data,$posts,$post;
 		$id		= isset($_params['catpdf_dl'])?$_params['catpdf_dl']:NULL;
 		
-		$posts 	= ($id>0) ? get_posts($post) : array(get_post($id));
-		var_dump($posts);
+		//var_dump($post);
+		$posts 	= ($id>0) ? array(get_post($id)) : get_posts($post) ;
+		//var_dump($posts);
 		
         $this->template = $catpdf_templates->get_current_tempate($type);
 		//var_dump($this->template);
@@ -75,10 +93,12 @@ class catpdf_output {
 		$i=1;
 		$c=count($template_sections);
 		foreach($template_sections as $code=>$section){
-			$sectionhtml= call_user_func( array( $catpdf_templates, 'get_section_'.$code ) );
-			//var_dump($sectionhtml);
-			$html.= ($sectionhtml?$sectionhtml:"").($i<$c?"\n\n<i class='page-break'></i>\n\n":"");
-			$i++;
+			if($code=="content"){
+				$sectionhtml= call_user_func( array( $catpdf_templates, 'get_section_'.$code ) );
+				//var_dump($sectionhtml);
+				$html.= ($sectionhtml?$sectionhtml:"").($i<$c?"\n\n<i class='page-break'></i>\n\n":"");
+				$i++;
+			}
 		}
 
         $html = $this->head . $html .$this->foot;
@@ -98,15 +118,21 @@ class catpdf_output {
 		return $px;
 	}
 		
+	public function get_pdf_header(){
+		
+		
+	}
+	
+	
 	
 	
     /**
      * Return html structure
      */
     public function _html_structure() {
-		global $_params, $dompdf, $catpdf_data;
+		global $_params, $dompdf, $catpdf_data, $catpdf_templates;
 		
-		if (empty($this->template)) return false; 
+		//if (empty($this->template)) return false; 
 		
         $options   = $catpdf_data->get_options();
 		$unit="px";
@@ -119,7 +145,7 @@ class catpdf_output {
 		$bottomMargin="15";			//@@!!OPTION REPLACE
 		$footHeight="45";			//@@!!OPTION REPLACE
 		$footSep="10";				//@@!!OPTION REPLACE
-		$pagerightMargin="15";	//@@!!OPTION REPLACE
+		$pagerightMargin="15";		//@@!!OPTION REPLACE
 		$pageleftMargin="15";		//@@!!OPTION REPLACE
 		
 		
@@ -127,13 +153,11 @@ class catpdf_output {
 		$pagew=$this->pointtopixelConvertion(CPDF_Adapter::$PAPER_SIZES[$_params['papersize']][2]);
 		$pageh=$this->pointtopixelConvertion(CPDF_Adapter::$PAPER_SIZES[$_params['papersize']][3]);
         
-		$template    = $this->template;
+		$template    = NULL;//$this->template;
 		
 		$this->title = $this->buildFileName($template,$options);
-		$pageheader  = $this->filter_shortcodes('pageheader');
-		$pagefooter  = $this->filter_shortcodes('pagefooter');//$this->filter_shortcodes('pagefooter');
 
-		
+
 		/* there should be a base html template? */
 		$head_html = "<!DOCTYPE html>\n";
         $head_html .= "<html>\n";
@@ -141,15 +165,15 @@ class catpdf_output {
         $head_html .= '<title>' . $this->title . "</title>\n";
 		
 		$head_html_style_sheets = "";
-		
+		$head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . PDF_STYLE . "'/>\n";
         if (isset($options['single']['enablecss']) && $options['single']['enablecss'] == 'on') {
-            $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . get_stylesheet_uri() . "'/>\n";
+            //$head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . get_stylesheet_uri() . "'/>\n";
         }
-        $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . PDF_STYLE . "'/>\n";
-		
-		
-		
-		
+        $get_style_css    = $catpdf_templates->get_style_css();
+		if ($get_style_css!="") {
+            $head_html_style_sheets .= "<link type='text/css' rel='stylesheet' href='" . $get_style_css. "'/>\n";
+        }
+//var_dump( $head_html_style_sheets); die();
         $head_html_closing_tag = "</head>\n";
 		
 		//calculated values needed for the pdf
@@ -162,8 +186,8 @@ class catpdf_output {
 		$page_padding="{$pageHeadMargin}{$unit} {$pagerightMargin}{$unit} {$pageFootMargin}{$unit} {$pageleftMargin}{$unit}";
 		
 		$bodyOpenTag = "<body>\n";
-		$header_section = "<div id='head_area'>\n<div class='wrap'>\n${pageheader}</div>\n</div>\n";
-		$footer_section = "<div id='foot_area'>\n<div class='wrap'>\n${pagefooter}</div>\n</div>\n";
+		
+
 		
 		//sets up the globals for the rendered inline php 
 		$indexscriptglobals="\n".'<script type="text/php"> $GLOBALS["i"]=1; $GLOBALS["indexpage"]=0; $GLOBALS["chapters"] = array(); </script>'."\n";
@@ -187,12 +211,14 @@ class catpdf_output {
 						.$head_style
 						.$head_html_closing_tag
 						.$bodyOpenTag
-						.$header_section
-						.$footer_section
 						.$indexscriptglobals
 						.$script;
+						
 		$indexer = '
 <script type="text/php">
+
+
+	$GLOBALS["repeater"] = $GLOBALS["inner_pdf"];
 	$bs = $GLOBALS["backside"]; // work to remove
 
 	$count=$pdf->get_page_number();
@@ -255,7 +281,7 @@ var inch = 92;
 		$bottomHtml = $indexer
 					.$bodyCloseTag
 					.$htmlCloseTag;		
-        $this->foot = $bottomHtml;
+        $this->footer = $bottomHtml;
     }
     /**
      * Return html with filtered shortcodes
@@ -264,7 +290,9 @@ var inch = 92;
 	 * also move to class.shortcuts
      */
     public function filter_shortcodes($tmp_type=NULL,$html=null) {
-		if($tmp_type==NULL) return false;
+		if($tmp_type==NULL){
+			return false;
+		}
 
         $template      = $this->template;
 		//var_dump($template);
@@ -293,7 +321,40 @@ var inch = 92;
         return $html;
     }
 
-
+	public function create_section_pdf($code,$html,$sub_name=""){
+		global $_params,$catpdf_output;
+		
+		$size = (isset($_params['papersize'])) ? urldecode($_params['papersize']) : 'letter';
+		$orientation = (isset($_params['orientation'])) ? urldecode($_params['orientation']) : 'portrait';
+		$sub_name=preg_replace('/[^a-z0-9]/i', '_', $sub_name);
+		$filename = trim($catpdf_output->buildFileName(null,null))."-".($sub_name!=""?"-$sub_name-":"").md5( implode(',',$_params) ) . ".pdf";
+		
+		$GLOBALS["section"]=$code;
+		$html=$this->head.
+			$this->header_part.
+			
+			$html.
+			($code!="cover"?$this->footer_part:"").
+			$this->foot;
+			
+			
+		print('--------'.$code.'--------'."/n");
+		//var_dump($html);
+		
+		$dompdf = new DOMPDF();
+		$dompdf->set_paper($size,$orientation);
+		$dompdf->load_html($html);
+		
+		$inner_pdf=$code;
+		$dompdf->render();
+		var_dump($GLOBALS["chapters"]);
+		var_dump($GLOBALS["repeater"]);
+		
+		$pdf = $dompdf->output();//store it for output
+		$part_name = $code.'--'.$filename;
+		$this->cachePdf('merging_stage/'.$part_name, $pdf );
+		return $part_name;	
+	}
 
 
 
@@ -336,10 +397,13 @@ var inch = 92;
 				$PDFMerger->addPDF(CATPDF_CACHE_PATH.'merging_stage/'.$file, 'all');//'1, 3, 4'//'1-2'
 			}
 			$PDFMerger->merge('file', CATPDF_CACHE_PATH.trim(trim($output_file),'/'));
+			return true;
 		}else{
 			if (!copy(CATPDF_CACHE_PATH.'merging_stage/'.$mergeList[0], CATPDF_CACHE_PATH.trim(trim($output_file),'/')) ) {
 				echo "failed to copy ".CATPDF_CACHE_PATH.'merging_stage/'.$mergeList[0]." to ". CATPDF_CACHE_PATH.'/'.$output_file."...\n";
+				return false;
 			}
+			return true;
 		}
 	}
 
