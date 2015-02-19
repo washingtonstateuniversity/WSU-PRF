@@ -1,0 +1,14 @@
+/* CSS Document */
+
+h2.sub-title{
+	left: 0;
+	line-height: 200px;
+	margin: auto;
+	margin-top: -200px;
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	text-align: center;
+	font-size:14px;
+	font-style:italic;
+}
