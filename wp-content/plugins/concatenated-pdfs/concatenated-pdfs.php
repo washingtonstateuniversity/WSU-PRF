@@ -18,6 +18,8 @@ define('CATPDF_STYLE', CATPDF_PATH . '/css/style.css');
 define('PDF_STYLE', CATPDF_URL . 'css/pdf_style.css');
 define('CATPDF_CACHE_PATH', CATPDF_PATH . 'cache/');
 define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
+define('CATPDF_LOG_PATH', CATPDF_CACHE_PATH . 'logs/');
+define('CATPDF_MERGING_PATH', CATPDF_CACHE_PATH . 'merging_stage/');
 
 
 	/**
@@ -39,6 +41,17 @@ define('CATPDF_CACHE_URL', CATPDF_URL . 'cache/');
 */
 if ( ! class_exists( 'concatenatedPDFsLoad' ) ) {
 	$catpdf_core = NULL;
+	$chapters = array();
+	$repeater = NULL;
+	$inner_pdf = NULL;
+	$section = NULL;
+	$interation = 1;
+	$pages=0;
+	$in_catpdf_shortcode=false;
+	$indexable=true;
+	$producing_pdf=false;
+	
+	
 	class concatenatedPDFsLoad {
 		public function __construct() {
 			global $catpdf_core;

@@ -12,6 +12,8 @@ class catpdf_pages {
     public $message = array();
     public $title = '';
 	public $post_query_arr = NULL;
+
+
     function __construct() {
 		global $_params;
         if (is_admin()) {
@@ -26,14 +28,11 @@ class catpdf_pages {
 			add_action('admin_init', array( $this, 'admin_init' ));
 			add_action('admin_menu', array( $this, 'admin_menu' ));
 		}
-		
-        if (isset($_params['catpdf_dl'])) {// Check if post download is performed
-            add_action('init', array( $this, 'download_post' ));// Add download action hook
-        }
-        if (isset($_params['catpdf_post_dl']) && $_params['catpdf_post_dl']=="true") {// Check if single post download is performed
+        if ( isset($_params['catpdf']) && $_params['catpdf'] == "run") {// Check if single post download is performed
             add_action('init', array( $this, 'download_posts' ));// Add download action hook
         }
     }
+	
     /**
      * Initailize plugin admin part
      */
@@ -143,10 +142,7 @@ class catpdf_pages {
         // Display export form
         $this->view(CATPDF_PATH . '/includes/views/export.php', $data);
     }
-	
-    /*-------------------------------------------------------------------------*/
-    /* -Option- 															   */
-    /*-------------------------------------------------------------------------*/
+
     /**
      * Update plugin option
      */
@@ -155,6 +151,7 @@ class catpdf_pages {
         $options = $_params;
         update_option('catpdf_options', json_encode($options));
     }
+
     /**
      * Display "Option" page
      */
@@ -173,49 +170,13 @@ class catpdf_pages {
         // Display option form
         $this->view(CATPDF_PATH . '/includes/views/options.php', $data);
     }
-    /*-------------------------------------------------------------------------*/
-    /* -Export- 															   */
-    /*-------------------------------------------------------------------------*/
-    /**
-     * Perform export pdf
-     */
-	public $inner_pdf=NULL;
-    public function export() {
-        global $dompdf, $catpdf_output, $_params,$inner_pdf;
-        
-		$file = date("Now") . ".pdf";//need to fix this
-		//would have saved recorde of publication to pull from
-		$cached=false;//add check
-        if(!$cached){
-			$dompdf->set_paper($_params['papersize'], $_params['orientation']);
-			$content     = $catpdf_output->construct_template();
-			
-			$dompdf->load_html($content);
-			if( isset($_dompdf_warnings) ){
-				var_dump( $_dompdf_warnings ); die();
-			}
-			$inner_pdf="before";
-			$dompdf->render();
-			$pdf = $dompdf->output();//store it for output
-			
-			//$dompdf->stream();
-			
-			$prettyname = trim($catpdf_output->title) . ".pdf";
-			
-			if( $catpdf_output->cachePdf($file,$pdf) ){
-				$catpdf_output->sendPdf($file,$prettyname);
-			}else{
-				//send off error message	
-			}
-		}else{
-			$catpdf_output->sendPdf($file);
-		}
-    }
+
+
     /**
      * Download post pdf
      */
     public function download_posts() {
-        global $dompdf,$_params,$catpdf_output,$post,$post_query_arr,$catpdf_templates;
+        global $dompdf,$_params,$catpdf_output,$post,$post_query_arr,$catpdf_templates,$producing_pdf;
         $param_arr   = array(
             'from' => (isset($_params['from'])) ? urldecode($_params['from']) : '',
             'to' => (isset($_params['to'])) ? urldecode($_params['to']) : '',
@@ -225,28 +186,40 @@ class catpdf_pages {
 			'post_type' => (isset($_params['type'])) ? urldecode($_params['type']) : 'post',
 			'post_status' => (isset($_params['status'])) ? urldecode($_params['status']) : 'published'
         );
+		
+		$todo_list = array();
+		if(isset($_params['sections']) && !empty($_params['sections'])){
+			$todo_list = array_map('trim', explode(',', $_params['sections']));
+		}
+		
+		
         $post_query_arr  = $param_arr;
 		$_params['papersize']= isset($_params['papersize']) && !empty($_params['papersize']) ? $_params['papersize'] : "letter";
 		$_params['orientation']= isset($_params['orientation']) && !empty($_params['orientation']) ? $_params['orientation'] : "portrait";
 
-		$catpdf_templates->get_style();
-		$catpdf_output->_html_structure();
-		
 		$filename = trim($catpdf_output->buildFileName(null,null))."-".md5( implode(',',$_params) ) . ".pdf";
+		
 		if(!$catpdf_output->is_cached($filename) || isset($_params['dyno'])){
+			$catpdf_templates->get_style();
 			$catpdf_output->prep_output_objects();
-			//var_dump($content);
-			$html = "";
-			$i=1;
-			$template_sections = $catpdf_templates->get_default_render_order();
-
+			$catpdf_output->prep_pageheader();
+			$catpdf_output->prep_pagefooter();
+			$catpdf_output->_html_structure();
+			
+			//render all of the pdf's by section and then store the marker
 			$renderedList = array();
-			$c=count($template_sections);
+			$template_sections = $catpdf_templates->get_default_render_order();
 			foreach($template_sections as $code=>$section){
+				if(!empty($todo_list) && !in_array($code,$todo_list)){
+					continue;	
+				}
+				$producing_pdf=true;
 				$part_name = call_user_func( array( $catpdf_templates, 'get_section_'.$code ) );
+				$producing_pdf=false;
 				$renderedList[$code]=$part_name;
-				$i++;
 			}
+			
+			//take the rendered output and ordering in the way the book will be put together
 			$oupout_order = $catpdf_templates->get_default_template_sections();
 			$merge_list = array();
 			foreach($oupout_order as $code=>$section){
@@ -263,62 +236,19 @@ class catpdf_pages {
 					}
 				}
 			}
+
 			var_dump($template_sections);
+			var_dump($renderedList);
 			var_dump($merge_list);
 
 			if($catpdf_output->merge_pdfs($merge_list,$filename)){
+				die("before send");
 				$catpdf_output->sendPdf($filename);
 			}
 		}else{
 			$catpdf_output->sendPdf($filename);	
 		}
     }
-    /**
-     * Download single post pdf
-     */
-    public function download_post() {
-        global $dompdf, $PDFMerger, $catpdf_output,$post,$catpdf_data,$_params;
-		//die('here');
-        $id          = $_GET['catpdf_dl'];
-       	$posts 	= array(get_post($id));
-
-        $single      = $posts[0];
-		//var_dump();die();
-        $filename    = preg_replace('/[^a-z0-9]/i', '_', $single->post_title)."-".md5( implode(',',$_params) ) . ".pdf";	
-        if(!$catpdf_output->is_cached($filename) || isset($_params['dyno'])){
-			$content     = $catpdf_output->construct_template('single');
-			//var_dump($content);die();
-			$dompdf = new DOMPDF();
-			$dompdf->set_paper('letter', 'portrait');
-			$dompdf->load_html($content);
-			
-			
-			if( isset($_dompdf_warnings) ){
-				var_dump( $_dompdf_warnings ); die();
-			}
-			$inner_pdf="before";
-			$dompdf->render();
-			var_dump($inner_pdf);die();
-			
-			
-			$pdf = $dompdf->output();//store it for output	
-			if($catpdf_output->cachePdf( 'merging_stage/'.$filename, $pdf )){
-			
-				$mergeList[]=$filename;
-				
-				$catpdf_output->merge_pdfs($mergeList,$filename);
-				$catpdf_output->sendPdf($filename);
-			}else{
-				var_dump($pdf); die();	
-			}
-		}else{
-			$catpdf_output->sendPdf($filename);	
-		}
-    }
-
-
-
-
 
 
 

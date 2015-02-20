@@ -67,13 +67,21 @@ class catpdf_core {
 			}
 		}
     }
+	
 	/**
-	 * Initialize install
+	 * Initialize install.
+	 *
+	 * Basicly we are just going to make folders if needed
 	 */
 	public function install_init() {
-		// Insert default datas
-		$this->_insert_defaults();
+		if (!file_exists (CATPDF_LOG_PATH) && !mkdir(CATPDF_LOG_PATH, 0777, true)) {
+			die('Failed to create folders...');
+		}
+		if (!file_exists (CATPDF_MERGING_PATH) && !mkdir(CATPDF_MERGING_PATH, 0777, true)) {
+			die('Failed to create folders...');
+		}
 	}
+	
 	/**
 	 * Add meta boxes used to capture pieces of information for the profile.
 	 *
@@ -131,7 +139,7 @@ class catpdf_core {
 		<hr/>
 		<p> Pre view the PDF</p>
 		<p class="description"><b>NOTE:</b> The preview is for this page only, meaning that there will be no cover, index, or anything of that nature.  Only the content as if it was in the middle of the docment.</p>
-		<?=$shortcode->apply_download_button(array('text'=>'Preview Download Link','catpdf_dl'=>$post->ID,'target'=>'_blank','catpdf_post_dl'=>'false'))?>
+		<?=$shortcode->apply_download_button(array('text'=>'Preview Download Link','catpdf_dl'=>$post->ID,'target'=>'_blank' ))?>
 		<?php
 	}
 	/**
@@ -190,14 +198,13 @@ class catpdf_core {
 	 * @return string
      */
     public function apply_post_download_button($content) {
-        if ($GLOBALS['post']->post_type == 'post') {
+        /*if ($GLOBALS['post']->post_type == 'post') {
             $id   = $GLOBALS['post']->ID;
             $url  = add_query_arg('catpdf_dl', $id);
             $link = '<a href="' . $url . '"><img src="' . CATPDF_URL . 'images/download-icon.png"></a>';
             return $content . $link;
-        } else {
-            return $content;
-        }
+        }*/
+		return $content;
     }
 
 

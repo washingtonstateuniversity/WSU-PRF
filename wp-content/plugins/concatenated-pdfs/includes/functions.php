@@ -1,7 +1,6 @@
 <?php
-/*
-
-* Returns download button link
+/**
+     * Returns download button link
 
 */
 function catpdf_post_download() {
@@ -13,15 +12,14 @@ function catpdf_post_download() {
     }
     return $link;
 }
-/*
-
-* Display download button
+/**
+     * Display download button
 
 */
 function apply_posts_download($atts = array()) {
     $link                  = '';
     $text                  = (isset($atts['text'])) ? $atts['text'] : 'Download';
-    $atts['catpdf_post_dl'] = 'true';
+	
     if (count($atts) > 0) {
         foreach ($atts as $key => $att) {
             $atts[$key] = urlencode($att);

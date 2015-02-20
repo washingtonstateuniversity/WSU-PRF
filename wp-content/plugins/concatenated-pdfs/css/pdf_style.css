@@ -88,14 +88,14 @@ h1.CoverTitle {
 
 #catpdf_index{padding:0px 75px;}
 
-#catpdf_index .indexed_chapter{width:100%; border:none;}
-#catpdf_index .indexed_chapter tr{border:none;}
-#catpdf_index .indexed_chapter td{border:none;}
+#catpdf_index .indexed_chapter{width:100%; border:none;border-bottom:1px #A2A2A2 solid;}
+#catpdf_index .indexed_chapter tr{border:none; }
+#catpdf_index .indexed_chapter td{border:none;white-space: nowrap;}
 
-#catpdf_index .indexed_chapter .chapter{width:5%; text-align:right;}
-#catpdf_index .indexed_chapter .text{}
-#catpdf_index .indexed_chapter td.segment{border-bottom:1px dotted #494949;}
-#catpdf_index .indexed_chapter .pagenumber{width:3%; text-align:left;}
+#catpdf_index .indexed_chapter td.chapter{width:7%; text-align:right;}
+#catpdf_index .indexed_chapter td.text{}
+#catpdf_index .indexed_chapter td.segment{min-width:15%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; word-break: break-all; word-wrap: break-word;}	
+#catpdf_index .indexed_chapter td.pagenumber{width:3%; text-align:left;}
 
 #catpdf_index h2{font-size:20px !important;font-weight:bold !important; border-bottom:1px solid #585755;}
 
@@ -112,12 +112,9 @@ h1.CoverTitle {
 #logo{float:left;height:45px;width:162px;}
 #site_tag{position:absolute; top:12.5px; right:12.5px;text-align: right;width:auto;font-size:12px;}
 
-.indexed_chapter {}
-.indexed_chapter td.chapter{width:15%; text-align:right;}
-.indexed_chapter td.text{width:25%; text-align:left;>}
-.indexed_chapter td.segment{text-align:right;}
-.indexed_chapter td.pagenumber{width:5%; text-align:left;}
+
 
 .size1{font-size:7px;}
 .size2{font-size:9px;}
+
 

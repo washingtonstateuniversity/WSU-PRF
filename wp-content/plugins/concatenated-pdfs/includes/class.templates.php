@@ -13,7 +13,6 @@ class catpdf_templates {
     public $title = '';
 	public $current_template = NULL;
 	public $current_style = '';
-	public $active_post = NULL;
     function __construct() {
 		global $_params;
         if (is_admin()) {
@@ -60,8 +59,7 @@ class catpdf_templates {
 	}
 	
 	public function get_section_content(){	
-		global $catpdf_output,$_params,$post,$posts;
-
+		global $catpdf_output,$shortcode,$_params,$post,$posts;
 		$parts=array();
 		//var_dump($posts);die();
 		foreach($posts as $posting){
@@ -70,38 +68,35 @@ class catpdf_templates {
 			$post=$posting;
 			//$this->single=$posting;
 			//? $post = $this->single;
-			//$active_post = $post;
-			
-			//needs to be if single once, else each pdf.
-			$catpdf_output->_html_structure();
-			$content 		= $catpdf_output->filter_shortcodes('body', $this->resolve_template('concat-body.php') );
+			//
+			$content 		= $shortcode->filter_shortcodes('loop', $this->resolve_template('concat-loop.php') );
 			$html	= "\n<div id='catpdf_content'>\n{$content}\n</div>\n";
-			var_dump($html);
+			//var_dump($html);
 			$part_name = $catpdf_output->create_section_pdf("content",$html,$posting->post_title);
 			$parts[]=$part_name;
 		}
 		return $parts;
 	}	
 	public function get_section_cover(){
-		global $catpdf_output,$_params,$post,$posts;
-		$cover			= $catpdf_output->filter_shortcodes('body',$this->resolve_template("cover.php"));
+		global $catpdf_output,$shortcode,$_params,$post,$posts;
+		$cover			= $shortcode->filter_shortcodes('body',$this->resolve_template("cover.php"));
 		$html 			= "\n<div id='catpdf_cover'>\n{$cover}\n</div>\n";	
 		$part_name = $catpdf_output->create_section_pdf("cover",$html);
 		return $part_name;
 	}
 	
 	public function get_section_index(){
-		global $catpdf_output,$_params,$post,$posts;
+		global $catpdf_output,$shortcode,$_params,$post,$posts;
 		$index="\n".'<script type="text/php">$GLOBALS["indexpage"]=$pdf->get_page_number(); $GLOBALS["backside"]=$pdf->open_object();</script>'."\n";
-		$index.=$catpdf_output->filter_shortcodes('index',$this->resolve_template("index-table.php"));
+		$index.=$shortcode->filter_shortcodes('index',$this->resolve_template("index-table.php"));
 		$index.="\n".'<script type="text/php">$pdf->close_object(); </script>'."\n";
 		$html="\n<div id='catpdf_index'>\n{$index}\n</div>\n";
 		$part_name = $catpdf_output->create_section_pdf("index",$html);
 		return $part_name;
 	}	
 	public function get_section_appendix(){	
-		global $catpdf_output,$_params,$post,$posts;
-		$appendix			= $this->resolve_template("appendix.php");
+		global $catpdf_output,$shortcode,$_params,$post,$posts;
+		$appendix			= $shortcode->get_indexer(__(""),__("Appendix "),"false").$this->resolve_template("appendix.php");
 		$html 		= "\n<div id='catpdf_appendix'>\n{$appendix}\n</div>\n";
 		$part_name = $catpdf_output->create_section_pdf("appendix",$html);
 		return $part_name;

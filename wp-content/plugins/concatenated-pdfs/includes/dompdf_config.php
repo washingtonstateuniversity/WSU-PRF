@@ -23,7 +23,7 @@ def("DOMPDF_FONT_DIR", DOMPDF_DIR . "/lib/fonts/");
 def("DOMPDF_FONT_CACHE", DOMPDF_FONT_DIR);
 def("DOMPDF_TEMP_DIR", DOMPDF_DIR.'/tmp/');
 def("DOMPDF_CHROOT", realpath(DOMPDF_DIR));
-def("DOMPDF_LOG_OUTPUT_FILE", DOMPDF_DIR. "/logs/log.htm");
+def("DOMPDF_LOG_OUTPUT_FILE", CATPDF_LOG_PATH. "/dompdf-".date('m-d-Y--H-i-s').".html");
 
 def("DOMPDF_UNICODE_ENABLED", $options["DOMPDF_UNICODE_ENABLED"]!=false);
 def("DOMPDF_ENABLE_FONTSUBSETTING", $options["DOMPDF_ENABLE_FONTSUBSETTING"]!=false);
