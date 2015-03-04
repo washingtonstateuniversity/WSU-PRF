@@ -14,3 +14,4 @@ wp-content/plugins/concatenated-pdfs/includes/dompdf/tmp/*
 wp-content/plugins/concatenated-pdfs/includes/dompdf/logs/*.html
 wp-content/plugins/concatenated-pdfs/**/*.pdf
 wp-content/plugins/concatenated-pdfs/cache/logs/*.html
+wp-content/plugins/concatenated-pdfs/cache/merging_stage/*

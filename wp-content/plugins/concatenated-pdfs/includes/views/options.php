@@ -64,7 +64,7 @@
 		  <div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
 <div class="field">
 			  <label><?= _e( "Use theme's CSS?" ); ?> </label>
-			  <input type="checkbox" name="concat[enablecss]" id="enablecss"  value="1" <?=checked($options['concat']['enablecss'],1)?>/>
+			  <input type="checkbox" name="concat[enablecss]" id="enablecss"  value="true" <?=checked($options['concat']['enablecss'],"true")?>/>
 			</div>
 			<div class="note block">
 				<div class="note_block">
@@ -128,7 +128,7 @@
 		  <div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
 <div class="field">
 			  <label><?php echo _e( "Use theme's CSS?" ); ?> </label>
-			  <input type="checkbox" name="single[enablecss]" id="enablecss" <?=( ( isset( $options['single']['enablecss'] ) && $options['single']['enablecss'] == 'on' ) ? 'checked="checked"' : '' );?> >
+			  <input type="checkbox" name="single[enablecss]" id="enablecss" <?=checked($options['single']['enablecss'],"true")?> value="true">
 			</div>
 			<div class="note block">
 				<div class="note_block">
@@ -229,7 +229,18 @@
 
 			</div>
 			<div class="note block"><div class="note_block"><?=_e("Dimensions of paper sizes in points.  The format is top left point coordinate to bottom right point coordinate (TLy,TLx,BRy,BRx). North America standard is 'letter'; other countries generally 'a4'")?></div></div>
-		</div>	  
+		</div>
+      <div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
+        <div class="field">
+          <label><?php _e( "Orientation" ); ?></label>
+          <select id="orientation" name="DOMPDF_DEFAULT_ORIENTATION">
+            <?php foreach( $select_ors as $select_or ) : ?>
+            <option <?=selected($options['DOMPDF_DEFAULT_ORIENTATION'],$select_or)?>  value="<?php echo $select_or; ?>"><?php echo $select_or; ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+		  <div class="note block"><div class="note_block"><?=_e("Select paper orientation.")?></div></div>
+      </div>
 		<div class="field-wrap"><a href="#" class="help" title="View Help"><span class="dashicons dashicons-editor-help"></span></a>
 			<div class="field">
 				<label><?=_e( "Default font family" )?> </label>

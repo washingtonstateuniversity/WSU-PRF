@@ -27,13 +27,15 @@ class WSU_Content_Type_Policy {
 	 * Set up the hooks used by WSU_Content_Type_Policy
 	 */
 	public function __construct() {
-		add_action( 'init',                               array( $this, 'register_post_type'       )        );
-		add_action( 'wp_ajax_submit_policy',             array( $this, 'ajax_callback'            )        );
-		add_action( 'wp_ajax_nopriv_submit_policy',      array( $this, 'ajax_callback'            )        );
-		add_action( 'generate_rewrite_rules',             array( $this, 'rewrite_rules'            )        );
-		add_action( 'pre_get_posts',                      array( $this, 'modify_post_query'        )        );
-		add_action( 'add_meta_boxes',                     array( $this, 'add_meta_boxes'           )        );
-		add_action( 'admin_enqueue_scripts',              array( $this, 'enqueue_admin_scripts'    )        );
+		add_action( 'init',                               array( $this, 'register_post_type'        )        );
+		add_action( 'wp_ajax_submit_policy',              array( $this, 'ajax_callback'             )        );
+		add_action( 'wp_ajax_nopriv_submit_policy',       array( $this, 'ajax_callback'             )        );
+		add_action( 'generate_rewrite_rules',             array( $this, 'rewrite_rules'             )        );
+		add_action( 'pre_get_posts',                      array( $this, 'modify_post_query'         )        );
+		add_action( 'add_meta_boxes',                     array( $this, 'add_meta_boxes'            )        );
+		add_action( 'save_post',                          array( $this, 'save_meta'                 ), 15, 2 );
+		
+		add_action( 'admin_enqueue_scripts',              array( $this, 'enqueue_admin_scripts'     )        );
 
 		add_action( 'manage_'.$this->post_type.'_posts_custom_column', array( $this, 'manage_list_table_number_column'              ), 10, 2 );
 		add_action( 'manage_'.$this->post_type.'_posts_custom_column', array( $this, 'manage_list_table_policy_dates_column' ), 10, 2 );
@@ -113,7 +115,7 @@ class WSU_Content_Type_Policy {
 	 * @param WP_Post $post Current post object.
 	 */
 	function display_number_meta_box( $post ) {
-		$postmeta = get_post_meta( $post->ID, 'wsu_policy_number', true );
+		$postmeta = get_post_meta( $post->ID, '_wsu_policy_number', true );
 		$text = isset( $postmeta ) ? esc_attr( $postmeta ) : ''; 
 		$_note = __('Policy reference number');
 		$_input = '<input type="text" id="wsu_policy_number" class="policy-form-input" name="wsu_policy_number" value="'.$text.'" /><p>'.$_note.'</p>';
@@ -126,7 +128,7 @@ class WSU_Content_Type_Policy {
 	 * @param WP_Post $post Post object to display meta for.
 	 */
 	function display_date_meta_box( $post ) {
-		$postmeta = get_post_meta( $post->ID, 'wsu_policy_date', true );
+		$postmeta = get_post_meta( $post->ID, '_wsu_policy_date', true );
 		$text = isset( $postmeta ) ? esc_attr( $postmeta ) : ''; 
 		$_note = __('This is the Date the policy went into effect.');
 		$_input = '<input type="date" id="wsu_policy_date" class="policy-form-input" name="wsu_policy_date" value="'.$text.'" /><p>'.$_note.'</p>';
@@ -334,7 +336,7 @@ class WSU_Content_Type_Policy {
 		if ( 'number' !== $column_name )
 			return;
 
-		if ( $number = get_post_meta( $post_id, '_policy_number', true ) )
+		if ( $number = get_post_meta( $post_id, '_wsu_policy_number', true ) )
 			echo esc_html( $number );
 	}
 
@@ -385,5 +387,26 @@ class WSU_Content_Type_Policy {
 		return site_url( $this->post_type_archive . '/' . $year . '/' . $month . '/' );
 	}
 
+	
+	
+	
+	public function save_meta( $post_id, $post ) {
+		if ( isset( $_POST['wsu_policy_number'] ) ) {
+			if ( empty( trim( $_POST['wsu_policy_number'] ) ) ) {
+				delete_post_meta( $post_id, '_wsu_policy_number');
+			} else {
+				update_post_meta( $post_id, '_wsu_policy_number', $_POST['wsu_policy_number'] );
+			}
+		}
+		if ( isset( $_POST['wsu_policy_date'] ) ) {
+			if ( empty( trim( $_POST['wsu_policy_date'] ) ) ) {
+				delete_post_meta( $post_id, '_wsu_policy_date');
+			} else {
+				update_post_meta( $post_id, '_wsu_policy_date', $_POST['wsu_policy_date'] );
+			}
+		}
+		return;
+	}
+	
 }
 $wsu_content_type_policy = new WSU_Content_Type_Policy();

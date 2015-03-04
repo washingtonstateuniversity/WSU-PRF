@@ -7,6 +7,12 @@ class catpdf_data {
     function __construct() { }
 
 
+	public $page_num_placeholder = '{P}';
+	public $page_total_placeholder = '{PT}';
+	public $page_label_placeholder = '{PL}';
+	public $page_separator_placeholder = '{PS}';
+
+
 	public function get_options(){
 		$plugin_option_defaults=array(
 				'concat' => array(
@@ -28,6 +34,7 @@ class catpdf_data {
 				"DOMPDF_PDF_BACKEND"=>"CPDF",
 				"DOMPDF_DEFAULT_MEDIA_TYPE"=>"screen",
 				"DOMPDF_DEFAULT_PAPER_SIZE"=>"letter",
+				"DOMPDF_DEFAULT_ORIENTATION"=>'portrait',
 				"DOMPDF_DEFAULT_FONT"=>"serif",
 				"DOMPDF_DPI"=>96,
 				"DOMPDF_ENABLE_PHP"=>true,
@@ -212,33 +219,18 @@ class catpdf_data {
 		//var_dump(get_posts( array('include'=>array($id))));
 
 		$posts_array = get_posts( $args );
-		
-		
-		
-		
-        //$result = new WP_Query($args);
-		
-        return $posts_array;//$result->posts;
-    }
-    /**
-     * Return query filter
-     * @param string $where
-	 *
-	 * @return string
-     */
-    public function filter_where($where = '') {
-        global $_params;
-        if (isset($_params['from']) && $_params['from'] != '') {
-            $from = date('Y-m-d', strtotime($_params['from']));
-            $where .= ' AND DATE_FORMAT( post_date , "%Y-%m-%d" ) >= "' . $from . '"';
-        }
-        if (isset($_params['to']) && $_params['to'] != '') {
-            $to = date('Y-m-d', strtotime($_params['to']));
-            $where .= ' AND DATE_FORMAT( post_date , "%Y-%m-%d" ) <= "' . $to . '"';
-        }
-        return $where;
-    }
 
-
+        return $posts_array;
+    }
+	
+	
+	public function pixeltopointConvertion($px){
+		$point = $px * 72 / 96;
+		return $point;
+	}
+	public function pointtopixelConvertion($point){
+		$px = $point * 96 / 72;
+		return $px;
+	}
 }
 ?>

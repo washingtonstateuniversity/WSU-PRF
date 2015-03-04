@@ -185,11 +185,16 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				var_dump($url);
 				die();
 			}
-			$doc = phpQuery::newDocument($page);
-			$as = pq('a');
+			
+		
+			$content_obj = htmlqp($page, 'body', array('ignore_parser_warnings' => TRUE));
+			$as = $content_obj->find('a');
+			
+			//$doc = phpQuery::newDocument($page);
+			//$as = pq('a');
 			$urls=array();
 			foreach($as as $a) {
-				$link_url=pq($a)->attr('href');
+				$link_url=$a->attr('href');
 				if(!empty($link_url)){
 					$type='page';
 					if(!$this->is_localurl($link_url)){
@@ -393,12 +398,15 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			//$dom = $html5->loadHTML($raw_html);
 			
 			
-			if($output == 'text')
+			if($output == 'text'){
 				return html5qp($raw_html,$selector)->text();
-			if($output == 'html')
+			}
+			if($output == 'html'){
 				return html5qp($raw_html,$selector)->html();
-			if( empty($output) )
+			}
+			if( empty($output) ){
 				return new WP_Error('scrape_get_html_by_selector_failed', "Error parsing selector: $selector");
+			}
 		}
 	
 		
@@ -415,9 +423,15 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @access public
 		 */	
 		public function normalize_url($url){
-			if(!$this->is_localurl($url))return $url;
-			if($this->is_email($url))return $url;
-			if($this->is_anchor($url))return $url;
+			if(!$this->is_localurl($url)){
+				return $url;
+			}
+			if($this->is_email($url)){
+				return $url;
+			}
+			if($this->is_anchor($url)){
+				return $url;
+			}
 			$baseurl=str_replace('http://'.$this->rootUrl,'',$url);
 			if(substr($baseurl,0,1)!='/'){
 				if(strpos($baseurl,'/')!==false ){

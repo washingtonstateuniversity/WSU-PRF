@@ -52,6 +52,25 @@
             </select>
 			<input class="all-btn sept-mar" type="button" value="Select All">
           </div>
+		  <div class="clr"></div>
+          <div class="wd200 fl">
+            <label class="marb5"><?php _e( "Order by" ); ?></label>
+            <select id="orderby" name="orderby">
+				<?php foreach($orderby as $order):?>
+				<option><?=$order?></option>
+				<?php endforeach;?>
+            </select>
+          </div>
+          <div class="wd200 fl" id="meta_key">
+            <label class="marb5"><?php _e( "meta key" ); ?></label>
+            <input type="text" name="meta_key"/>
+          </div>
+          <div class="wd200 fl" id="meta_value">
+            <label class="marb5"><?php _e( "meta value" ); ?></label>
+            <input type="text" name="meta_value"/>
+          </div>		  
+
+		  
           <div class="clr"></div>
         </div>
         <div class="clr"></div>

@@ -132,6 +132,23 @@ class catpdf_pages {
         $data['select_cats']   = $select_cats;
         $data['select_author'] = $select_author;
 
+		$data['orderby'] = array('none',
+								'ID',
+								'author',
+								'title',
+								'date',
+								'modified',
+								'parent',
+								'rand',
+								'comment_count',
+								'menu_order',
+								'meta_value',
+								'meta_value_num',
+								'post__in',
+								);
+		
+
+
 		$data['styles'] = array('default' => "default") + $catpdf_templates->get_styles();
         $data['select_sizes']  = array('letter' => $catpdf_data->paper_sizes['letter']) + $catpdf_data->paper_sizes;
         $data['select_ors']    = $catpdf_data->paper_orientation;
@@ -164,7 +181,25 @@ class catpdf_pages {
 		$data['dompdf_options'] = $catpdf_data->get_options();
 		$data['sizes']   = array('letter' => $catpdf_data->paper_sizes['letter']) + $catpdf_data->paper_sizes;
 		$data['media_types'] = $catpdf_data->media_types;
+		$data['select_ors']    = $catpdf_data->paper_orientation;
 		$data['styles'] = array('default' => "default") + $catpdf_templates->get_styles();
+		
+		$data['orderby'] = array('none',
+								'ID',
+								'author',
+								'title',
+								'date',
+								'modified',
+								'parent',
+								'rand',
+								'comment_count',
+								'menu_order',
+								'meta_value',
+								'meta_value_num',
+								'post__in',
+								);
+		
+		
         // Get templates
         $data['templates'] = array();//$catpdf_templates->get_template();
         // Display option form
@@ -177,77 +212,33 @@ class catpdf_pages {
      */
     public function download_posts() {
         global $dompdf,$_params,$catpdf_output,$post,$post_query_arr,$catpdf_templates,$producing_pdf;
+		$_params['dyno']='yes';
         $param_arr   = array(
             'from' => (isset($_params['from'])) ? urldecode($_params['from']) : '',
             'to' => (isset($_params['to'])) ? urldecode($_params['to']) : '',
-            'category' => (isset($_params['cat']) && $_params['cat'] != '') ? explode(',', $_params['cat']) : array(),
             'user' => (isset($_params['user']) && $_params['user'] != '') ? explode(',', $_params['user']) : array(),
-            'template' => (isset($_params['template'])) ? urldecode($_params['template']) : 'default',
-			'post_type' => (isset($_params['type'])) ? urldecode($_params['type']) : 'post',
-			'post_status' => (isset($_params['status'])) ? urldecode($_params['status']) : 'published'
+            'template' => (isset($_params['template']) && !empty($_params['template'])) ? urldecode($_params['template']) : 'default',
+			'post_type' => (isset($_params['type']) && !empty($_params['type'])) ? urldecode($_params['type']) : 'post',
+			'post_status' => (isset($_params['status']) && !empty($_params['status'])) ? urldecode($_params['status']) : 'published',
+			'orderby' => (isset($_params['orderby']) && !empty($_params['orderby'])) ? urldecode($_params['orderby']) : 'date', 
         );
-		
-		$todo_list = array();
-		if(isset($_params['sections']) && !empty($_params['sections'])){
-			$todo_list = array_map('trim', explode(',', $_params['sections']));
+		if(isset($_params['cat']) && !empty($_params['cat'])){
+			$param_arr['category'] = explode(',', $_params['cat']);
 		}
-		
+		if(isset($_params['meta_key']) && !empty($_params['meta_key'])){
+			$param_arr['meta_key'] = $_params['meta_key'];
+		}
+		if(isset($_params['meta_value']) && !empty($_params['meta_value'])){
+			$param_arr['meta_value'] = $_params['meta_value'];
+		}
+		$prettyname= isset($_params['filename']) && !empty($_params['filename']) ? $_params['filename']. ".pdf" : "";
 		
         $post_query_arr  = $param_arr;
 		$_params['papersize']= isset($_params['papersize']) && !empty($_params['papersize']) ? $_params['papersize'] : "letter";
 		$_params['orientation']= isset($_params['orientation']) && !empty($_params['orientation']) ? $_params['orientation'] : "portrait";
 
 		$filename = trim($catpdf_output->buildFileName(null,null))."-".md5( implode(',',$_params) ) . ".pdf";
-		
-		if(!$catpdf_output->is_cached($filename) || isset($_params['dyno'])){
-			$catpdf_templates->get_style();
-			$catpdf_output->prep_output_objects();
-			$catpdf_output->prep_pageheader();
-			$catpdf_output->prep_pagefooter();
-			$catpdf_output->_html_structure();
-			
-			//render all of the pdf's by section and then store the marker
-			$renderedList = array();
-			$template_sections = $catpdf_templates->get_default_render_order();
-			foreach($template_sections as $code=>$section){
-				if(!empty($todo_list) && !in_array($code,$todo_list)){
-					continue;	
-				}
-				$producing_pdf=true;
-				$part_name = call_user_func( array( $catpdf_templates, 'get_section_'.$code ) );
-				$producing_pdf=false;
-				$renderedList[$code]=$part_name;
-			}
-			
-			//take the rendered output and ordering in the way the book will be put together
-			$oupout_order = $catpdf_templates->get_default_template_sections();
-			$merge_list = array();
-			foreach($oupout_order as $code=>$section){
-				if( isset($renderedList[$code]) && !empty($renderedList[$code]) ){
-					if(is_array($renderedList[$code])){
-						$i=0;
-						foreach($renderedList[$code] as $item){
-							$key=$code.$i;
-							$merge_list[$key]=$item;	
-							$i++;
-						}
-					}else{
-						$merge_list[$code]=$renderedList[$code];
-					}
-				}
-			}
-
-			var_dump($template_sections);
-			var_dump($renderedList);
-			var_dump($merge_list);
-
-			if($catpdf_output->merge_pdfs($merge_list,$filename)){
-				die("before send");
-				$catpdf_output->sendPdf($filename);
-			}
-		}else{
-			$catpdf_output->sendPdf($filename);	
-		}
+		$catpdf_output->sendPdf($filename,$prettyname);
     }
 
 

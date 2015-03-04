@@ -17,14 +17,14 @@ function extract_subdomains($domain){
     return $subdomains;
 }
 
-add_action( 'init', 'wsu_ga_remove_analytics' );
+/*add_action( 'init', 'wsu_ga_remove_analytics' );
 function wsu_ga_remove_analytics() {
 	global $wsu_analytics;
-	remove_action( 'wp_enqueue_scripts', array( $wsu_analytics, 'enqueue_scripts' ) );
-	remove_action( 'admin_init', array( $wsu_analytics, 'display_settings' ) );
-	remove_action( 'wp_footer', array( $wsu_analytics, 'global_tracker' ), 999 );
-	remove_action( 'admin_footer', array( $wsu_analytics, 'global_tracker' ), 999 );
-}
+	//remove_action( 'wp_enqueue_scripts', array( $wsu_analytics, 'enqueue_scripts' ) );
+	//remove_action( 'admin_init', array( $wsu_analytics, 'display_settings' ) );
+	//remove_action( 'wp_footer', array( $wsu_analytics, 'global_tracker' ), 999 );
+	//remove_action( 'admin_footer', array( $wsu_analytics, 'global_tracker' ), 999 );
+}*/
 
 
 
@@ -234,32 +234,9 @@ add_action( 'wp_enqueue_scripts', 'gauntlet_scripts' );
  * Enqueue child theme Javascript files.
  */
 function gauntlet_scripts() {
-	wp_enqueue_script( 'freezer.js', get_stylesheet_directory_uri() . '/scripts/freezer.js', array( 'jquery' ), false, true );
-	$code = get_gauntlet_attr("code");
-	switch($code){
-		case "current":
-			// nothing yet
-			break;
-		case "ideal":
-			// nothing yet
-			break;
-		case "controll":
-			// nothing yet
-			break;
-		case "jtrack":
-			wp_enqueue_script( 'jtrack.min.js', '//repo.wsu.edu/jtrack/develop/jtrack.min.js', array( 'jquery' ), false, true );
-			break;
-		case "tag_man":
-			// nothing yet
-			break;
-		default:
-			//nothing to do
-	}
-	wp_enqueue_script( 'site.js', get_stylesheet_directory_uri() . '/scripts/site.js', array( 'jquery' ), false, true );
-	if(file_exists(get_stylesheet_directory() . '/scripts/site-'.$code.'.js')){
-		wp_enqueue_script( 'site-'.$code.'.js', get_stylesheet_directory_uri() . '/scripts/site-'.$code.'.js', array( 'jquery' ), false, true );
-	}
 	
-	wp_enqueue_script( 'test_drive.js', get_stylesheet_directory_uri() . '/scripts/test_drive.js', array( 'jquery' ), false, true );
-
+	
+	
+	wp_enqueue_script( 'site.js', get_stylesheet_directory_uri() . '/scripts/site.js', array( 'jquery' ), false, true );
+	
 }
