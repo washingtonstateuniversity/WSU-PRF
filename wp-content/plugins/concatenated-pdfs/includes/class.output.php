@@ -76,7 +76,7 @@ class catpdf_output {
 		global $catpdf_templates,$_params,$catpdf_data,$posts,$post_query_arr,$shortcode;
 		$id		= isset($_params['catpdf_dl'])?$_params['catpdf_dl']:NULL;
 		//var_dump($post);
-		$posts 	= ($id>0) ? array(get_post($id)) : $this->get_posts_children('',$post_query_arr) ;
+		$posts 	= ($id>0) ? array(get_post($id)) : $this->get_posts_children(0,$post_query_arr) ;
 	}
 
 	public function prep_pageheader(){

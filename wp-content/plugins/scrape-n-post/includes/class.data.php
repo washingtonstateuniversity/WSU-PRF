@@ -13,8 +13,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * 
 		 * @reutrun array
 		 *
-		 * @access public
-		 *
 		 * @TODO should pull from inline options right before run then merge the options
 		 */
 		public function get_options(){
@@ -44,8 +42,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * 
 		 * @return array
 		 *
-		 * @access public
-		 *
 		 * @TODO this is just laying out the ground work still
 		 */
 		public function get_scraping_profile($id=0){
@@ -66,8 +62,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * Get all the urls of a page.
 		 * 
 		 * @return array All the urls that are on a page
-		 *
-		 * @access public
 		 */
 		public function get_all_urls($url, $depth = 5) {
 			$this->traverse_all_urls($url,$depth);
@@ -84,12 +78,10 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * 
 		 * @param string $url Starting url
 		 * @param int $depth Starting depth pool, -- with interation
-		 *
-		 * @access public
 		 * 
 		 * @TODO should store the content if option allows for it, create option to not allow for storeage, and when to not allow
 		 */
-		public function traverse_all_urls($url,  $depth = 5) {
+		public function traverse_all_urls( $url,  $depth = 5, $idx = 0 ) {
 			global $_params,$scrape_core,$scrape_actions;
 			
 			if ( isset($this->seen["{$url}"]) 
@@ -100,6 +92,12 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			}
 			$this->seen["{$url}"] = true;
 			$scrape_options = get_option('scrape_options');
+			
+			if($scrape_options['limit_scraps']<=$idx){
+				return;
+			}
+			
+			
 			$urls = $this->get_urls($url);
 			foreach($urls as $href=>$obj ) {
 				if($obj['type']=='page'){
@@ -140,19 +138,35 @@ if ( ! class_exists( 'scrape_data' ) ) {
 				}
 				if( $obj['type'] == "page" ){
 					$exist=$scrape_core->_is_exist('url',$href);
+
 					if(!$exist){
+						
+						$raw_html = wp_remote_get($href);//$scrape_data->scrape_get_content($id, 'html');
+						//var_dump($raw_html);die();
+						if(is_a($raw_html, 'WP_Error') || $raw_html=="ERROR::404"){
+							$scrape_core->message = array(
+								'type' => 'error',
+								'message' => __('Failed '.print_r($raw_html))
+							);
+						}
+						
 						$scrape_actions->add_queue(array(
 							'url'=>$href,
 							'type'=>$obj['type'],
-							'http_status'=>200
+							'http_status'=>$raw_html['response']['code'],
+							'html'=>($raw_html['response']['code']!=200)?"":$raw_html['body']
 						));
 						
 						if($scrape_options['add_post_on_crawl']){
 							$scrape_actions->make_post($href);
 						}
+						$idx++;
+					}
+					if($scrape_options['limit_scraps']<=$idx){
+						return;
 					}
 					$this->wanted[$href]=$obj;
-					$this->traverse_all_urls($href,$depth - 1);
+					$this->traverse_all_urls($href,$depth - 1,$idx);
 				}
 			}
 			sleep( $scrape_options['interval'] );
@@ -169,8 +183,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url starting url of target content
 		 *
 		 * @return array $url all url found in the page
-		 *
-		 * @access public
 		 *
 		 * @TODO should pull from store the content if option allows for it, create option to not allow for storage, and when to not allow
 		 */
@@ -215,8 +227,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 
 		/**
 		 * build link object.
-		 *
-		 * @access public
 		 * 
 		 * @TODO remove
 		 */
@@ -234,8 +244,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param array $scrapeopt Options
 		 *
 		 * @return string
-		 *
-		 * @access public
 		 *
 		 * @TODO Refactor this alot!!
 		 */
@@ -324,8 +332,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param array $http_args Optional. Override the defaults.
 		 * 
 		 * @return WP_Error|array The response or WP_Error on failure.
-		 *
-		 * @access public
 		 */
 		function scrape_remote_request($url, $cache_args = array(), $http_args = array(),$retry_limit=false) {
 			//print('starting request <h5>'.$url.'</h5>');
@@ -384,8 +390,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $output html or text
 		 *
 		 * @return string
-		 *
-		 * @access public
 		 */
 		function scrape_get_html_by_selector($raw_html, $selector, $output = 'html'){
 			// Parsing request using phpQuery
@@ -419,8 +423,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url possibly drity url
 		 * 
 		 * @return string Clean url
-		 *
-		 * @access public
 		 */	
 		public function normalize_url($url){
 			if(!$this->is_localurl($url)){
@@ -464,8 +466,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 *
 		 * @return string
 		 *
-		 * @access public
-		 *
 		 * @todo this should be an optional part, an pull from a type list
 		 */
 		public function normalize_url_format($url){
@@ -479,8 +479,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
-		 *
-		 * @access public
 		 *
 		 * @todo this should be an optional part, an pull from a type list
 		 */
@@ -497,8 +495,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
-		 *
-		 * @access public
 		 * 
 		 * @todo this should be an optional part, an pull from a type list
 		 */
@@ -515,8 +511,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
-		 *
-		 * @access public
 		 */
 		public function is_email($url=false){
 			if( $url === false || strpos($url,'mailto:')===false ){
@@ -531,8 +525,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
-		 *
-		 * @access public
 		 */
 		public function is_anchor($url=false){
 			if(substr($url,0,1) == '#'){
@@ -547,8 +539,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $url
 		 *
 		 * @return boolean
-		 *
-		 * @access public
 		 */
 		public function is_localurl($url){
 			if( substr($url,0,4) == 'http' && strpos($url,$this->rootUrl)===false ){
@@ -568,8 +558,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param int $id
 		 *
 		 * @return object
-		 *
-		 * @access public
 		 */
 		public function query_posts($id = NULL) {
 			global $_params;
@@ -605,8 +593,6 @@ if ( ! class_exists( 'scrape_data' ) ) {
 		 * @param string $where
 		 * 
 		 * @return string
-		 *
-		 * @access public
 		 */
 		public function filter_where($where = '') {
 			global $_params;
@@ -620,8 +606,54 @@ if ( ! class_exists( 'scrape_data' ) ) {
 			}
 			return $where;
 		}
-	
-	
+		
+		/*
+		 * Return detected meta keys.
+		 *
+		 * @global class $wpdb
+		 * 
+		 * @param string $post_type
+		 * 
+		 * @return array
+		 */
+		public function get_meta_keys( $post_type='post' ){
+			global $wpdb;
+			$query = "
+				SELECT DISTINCT($wpdb->postmeta.meta_key) 
+				FROM $wpdb->posts 
+				LEFT JOIN $wpdb->postmeta 
+				ON $wpdb->posts.ID = $wpdb->postmeta.post_id 
+				WHERE $wpdb->posts.post_type = '%s' 
+				AND $wpdb->postmeta.meta_key != '' 
+				AND $wpdb->postmeta.meta_key NOT RegExp '(^[_0-9].+$)' 
+				AND $wpdb->postmeta.meta_key NOT RegExp '(^[0-9]+$)'
+			";
+			$meta_keys = $wpdb->get_col($wpdb->prepare($query, $post_type));
+			set_transient($post_type.'_meta_keys', $meta_keys, 60*60*24); # 1 Day Expiration
+			return $meta_keys;
+		}
+		/*
+		 * Return detected meta keys.
+		 *
+		 * @global class $wpdb
+		 * 
+		 * @return array
+		 */
+		public function get_all_meta_keys($unique=true){
+			global $wpdb;
+			$post_types      = get_post_types(array(
+				'public'   => true,
+			),'names' , 'and' );
+			
+			$meta_keys = array();
+			foreach( $post_types as $post_type){
+				$meta_keys = array_merge($meta_keys,$this->get_meta_keys( $post_type ));
+			}
+			return $unique ? array_unique ($meta_keys) : $meta_keys;
+		}	
+		
+		
+		
 	}
 	global $scrape_data;
 	$scrape_data = new scrape_data();

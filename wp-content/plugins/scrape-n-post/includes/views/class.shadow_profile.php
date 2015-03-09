@@ -70,22 +70,120 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 		 * not really the meta of the post, but it'll work for our needs
 		 *
 		 * @global class $scrape_core
+		 * @gloabl class $scrape_data
 		 *
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_shadow_feild_map_meta_box( $post ) {
-			global $scrape_core;
-			$mapable_parts=array('post_content','post_name','post_title','post_excerpt','post_date','post_category');//,'post_author','post_parent','menu_order','tags_input','tax_input');
-			foreach($mapable_parts as $name){
-				$value=array();
-				$input_name = SHADOW_KEY."_map[$name]";
-				$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_'.$name, true );
-				$this->mapping_block($post,$name,$input_name,json_decode($value));
-			}
+			global $scrape_core, $scrape_data;
+			
+			$display='';//@todo check why this is there.. maybe for optional or security reasons?
+			?><fieldset id="post_block" style=" <?=$display?> ">
+				<legend>Post Blocks</legend>
+				<div id="mapping_meta_template" style="padding:10px 15px; border:1px solid #E9E9E9;">
+				<?php
+						$mapable_parts=array('post_content', 'post_name', 'post_title', 'post_excerpt', 'post_date', 'post_category');//,'post_author','post_parent','menu_order','tags_input','tax_input');
+						foreach($mapable_parts as $name){
+							$value=array();
+							$input_name = SHADOW_KEY."_map[$name]";
+							$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_'.$name, true );
+							$this->mapping_block( $post, $name, $input_name, json_decode($value) );
+						}
+					?>
+				</div>
+			</fieldset>
+			<?php
+
+			?><fieldset id="meta_block" style=" <?=$display?> ">
+				<legend>Meta Blocks</legend>
+				<div id="mapping_meta_template" style="padding:10px 15px; border:1px solid #E9E9E9;">
+				
+				<?php
+					$mapable_meta_parts=$scrape_data->get_all_meta_keys();
+					$meta_values=array();
+					foreach($mapable_meta_parts as $name){
+						$value=array();
+						$value = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_map_meta__'.$name, true );
+						if(!empty($value)){
+							$meta_values[$name]=$value;
+						}
+					}
+					
+					?>
+				
+				
+					<label>Add a meta value map: </label>
+					<?php $mapable_meta_parts=$scrape_data->get_all_meta_keys(); ?>
+					<select id="meta_choice">
+						<option>Select</option>
+					<?php foreach($mapable_meta_parts as $name) : ?>
+						<?php if(strpos($name,'_'.SHADOW_KEY)===false) : ?>
+							<option <?=(isset($meta_values[$name])?"disabled":"")?>><?=$name?></option>
+						<?php endif;?>
+					<?php endforeach;?>
+					</select>
+				<?php
+					$mapable_meta_parts=$scrape_data->get_all_meta_keys();
+					foreach($mapable_meta_parts as $name){
+						$input_name = SHADOW_KEY."_map[meta__$name]";
+						$this->mapping_block( $post, $name, $input_name, isset($meta_values[$name]) ? json_decode($meta_values[$name]) : array(), isset($meta_values[$name]) );
+					}
+					?>
+				</div>
+			</fieldset>
+			
+			<fieldset id="meta_block" style=" <?=$display?> ">
+				<legend>Content additions</legend>
+				<br/>
+				<div id="ext_sections">
+					<?php
+						$input_name = SHADOW_KEY."_post_preppened_content";
+						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					?>
+						<label> <?=_e( "Preppened content block" )?> </label><br/>
+						<textarea name="<?=$input_name?>"  style="width:100%; min-height:250px;"><?=esc_textarea( $meta_data)?></textarea>
+					<?php
+					$input_name = SHADOW_KEY."_post_preppened_shortcode";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$scrape_core->make_radio_html(array(
+						'types'       => array('Yes'=>'yes','No'=>'no'),
+						'input_name'  => $input_name,
+						'meta_data'   => isset($meta_data)?$meta_data:'no',
+						'description' => '',
+						'title'       => 'Process shortcodes'
+					))?>
+					
+					<hr/>
+					<?php
+						$input_name = SHADOW_KEY."_post_appended_content";
+						$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					?>
+						<label> <?=_e( "Appended content block" )?> </label><br/>
+						<textarea name="<?=$input_name?>"  style="width:100%; min-height:250px;"><?=esc_textarea( $meta_data)?></textarea>
+					<?php
+					$input_name = SHADOW_KEY."_post_appended_shortcode";
+					$meta_data = get_post_meta( $post->ID, '_'.$input_name, true );
+					$scrape_core->make_radio_html(array(
+						'types'       => array('Yes'=>'yes','No'=>'no'),
+						'input_name'  => $input_name,
+						'meta_data'   => isset($meta_data)?$meta_data:'no',
+						'description' => '',
+						'title'       => 'Process shortcodes'
+					))?>
+					<hr/>
+				</div>
+			</fieldset>
+			
+			
+			
+			
+			
+			<?php
+		
 		}
 		
 		public function add_block_tempates(){
-			global $post;    
+			global $post,$scrape_core;    
 			?>
 			<div id="mapping_template">
 				<?=$this->feild_block_stub($post,"{STUB_NAME}","{INPUT_NAME}",array())?>
@@ -96,17 +194,18 @@ if ( ! class_exists( 'shadow_profile' ) ) {
 			<?php		
 		}
 		
-		public function mapping_block($post,$name,$input_name,$values=array()){
+		public function mapping_block( $post, $name, $input_name, $values=array(), $show=true){
 			$display="";
-			if($name=="post_excerpt" && get_post_meta( $post->ID, '_'.SHADOW_KEY."_post_excerpt", true )!="yes"){
+			if( !$show || ( $name=="post_excerpt" && get_post_meta( $post->ID, '_'.SHADOW_KEY."_post_excerpt", true )!="yes" ) ){
 				$display="display:none;";
 			}
 			?>
 			<fieldset class="field_block <?=$name?>" style=" <?=$display?> ">
 				<legend><?=$name?></legend>
+				<a href="#" class="mapping-showhide <?=(isset($open_value)?"open":"")?>" style=" <?=(isset($values) && !empty($values)?"":"display:none;")?> " data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b><span class="dashicons dashicons-admin-collapse"></span><span class="show_text">Show</span></b></a>
 				<a href="#" class="mapping-add button" style="float:right;<?=(isset($values) && !empty($values)?"display:none;":"")?>" data-block_name="<?=$name?>" data-base_input_name="<?=$input_name?>"><b>Add mapping<span class="dashicons dashicons-plus-alt"></span></b></a>
 				
-				<div class="fields_area">
+				<div class="fields_area <?=( isset($is_open) || (!isset($values) || empty($values)) ? "" : "closed" )?>">
 				<?php if(isset($values) && !empty($values)):?>
 					<?=$this->feild_block_stub($post,$name,$input_name,$values)?>
 				<?php endif;?>
@@ -466,11 +565,14 @@ $content = ob_get_clean();
 		/**
 		 * Save a profiles meta saved through the object's meta box.
 		 *
+		 * @global class $scrape_data
+		 *
 		 * @param int     $post_id The ID of the post being saved.
 		 * @param object  $post The post being saved.
 		 */
 		public function save_shadow_profile_object( $post_id, $post ) {
-			$shadow_profile_object_names = array('post_status','post_type','post_author','ping_status','comment_status','post_password','post_excerpt','post_category','post_category_method','page_template');
+			global $scrape_data;
+			$shadow_profile_object_names = array( 'post_status', 'post_type', 'post_author', 'ping_status', 'comment_status', 'post_password', 'post_excerpt', 'post_category', 'post_category_method', 'page_template' );
 			foreach($shadow_profile_object_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
 					if ( empty( trim( $_POST[SHADOW_KEY.'_'.$name] ) ) ) {
@@ -480,18 +582,48 @@ $content = ob_get_clean();
 					}
 				}
 			}
-			
-			$shadow_profile_object_mapping_names = array('post_content','post_name','post_title','post_excerpt','post_date','post_category');
+
+			$shadow_profile_object_names = array( 'post_preppened_content', 'post_preppened_shortcode', 'post_appended_content', 'post_appended_shortcode' );
+			foreach($shadow_profile_object_names as $name){
+				//var_dump($_POST[SHADOW_KEY.'_'.$name]);
+				if ( isset( $_POST[SHADOW_KEY.'_'.$name] ) ) {
+					$value = $_POST[SHADOW_KEY.'_'.$name];
+					if ( empty( trim( $value ) ) ) {
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name );
+					} else {
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_'.$name, $value );
+						//var_dump('update_post_meta');
+					}
+				}
+			}//die();
+		
+			$shadow_profile_object_mapping_names = array( 'post_content', 'post_name', 'post_title', 'post_excerpt', 'post_date', 'post_category' );
 			foreach($shadow_profile_object_mapping_names as $name){
 				if ( isset( $_POST[SHADOW_KEY.'_map'][$name] ) ) {
 					$value = json_encode($_POST[SHADOW_KEY.'_map'][$name]);
 					if ( empty( trim( $value ) ) ) {
 						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name );
 					} else {
-						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name, json_encode($_POST[SHADOW_KEY.'_map'][$name]) );
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_'.$name, $value );
 					}
 				}
 			}
+
+			$mapable_meta_parts=$scrape_data->get_all_meta_keys();
+			foreach($mapable_meta_parts as $name){
+				$input_name = SHADOW_KEY."_map[meta__$name]";
+				$this->mapping_block( $post, $name, $input_name, isset($meta_values[$name]) ? json_decode($meta_values[$name]) : array(), isset($meta_values[$name]) );
+				
+				if ( isset( $_POST[SHADOW_KEY.'_map']['meta__'.$name] ) ) {
+					$value = json_encode($_POST[SHADOW_KEY.'_map']['meta__'.$name]);
+					if ( empty( trim( $value ) ) ) {
+						delete_post_meta( $post_id, '_'.SHADOW_KEY.'_map_meta__'.$name );
+					} else {
+						update_post_meta( $post_id, '_'.SHADOW_KEY.'_map_meta__'.$name, json_encode($_POST[SHADOW_KEY.'_map']['meta__'.$name]) );
+					}
+				}
+			}
+
 			return;
 		}
 

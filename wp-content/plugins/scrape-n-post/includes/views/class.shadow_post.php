@@ -9,9 +9,114 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		function __construct() {
 			add_action( 'init', array( $this, 'register_shadow_post_type' ), 11 );
 			add_action( 'add_meta_boxes', array( $this, 'add_shadow_post_meta_boxes' ), 11, 1 );
+			add_filter('post_row_actions', array( $this, 'shadow_post_action_row' ), 10, 2);
 			add_action( 'save_post', array( $this, 'save_shadow_post_object' ), 15, 2 );
+			
+			add_action( 'admin_footer-edit.php', array( $this, 'custom_bulk_admin_footer' ) );
+			add_action( 'load-edit.php', array( $this, 'custom_bulk_action' ) );
+			add_action( 'admin_notices', array( $this, 'custom_bulk_admin_notices' ) );
+			
 			add_action( 'transition_post_status', array( $this, 'force_shadow_post_status' ), 15, 3 );
 		}
+
+
+
+	
+	 
+		public function custom_bulk_admin_footer() {
+			global $post_type;
+			if( $post_type == SHADOW_POST_TYPE_POST ) {
+				?>
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery('<option>').val('import').text('<?php _e('Import')?>').appendTo("select[name='action']");
+						jQuery('<option>').val('import').text('<?php _e('Import')?>').appendTo("select[name='action2']");
+					});
+				</script>
+				<?php
+			}
+		}
+	
+	
+	/*
+	        global $scrape_actions,$_param;
+        if ('ignore' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					//add ignore flag
+                    //$scrape_actions->update_queue($url);
+                }
+            }
+        }
+        if ('topost' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					$scrape_actions->make_post($url,array());
+                }
+            }
+        }
+        if ('reimport' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					$scrape_actions->reimport_post($url);
+                }
+            }
+        }	
+        if ('detach' === $this->current_action()) {
+            if (count($_param['url']) > 0) {
+                foreach ($_param['url'] as $url) {
+					$scrape_actions->detach_post($url);
+                }
+            }
+        }		*/
+		public function custom_bulk_action() {
+			global $scrape_actions, $_params;
+			//get the action
+			$wp_list_table = _get_list_table('WP_Posts_List_Table');
+			$action = $wp_list_table->current_action();
+			
+			//security check
+			//check_admin_referer('edit.php');
+			switch( $action ) {
+				//Perform the action
+				case 'import':
+					$imported = 0;
+					if(isset($_params['post'] )){
+						foreach( $_params['post']  as $post_id ) {
+							$url = get_post_meta($post_id, '_'.SHADOW_KEY.'_url', true );
+							if ( !$scrape_actions->make_post( $url, array() ) ){
+								wp_die( __('Error exporting post.') );
+							}
+							$imported++;
+						}
+					}
+					// build the redirect url
+					$sendback = add_query_arg( array( 'imported' => $imported, 'ids' => join(',', $post_ids) ), $sendback );
+					break;
+				default: return;
+			}
+			//Redirect client
+			wp_redirect($sendback);
+			return;
+		}
+	
+	 
+		public function custom_bulk_admin_notices() {
+			global $post_type, $pagenow, $_params;
+			if( $post_type == SHADOW_POST_TYPE_POST && isset( $_params['imported'] ) && (int) $_params['imported']>0 ) {
+				if( $_params['imported']>0 ){
+					$message = sprintf( _n( 'Post imported.', '%s posts exported.', $_params['imported'] ), number_format_i18n( $_params['imported'] ) );
+				}else{
+					$message = sprintf( __( 'No Posts were imported.' ) );
+				}
+				echo "<div class='updated'><p>{$message}</p></div>";
+			}
+		}
+
+
+
+
+
 
 		/**
 		 * force post status to be private for the shadow posts.
@@ -19,8 +124,6 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param string $new_status string of new value
 		 * @param string $old_status string of old value
 		 * @param object $post Post object
-		 * 
-		 * @access public
 		 */
 		public function force_shadow_post_status( $new_status, $old_status,  $post ) {
 			if ( $post->post_type == SHADOW_POST_TYPE_POST && $new_status == 'publish' && $old_status  != $new_status ) {
@@ -96,14 +199,15 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_cached_html( $post ) {
+
 			?>
 			<div id="wsuwp-snp-display-content">
 				<p class="description">Html from url</p>
 				<p class="description"><strong>note:</strong> edits to this will not be saved. This is purely informational only.</p>
 				<div class="html">
 					<label for="wsuwp-snp-html">Last captured html:</label><br/>
-					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?=$post->content?></textarea>
-					<input type="hidden" name="content" value="<?=$post->content?>" />
+					<textarea id="wsuwp-snp-html" style="width:100%; min-height:500px;"><?=$post->post_content?></textarea>
+					<textarea name="content" style="width:0%; max-height:0px;"><?=$post->post_content?></textarea>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -116,7 +220,7 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		 * @param WP_Post $post The full post object being edited.
 		 */
 		public function display_option_post_tie( $post ) {
-			$tiedTo = get_post_meta( $post->ID, '_wsuwp_spn_tied_post_id', true );
+			$tiedTo = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_tied_post_id', true );
 			?>
 			<div id="wsuwp-snp-display-ignore">
 				<p class="description">This is the post that the shadow post feeds to when requested</p>
@@ -163,15 +267,32 @@ if ( ! class_exists( 'shadow_post' ) ) {
 		}
 
 
+		public function shadow_post_action_row($actions, $post){
+			//check for your post type
+			if ($post->post_type == SHADOW_POST_TYPE_POST ){
+				/*do you stuff here
+				you can unset to remove actions
+				and to add actions ex:*/
+				$tiedTo = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_tied_post_id', true );
+				if($tiedTo>0){
+					$actions['remake_post'] = '<a href="#&shadow='.get_permalink($post->ID).'&post='.$tiedTo.'">'.__('Reimport Post').'</a>';
+				}else{
+					$actions['make_post'] = '<a href="#&shadow='.get_permalink($post->ID).'">'.__('Make Post').'</a>';
+				}
+				
+			}
+			return $actions;
+		}
+
 		/**
 		 * Display a meta box to capture the URL for an object.
 		 *
 		 * @param WP_Post $post
 		 */
 		public function display_object_url_meta_box( $post ) {
-			$object_url = get_post_meta( $post->ID, '_wsuwp_spn_url', true );
+			$object_url = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_url', true );
 			$object_url = ! empty( $object_url ) ? esc_url( $object_url ) : '';
-			$http_status = get_post_meta( $post->ID, '_wsuwp_spn_last_http_status', true );
+			$http_status = get_post_meta( $post->ID, '_'.SHADOW_KEY.'_last_http_status', true );
 			$http_status = ! empty( $http_status ) ? $http_status : 'not checked';
 			?>
 			<div id="wsuwp-snp-display">

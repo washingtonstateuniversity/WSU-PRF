@@ -27,24 +27,29 @@ class WSU_Content_Type_Policy {
 	 * Set up the hooks used by WSU_Content_Type_Policy
 	 */
 	public function __construct() {
-		add_action( 'init',                               array( $this, 'register_post_type'        )        );
-		add_action( 'wp_ajax_submit_policy',              array( $this, 'ajax_callback'             )        );
-		add_action( 'wp_ajax_nopriv_submit_policy',       array( $this, 'ajax_callback'             )        );
-		add_action( 'generate_rewrite_rules',             array( $this, 'rewrite_rules'             )        );
-		add_action( 'pre_get_posts',                      array( $this, 'modify_post_query'         )        );
-		add_action( 'add_meta_boxes',                     array( $this, 'add_meta_boxes'            )        );
-		add_action( 'save_post',                          array( $this, 'save_meta'                 ), 15, 2 );
+		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'wp_ajax_submit_policy', array( $this, 'ajax_callback' ) );
+		add_action( 'wp_ajax_nopriv_submit_policy', array( $this, 'ajax_callback' ) );
+		add_action( 'generate_rewrite_rules', array( $this, 'rewrite_rules' ) );
+		add_action( 'pre_get_posts', array( $this, 'modify_post_query' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_filter( 'post_row_actions', array( $this, 'policy_post_action_row' ), 10, 2);
+		add_action( 'save_post', array( $this, 'save_meta' ), 15, 2 );
 		
-		add_action( 'admin_enqueue_scripts',              array( $this, 'enqueue_admin_scripts'     )        );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
-		add_action( 'manage_'.$this->post_type.'_posts_custom_column', array( $this, 'manage_list_table_number_column'              ), 10, 2 );
+		add_action( 'manage_'.$this->post_type.'_posts_custom_column', array( $this, 'manage_list_table_number_column' ), 10, 2 );
 		add_action( 'manage_'.$this->post_type.'_posts_custom_column', array( $this, 'manage_list_table_policy_dates_column' ), 10, 2 );
+		add_action( 'pre_get_posts', array( $this, 'my_policy_number_orderby' ) );
 
-		add_filter( 'wpseo_title',                                  array( $this, 'post_type_archive_wpseo_title'), 10, 1 );
-		add_filter( 'post_type_archive_title',                      array( $this, 'post_type_archive_title'      ), 10, 1 );
-		add_filter( 'manage_edit-' . $this->post_type . '_columns', array( $this, 'manage_list_table_columns'    ), 10, 1 );
+		add_filter( 'wpseo_title', array( $this, 'post_type_archive_wpseo_title'), 10, 1 );
+		add_filter( 'post_type_archive_title', array( $this, 'post_type_archive_title' ), 10, 1 );
+		add_filter( 'manage_edit-' . $this->post_type . '_columns', array( $this, 'manage_list_table_columns' ), 10, 1 );
+		add_filter( 'manage_edit-' . $this->post_type . '_sortable_columns', array( $this, 'my_sortable_policy_column' ) );
 
 	}
+
+
 
 	/**
 	 * Register the Policy post type for the WSU News system.
@@ -116,9 +121,19 @@ class WSU_Content_Type_Policy {
 	 */
 	function display_number_meta_box( $post ) {
 		$postmeta = get_post_meta( $post->ID, '_wsu_policy_number', true );
+		
+		$parent_policy_num="";
+		$parents = get_post_ancestors( $post->ID );
+		foreach($parents as $parent_id){
+			$policy_num = get_post_meta( $parent_id, '_wsu_policy_number', true );
+			if($policy_num!=""){
+				$parent_policy_num.= (!empty($parent_policy_num)?".":"").$policy_num;
+			}
+		}
+		
 		$text = isset( $postmeta ) ? esc_attr( $postmeta ) : ''; 
 		$_note = __('Policy reference number');
-		$_input = '<input type="text" id="wsu_policy_number" class="policy-form-input" name="wsu_policy_number" value="'.$text.'" /><p>'.$_note.'</p>';
+		$_input = $parent_policy_num.(!empty($parents)?'.':'').'<input type="text" id="wsu_policy_number" class="policy-form-input" name="wsu_policy_number" value="'.$text.'" /><p>'.$_note.'</p>';
 		echo $_input;
 	}
 
@@ -134,6 +149,14 @@ class WSU_Content_Type_Policy {
 		$_input = '<input type="date" id="wsu_policy_date" class="policy-form-input" name="wsu_policy_date" value="'.$text.'" /><p>'.$_note.'</p>';
 		echo $_input;
 		
+	}
+
+	public function policy_post_action_row($actions, $post){
+		//check for your post type
+		if ($post->post_type == $this->post_type ){
+			//
+		}
+		return $actions;
 	}
 
 	/**
@@ -236,21 +259,23 @@ class WSU_Content_Type_Policy {
 	 */
 	public function post_type_archive_title( $name ) {
 
-		if ( 'Policies' !== $name )
+		if ( 'Policies' !== $name ){
 			return $name;
+		}
 
 		// Get the date from our URL because we've tricked the query until now.
 		$url_dates = explode( '/', trim( $_SERVER['REQUEST_URI'], '/' ) );
 		array_shift( $url_dates );
 
-		if ( isset( $url_dates[2] ) )
+		if ( isset( $url_dates[2] ) ){
 			return date( 'F j, Y ', strtotime( $url_dates[0] . '-' . $url_dates[1] . '-' . $url_dates[2] . ' 00:00:00' ) ) . $name;
-		elseif ( isset( $url_dates[1] ) && 0 !== absint( $url_dates[0] ) )
+		}elseif ( isset( $url_dates[1] ) && 0 !== absint( $url_dates[0] ) ){
 			return date( 'F Y ', strtotime( $url_dates[0] . '-' .  $url_dates[1] . '-01 00:00:00' ) ) . $name;
-		elseif ( isset( $url_dates[0] ) && 0 !== absint( $url_dates[0] ) )
+		}elseif ( isset( $url_dates[0] ) && 0 !== absint( $url_dates[0] ) ){
 			return date( 'Y ', strtotime( $url_dates[0] . '-01-01 00:00:00' ) ) . $name;
-		else
+		}else{
 			return $name;
+		}
 
 	}
 
@@ -262,8 +287,9 @@ class WSU_Content_Type_Policy {
 	 * @return string Our replacement version of the title.
 	 */
 	public function post_type_archive_wpseo_title( $title ) {
-		if ( is_post_type_archive( $this->post_type ) )
+		if ( is_post_type_archive( $this->post_type ) ){
 			return $this->post_type_archive_title( $this->post_type_name ) . ' |';
+		}
 
 		return $title;
 	}
@@ -276,54 +302,17 @@ class WSU_Content_Type_Policy {
 	 * @return array Modified list of columns.
 	 */
 	public function manage_list_table_columns( $columns ) {
-		// We may use categories and tags, but we don't need them on this screen.
+		// unset categories and tags on this screen.
 		unset( $columns['categories'] );
 		unset( $columns['tags'] );
 		unset( $columns['date'] );
 
-		// Remove all WPSEO added columns as we have no use for them on this screen.
-		unset( $columns['wpseo-score'] );
-		unset( $columns['wpseo-title'] );
-		unset( $columns['wpseo-metadesc'] );
-		unset( $columns['wpseo-focuskw'] );
-
 		// Add our custom columns. Move date to the end of the array after we unset it above.
-		$columns['number'] = 'Policy Number';
-		$columns['announce_dates'] = 'Effictive Date';
+		$columns['policy_number'] = 'Policy Number';
+		$columns['effictive_dates'] = 'Effictive Date';
 		$columns['date'] = 'Publish Date';
 
 		return $columns;
-	}
-
-
-
-	/**
-	 * Retrieve policy date meta for a post.
-	 *
-	 * @param int $post_id Post ID to retrieve metadata for.
-	 *
-	 * @return mixed Results of the post meta query.
-	 */
-	private function _get_policy_date_meta( $post_id ) {
-		/* @global WPDB $wpdb */
-		global $wpdb;
-
-		$policy_date = '_policy_date_%';
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key FROM $wpdb->postmeta WHERE post_id = %d and meta_key LIKE %s GROUP BY meta_key", $post_id, $policy_date ) );
-
-		return $results;
-	}
-
-	/**
-	 * Delete any policy dates associated with an policy.
-	 *
-	 * @param int $post_id Post ID of the policy to clear date data from.
-	 */
-	private function _clear_policy_date_meta( $post_id ) {
-		global $wpdb;
-
-		$policy_key = '_policy_date_%';
-		$wpdb->get_results( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE post_id = %d AND meta_key LIKE %s", $post_id, $policy_key ) );
 	}
 
 	/**
@@ -333,13 +322,50 @@ class WSU_Content_Type_Policy {
 	 * @param int    $post_id     Post ID of the current row being displayed.
 	 */
 	public function manage_list_table_number_column( $column_name, $post_id ) {
-		if ( 'number' !== $column_name )
+		if ( 'policy_number' !== $column_name ){
 			return;
-
-		if ( $number = get_post_meta( $post_id, '_wsu_policy_number', true ) )
-			echo esc_html( $number );
+		}
+		$parent_policy_num="";
+		$parents = get_post_ancestors( $post_id );
+		foreach($parents as $parent_id){
+			$policy_num = get_post_meta( $parent_id, '_wsu_policy_number', true );
+			if($policy_num!=""){
+				$parent_policy_num.= (!empty($parent_policy_num)?".":"").$policy_num;
+			}
+		}
+		$number = get_post_meta( $post_id, '_wsu_policy_number', true );
+		echo $parent_policy_num.(!empty($parents)?'.':'').esc_html( $number );
 	}
 
+
+	function my_sortable_policy_column( $columns ) {
+		$columns['policy_number'] = '_wsu_policy_number';
+
+		//To make a column 'un-sortable' remove it from the array
+		//unset($columns['date']);
+
+		return $columns;
+	}
+	
+	function my_policy_number_orderby( $query ) {
+		if( ! is_admin() ){
+			return;
+		}
+
+		$orderby = $query->get( 'orderby');
+
+		if( 'policy_number' == $orderby ) {
+			$query->set('meta_key','_wsu_policy_number');
+			$query->set('orderby','meta_value_num');
+		}
+	}
+
+	
+	
+	
+	
+	
+	
 	/**
 	 * Handle output for the policy dates column in the policy list table.
 	 *
@@ -347,18 +373,12 @@ class WSU_Content_Type_Policy {
 	 * @param int    $post_id     Post ID of the current row being displayed.
 	 */
 	public function manage_list_table_policy_dates_column( $column_name, $post_id ) {
-		if ( 'announce_dates' !== $column_name )
+		if ( 'effictive_dates' !== $column_name ){
 			return;
+		}
 
-		$policy_meta = $this->_get_policy_date_meta( $post_id );
-
-		foreach( $policy_meta as $meta ) {
-			$date = str_replace( '_policy_date_', '', $meta->meta_key );
-
-			if ( 8 === strlen( $date ) ) {
-				$date_display = substr( $date, 4, 2 ) . '/' . substr( $date, 6, 2 ) . '/' . substr( $date, 0, 4 );
-				echo $date_display . '<br>';
-			}
+		if ( $number = get_post_meta( $post_id, '_wsu_policy_date', true ) ) {
+			echo esc_html( $number );
 		}
 	}
 
