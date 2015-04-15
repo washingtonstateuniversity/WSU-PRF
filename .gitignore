@@ -10,8 +10,4 @@ wp-config.php
 
 */connection_images
 wp-content/db.php
-wp-content/plugins/concatenated-pdfs/includes/dompdf/tmp/*
-wp-content/plugins/concatenated-pdfs/includes/dompdf/logs/*.html
-wp-content/plugins/concatenated-pdfs/**/*.pdf
-wp-content/plugins/concatenated-pdfs/cache/logs/*.html
-wp-content/plugins/concatenated-pdfs/cache/merging_stage/*
+wp-content/plugins/concatenated-pdfs
