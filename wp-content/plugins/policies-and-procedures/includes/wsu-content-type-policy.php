@@ -51,10 +51,10 @@ class WSU_Content_Type_Policy {
 	}
 
 	/**
-	 * Register the Policy post type for the WSU News system.
+	 * Register the Policy post type for PRF.
 	 *
-	 * Single policy item: http://news.wsu.edu/policy/single-title-slug/
-	 * Policy archives:    http://news.wsu.edu/policies/
+	 * Single policy item: http://policies.wsu.edu/policy/single-title-slug/
+	 * Policy archives:    http://policies.wsu.edu/policies/
 	 */
 	public function register_post_type() {
 		$labels = array(
