@@ -22,6 +22,10 @@ class WSU_Content_Type_Policy {
 	 */
 	var $post_type_name = 'Policies And Procedures';
 
+	/**
+	 * @var string The slug used for archives.
+	 */
+	var $post_type_archive = 'policies';
 
 	/**
 	 * Set up the hooks used by WSU_Content_Type_Policy
