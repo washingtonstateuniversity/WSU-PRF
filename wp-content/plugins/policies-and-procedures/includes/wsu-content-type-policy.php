@@ -1,11 +1,10 @@
 <?php
 /**
- * Provide a content type to handle policies separately from news
+ * Provide a content type to handle policies.
  *
  * Class WSU_Content_Type_Policy
  */
 class WSU_Content_Type_Policy {
-
 
 	/**
 	 * @var string The slug to register the policy post type under.
@@ -32,8 +31,6 @@ class WSU_Content_Type_Policy {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'wp_ajax_submit_policy', array( $this, 'ajax_callback' ) );
-		add_action( 'wp_ajax_nopriv_submit_policy', array( $this, 'ajax_callback' ) );
 		add_action( 'generate_rewrite_rules', array( $this, 'rewrite_rules' ) );
 		add_action( 'pre_get_posts', array( $this, 'modify_post_query' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
@@ -53,15 +50,13 @@ class WSU_Content_Type_Policy {
 
 	}
 
-
-
 	/**
 	 * Register the Policy post type for the WSU News system.
 	 *
 	 * Single policy item: http://news.wsu.edu/policy/single-title-slug/
 	 * Policy archives:    http://news.wsu.edu/policies/
 	 */
-	function register_post_type() {
+	public function register_post_type() {
 		$labels = array(
 			'name'               => $this->post_type_name,
 			'singular_name'      => 'Policy',
@@ -100,7 +95,7 @@ class WSU_Content_Type_Policy {
 	/**
 	 * Add meta boxes used in the policy edit screen.
 	 */
-	function add_meta_boxes() {
+	public function add_meta_boxes() {
 		add_meta_box( 'wsu_policy_number', 'Policy Number:', array( $this, 'display_number_meta_box' ), $this->post_type, 'side' );
 		add_meta_box( 'wsu_policy_date', 'Policy Dates:', array( $this, 'display_date_meta_box' ), $this->post_type, 'side' );
 	}
@@ -123,7 +118,7 @@ class WSU_Content_Type_Policy {
 	 *
 	 * @param WP_Post $post Current post object.
 	 */
-	function display_number_meta_box( $post ) {
+	public function display_number_meta_box( $post ) {
 		$postmeta = get_post_meta( $post->ID, '_wsu_policy_number', true );
 		
 		$parent_policy_num="";
@@ -146,7 +141,7 @@ class WSU_Content_Type_Policy {
 	 *
 	 * @param WP_Post $post Post object to display meta for.
 	 */
-	function display_date_meta_box( $post ) {
+	public function display_date_meta_box( $post ) {
 		$postmeta = get_post_meta( $post->ID, '_wsu_policy_date', true );
 		$text = isset( $postmeta ) ? esc_attr( $postmeta ) : ''; 
 		$_note = __('This is the Date the policy went into effect.');
@@ -174,7 +169,7 @@ class WSU_Content_Type_Policy {
 	 *
 	 * @return WP_Rewrite Modified set of rewrite rules.
 	 */
-	function rewrite_rules( $wp_rewrite ) {
+	public function rewrite_rules( $wp_rewrite ) {
 		$rules = array();
 
 		$dates = array(
@@ -215,7 +210,7 @@ class WSU_Content_Type_Policy {
 	 *
 	 * @param WP_Query $query The query object currently in progress.
 	 */
-	function modify_post_query( $query ) {
+	public function modify_post_query( $query ) {
 
 		if ( is_admin() || ! is_post_type_archive( $this->post_type ) )
 			return;
@@ -342,7 +337,7 @@ class WSU_Content_Type_Policy {
 	}
 
 
-	function my_sortable_policy_column( $columns ) {
+	public function my_sortable_policy_column( $columns ) {
 		$columns['policy_number'] = '_wsu_policy_number';
 
 		//To make a column 'un-sortable' remove it from the array
@@ -351,7 +346,7 @@ class WSU_Content_Type_Policy {
 		return $columns;
 	}
 	
-	function my_policy_number_orderby( $query ) {
+	public function my_policy_number_orderby( $query ) {
 		if( ! is_admin() ){
 			return;
 		}
@@ -364,12 +359,6 @@ class WSU_Content_Type_Policy {
 		}
 	}
 
-	
-	
-	
-	
-	
-	
 	/**
 	 * Handle output for the policy dates column in the policy list table.
 	 *
@@ -411,9 +400,6 @@ class WSU_Content_Type_Policy {
 		return site_url( $this->post_type_archive . '/' . $year . '/' . $month . '/' );
 	}
 
-	
-	
-	
 	public function save_meta( $post_id, $post ) {
 		if ( isset( $_POST['wsu_policy_number'] ) ) {
 			if ( empty( trim( $_POST['wsu_policy_number'] ) ) ) {
