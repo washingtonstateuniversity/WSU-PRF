@@ -1,0 +1,146 @@
+.top-bar {margin-bottom: 0;}
+#header {
+
+	background-color: #f2f2f2;
+	#branding {@include grid-row;}
+	#site-title {
+		text-align: center;
+/*		@media #{$medium} {
+			@include grid-column($columns:4, $float:left);
+			text-align: left;
+			padding:0;
+		}*/
+	}
+	#site-description {
+		text-align: center;
+/*		@media #{$medium} {
+			@include grid-column($columns:8, $float:left);
+			text-align: left;
+			padding:0;
+		}*/
+	}
+}
+
+#custom-header {@include grid-row; }
+.header-image { @include grid-column($columns:12);display: block; margin: 0 0 1.1875em;}
+#main {@include grid-row;}
+
+#content {
+	@include grid-column($columns:12);
+	@media #{$small} {
+		.layout-2c-l &{ @include grid-column($columns:8, $float:left );  }
+		.layout-2c-r &{ @include grid-column($columns:8, $float: left, $push: 4 );  }
+		.layout-1c & { @include grid-column;}
+
+		.layout-3c-l & { @include grid-column($columns:6, $float:left); }
+		.layout-3c-r & { @include grid-column($columns:6, $float:right); }
+		.layout-3c-c & { @include grid-column($columns:6, $float:left, $push:3); }
+	}
+
+}
+#sidebar-primary {
+	@include grid-column($columns:12);
+	@media #{$small} {
+		.layout-2c-l & { @include grid-column($columns:4, $float:left);  }
+		.layout-2c-r & { @include grid-column($columns:4, $float:left, $pull:8 );  }
+		.layout-1c & { @include grid-column;}
+
+		.layout-3c-l & { @include grid-column($columns:3, $float:left); }
+		.layout-3c-r & { @include grid-column($columns:3, $float:right); }
+		.layout-3c-c & { @include grid-column($columns:3, $float:left, $pull:6); }
+	}
+
+}
+
+#sidebar-secondary{
+	@include grid-column($columns:12);
+	@media #{$small} {
+		.layout-2c-l & { @include grid-column($columns:4, $float:left); }
+		.layout-2c-r & { @include grid-column($columns:4, $float:left, $pull:8 ); }
+		.layout-1c & { @include grid-column;}
+
+		.layout-3c-l & { @include grid-column($columns:3, $float:left); }
+		.layout-3c-r & { @include grid-column($columns:3, $float:right); }
+		.layout-3c-c & { @include grid-column($columns:3, $float:left); }
+	}
+}
+
+#sidebar-subsidiary{
+	@include grid-row;
+	.widget{
+		@include grid-column($columns:12);
+		@media #{$small} {
+			@include grid-column($columns:6, $float:left);
+		}
+		@media #{$large} {
+			@include grid-column($columns:4, $float:left);
+		}
+	}
+}
+
+#footer {
+	@include grid-row;
+	> .wrap { @include grid-column($columns:12); }
+
+}
+
+.pagination { @include pagination; }
+
+.comment-list{
+	@include grid-row;
+	>.comment, >.pingback{@include panel;}
+	.comment,.pingback {
+		@include grid-column($columns:12);
+		.spine2-avatar {
+			@include grid-column($columns:2,$float:left);
+			> a {@include thumb;}
+		}
+		.spine2-comm { @include grid-column($columns:10,$float:left); }
+
+		.children {
+			@include grid-row($behavior:nest);
+			margin-left:1em;
+		}
+
+	}
+
+
+}
+
+.loop-nav, .comments-nav { @include grid-row;}
+
+.gallery {list-style: none;}
+@media #{$small}{
+	@for $i from 1 through 10 {
+		.gallery.col-#{$i} {@include block-grid($per-row:$i);}
+	}
+}
+
+
+.gallery-item a {@include thumb; }
+.gallery-caption {@include panel;margin-top: .5em;}
+
+.page-template-front-page{
+	.four.columns{
+		@include grid-column($columns:12);
+		@media #{$small}{
+			@include grid-column($columns:4,$float:left);
+		}
+	}
+		.eight.columns{
+			@include grid-column($columns:12);
+			@media #{$small}{
+				@include grid-column($columns:8,$float:left);
+			}
+	}
+}
+
+.entry-byline { margin-bottom: 1.5m;}
+
+#menu-subsidiary {@include grid-row;}
+#menu-subsidiary-items { @include inline-list; }
+#menu-subsidiary > .wrap { @include grid-column($columns:12);}
+#menu-secondary { @include grid-row;}
+#menu-secondary > .wrap { @include grid-column($columns:12);}
+
+a.th { display: block;margin-bottom: 1em;}

@@ -1,19 +1,19 @@
 <?php
 /*
 Plugin Name: WSU Analytics
-Version: 0.3.3
-Plugin URI: http://web.wsu.edu
-Description: Manages analytics for sites on the WSUWP Platform
-Author: washingtonstateuniversity, jeremyfelt
-Author URI: http://web.wsu.edu
+Version: 0.4.1
+Plugin URI: https://web.wsu.edu/
+Description: Provides tracking through Google Analytics for WSU WordPress sites using WSU's jTrack.
+Author: washingtonstateuniversity, jeremyfelt, jeremybass
+Author URI: https://web.wsu.edu/
 */
 
 class WSU_Analytics {
 
 	/**
-	 * @var string The current version of this plugin, or used to break script cache.
+	 * @var string The current version of this plugin. Used to break script cache.
 	 */
-	var $version = '0.3.4';
+	var $version = '0.4.3';
 
 	/**
 	 * @var string Track the string used for the custom settings page we add.
@@ -26,21 +26,25 @@ class WSU_Analytics {
 	var $extended_analytics_defaults = array(
 		'campus'          => 'none',
 		'college'         => 'none',
+		'unit_type'       => 'none',
 		'unit'            => 'none',
 		'subunit'         => 'none',
 		'extend_defaults' => 'true',
 		'use_jquery_ui'   => 'true',
-		'is_debug'        => 'false',
+		'track_global'    => 'true',
+		'track_app'       => 'true',
+		'track_site'      => 'true',
 	);
 
 	/**
 	 * Add our hooks.
 	 */
 	public function __construct() {
-		//set up the trackers for both the front and admin
+		// Tracking scripts are enqueued on the front end and admin views.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
+		add_action( 'admin_footer', array( $this, 'enqueue_scripts' ), 10 );
 
-		//account for the code media  elements, but treated as after dom load in the browser
+		// Hack an enqueue of mediaelement when required to add custom events.
 		add_filter( 'wp_video_shortcode_library', array( $this, 'mediaelement_scripts' ), 11 );
 		add_filter( 'wp_audio_shortcode_library', array( $this, 'mediaelement_scripts' ), 11 );
 
@@ -49,8 +53,6 @@ class WSU_Analytics {
 		// Configure the settings page and sections provided by the plugin.
 		add_action( 'admin_init', array( $this, 'register_settings_sections' ), 10 );
 		add_action( 'admin_menu', array( $this, 'add_analytics_options_page' ), 10 );
-
-		add_action( 'admin_footer', array( $this, 'enqueue_scripts' ), 10 );
 	}
 
 	/**
@@ -84,12 +86,10 @@ class WSU_Analytics {
 			<h2>WSU Analytics Settings</h2>
 			<form method="post" action="options.php">
 		<?php
-
-		wp_nonce_field('wsuwp-analytics-options');
+		wp_nonce_field( 'wsuwp-analytics-options' );
 		do_settings_sections( $this->settings_page );
 
 		submit_button();
-
 		?>
 				<input type="hidden" name="action" value="update" />
 				<input type="hidden" name="option_page" value="wsuwp-analytics" />
@@ -227,106 +227,146 @@ class WSU_Analytics {
 	public function general_settings_inputs() {
 		$option_object = $this->get_analytics_options();
 
-		//stubs for now untill it's pulled form a more central source
-		$campus=array(
-			"pullman"=>"Pullman"
+		$campus = array(
+			'pullman'      => 'Pullman',
+			'spokane'      => 'Spokane',
+			'vancouver'    => 'Vancouver',
+			'tri-cities'   => 'Tri-Cities',
+			'globalcampus' => 'Global Campus',
+			'everett'      => 'Everett',
 		);
-		$college=array(
-			"art_and_science"=>"Arts & Science",
-			"cahnrs"=>"CAHNRS & Extension",
-			"carson"=>"Carson",
-			"education"=>"Education",
-			"honors"=>"Honors College",
-			"medicine"=>"Medicine",
-			"murrow"=>"Murrow",
-			"nursing"=>"Nursing",
-			"pharmacy"=>"Pharmacy",
-			"vetmed"=>"VetMed",
-			"voiland"=>"Voiland"
+
+		$college = array(
+			'arts-and-sciences' => 'Arts & Sciences',
+			'cahnrs' => 'CAHNRS & Extension',
+			'carson' => 'Carson',
+			'education' => 'Education',
+			'honors' => 'Honors',
+			'medicine' => 'Medicine',
+			'murrow' => 'Murrow',
+			'nursing' => 'Nursing',
+			'pharmacy' => 'Pharmacy',
+			'vetmed' => 'VetMed',
+			'voiland' => 'Voiland',
 		);
-		$units=array(
-			"school"=>array(
-				"food_sciences"=>"Food Sciences"
-			),
-			"departments"=>array(
-			),
-			"offices"=>array(
-			),
-			"unit"=>array(
-				"ucomm"=>"University Communications"
-			)
+
+		$unit_type = array(
+			'center'     => 'Center',
+			'department' => 'Department',
+			'laboratory' => 'Laboratory',
+			'office'     => 'Office',
+			'program'    => 'Program',
+			'school'     => 'School',
+			'unit'       => 'Unit',
 		);
+
+		// @todo complete units taxonomy.
+		$units = array ();
 
 		?>
 		<!-- campus -->
-		<p><b>Campus</b></p>
-		<select name="wsuwp_analytics_option_map[campus]">
-			<option value="none" <?=selected( "none", $option_object["campus"] )?>>None</option>
-			<option value="all" <?=selected( "all", $option_object["campus"] )?>>All</option>
-			<?php foreach($campus as $key=>$name):?>
-				<option value="<?=$key?>" <?=selected( $key, $option_object["campus"] )?>><?=$name?></option>
-			<?php endforeach;?>
-		</select>
-		<p class="description">Does this site represent a campus in either location or association?</p><br/>
+		<p><label class="wsu-analytics-label" for="wsu-analytics-campus">Campus:</label>
+		<select id="wsu-analytics-campus" name="wsuwp_analytics_option_map[campus]">
+			<option value="none" <?php selected( 'none', $option_object['campus'] ); ?>>None</option>
+			<option value="all" <?php selected( 'all', $option_object['campus'] ); ?>>All</option>
+			<?php foreach( $campus as $key => $name ) : ?>
+				<option value="<?php echo $key; ?>" <?php selected( $key, $option_object['campus'] )?>><?php echo $name; ?></option>
+			<?php endforeach; ?>
+		</select></p>
+		<p class="description">Does this site represent a campus in location or association?</p><br/>
 
 		<!-- college -->
-		<p><b>College</b></p>
-		<select name="wsuwp_analytics_option_map[college]">
-			<option value="none" <?=selected( "none", $option_object["college"] )?>>None</option>
-			<option value="all" <?=selected( "all", $option_object["college"] )?>>All</option>
-			<?php foreach($college as $key=>$name):?>
-				<option value="<?=$key?>" <?=selected( $key, $option_object["college"] )?>><?=$name?></option>
-			<?php endforeach;?>
-		</select>
-		<p class="description">Does this site represent a College either in totality or as an association?</p><br/>
+		<p><label class="wsu-analytics-label" for="wsu-analytics-college">College:</label>
+		<select id="wsu-analytics-college" name="wsuwp_analytics_option_map[college]">
+			<option value="none" <?php selected( 'none', $option_object['college'] ); ?>>None</option>
+			<option value="all" <?php selected( 'all', $option_object['college'] ); ?>>All</option>
+			<?php foreach( $college as $key => $name ) : ?>
+				<option value="<?php echo $key; ?>" <?php selected( $key, $option_object['college'] ); ?>><?php echo $name; ?></option>
+			<?php endforeach; ?>
+		</select></p>
+		<p class="description">Does this site represent a college as a whole or by association?</p><br/>
+
+		<p><label class="wsu-analytics-label" for="wsu-analytics-unit-type">Unit Type:</label>
+		<select id="wsu-analytics-unit-type" name="wsuwp_analytics_option_map[unit_type]">
+			<option value="none" <?php selected( 'none', $option_object['unit_type'] ); ?>>None</option>
+			<?php foreach ( $unit_type as $k => $v ) : ?>
+				<option value="<?php echo $k; ?>" <?php selected( $k, $option_object['unit_type'] ); ?>><?php echo $v; ?></option>
+			<?php endforeach; ?>
+		</select></p>
+		<p class="description">What type of unit does this site represent?</p><br/>
 
 		<!-- units -->
-		<p><b>Parent Unit</b></p>
-		<select name="wsuwp_analytics_option_map[unit]">
-			<option value="none" <?=selected( "none", $option_object["unit"] )?>>None</option>
-			<?php foreach($units as $key=>$group):?>
-				<optgroup label="<?=$key?>">
-				<?php foreach($group as $item_key=>$name):?>
-					<option value="<?=$item_key?>" <?=selected( $item_key, $option_object["unit"] )?>><?=$name?></option>
+		<p><label class="wsu-analytics-label" for="wsu-analytics-parent-unit">Parent Unit:</label>
+		<select id="wsu-analytics-parent-unit" name="wsuwp_analytics_option_map[unit]">
+			<option value="none" <?php selected( 'none', $option_object['unit'] ); ?>>None</option>
+			<?php foreach( $units as $key => $group ) : ?>
+				<optgroup label="<?php echo $key; ?>">
+				<?php foreach( $group as $item_key => $name ) : ?>
+					<option value="<?php echo $item_key; ?>" <?php selected( $item_key, $option_object['unit'] ); ?>><?php echo $name; ?></option>
+				<?php endforeach; ?>
+				</optgroup>
+			<?php endforeach; ?>
+		</select></p>
+		<p class="description">Does this site represent an entity that has a parent unit? (e.g department, office, school)</p><br/>
+
+		<!-- units -->
+		<p><label class="wsu-analytics-label" for="wsu-analytics-unit">Unit:</label>
+		<select id="wsu-analytics-unit" name="wsuwp_analytics_option_map[subunit]">
+			<option value="none" <?php selected( 'none', $option_object['subunit'] ); ?>>None</option>
+			<?php foreach( $units as $key => $group ) : ?>
+				<optgroup label="<?php echo $key; ?>">
+				<?php foreach( $group as $item_key => $name ) : ?>
+					<option value="<?php echo $item_key; ?>" <?php selected( $item_key, $option_object['subunit'] ); ?>><?php echo $name; ?></option>
 				<?php endforeach;?>
 				</optgroup>
 			<?php endforeach;?>
-		</select>
-		<p class="description">Does this site represent an entiy that has a parent unit/department/office/school?</p><br/>
+		</select></p>
+		<p class="description">Does this site represent an entity that is a unit? (e.g. department, office, school)</p><br/>
 
-		<!-- units -->
-		<p><b>Unit</b></p>
-		<select name="wsuwp_analytics_option_map[subunit]">
-			<option value="none" <?=selected( "none", $option_object["subunit"] )?>>None</option>
-			<?php foreach($units as $key=>$group):?>
-				<optgroup label="<?=$key?>">
-				<?php foreach($group as $item_key=>$name):?>
-					<option value="<?=$item_key?>" <?=selected( $item_key, $option_object["subunit"] )?>><?=$name?></option>
-				<?php endforeach;?>
-				</optgroup>
-			<?php endforeach;?>
-		</select>
-		<p class="description">Does this site represent an entiy that is some form of a unit/department/office/school?</p><br/>
-
+		<?php if ( apply_filters( 'wsu_analytics_events_override', false ) || apply_filters( 'wsu_analytics_ui_events_override', false ) ) : ?>
 		<!-- extend_defaults -->
-		<p><b>Extend Defaults</b></p>
-		<label>Yes <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[extend_defaults]" value="true" <?=checked( "true", $option_object["extend_defaults"] )?> /></label>
-		<label>No <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[extend_defaults]" value="false" <?=checked( "false", $option_object["extend_defaults"] )?> /></label>
-		<p class="description">When using a theme js file to define your custom events, should, "Yes", it be extending the defaults provided with the plugin, or should, "No", it be replacing the defaults. </p><br/>
+		<p><span class="wsu-analytics-label">Custom Events Tracking:</span>
+		<label>Extend <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[extend_defaults]" value="true" <?=checked( "true", $option_object["extend_defaults"] )?> /></label>
+		<label>Override <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[extend_defaults]" value="false" <?=checked( "false", $option_object["extend_defaults"] )?> /></label>
+		<p class="description">Should your theme's custom events file(s) extend or override the default events provided by WSU Analytics?</p><br/>
+		<?php endif; ?>
 
 		<!-- use_jquery_ui -->
-		<p><b>Use jQuery UI</b></p>
+		<p><span class="wsu-analytics-label">Track jQuery UI Events:</span>
 		<label>Yes <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[use_jquery_ui]" value="true" <?=checked( "true", $option_object["use_jquery_ui"] )?> /></label>
 		<label>No <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[use_jquery_ui]" value="false" <?=checked( "false", $option_object["use_jquery_ui"] )?> /></label>
-		<p class="description">Load default jQuery UI events.  Note: When using a theme js file, the jQuery UI will follow the same `Extend Defaults` selection. </p><br/>
+		<p class="description">Should WSU Analytics track default jQuery UI events for the site?</p><br/>
 
-		<!-- debug -->
-		<p><b>Turn on debug</b></p>
-		<label>Yes <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[is_debug]" value="true" <?=checked( "true", $option_object["is_debug"] )?> /></label>
-		<label>No <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[is_debug]" value="false" <?=checked( "false", $option_object["is_debug"] )?> /></label>
-		<p class="description">Normally used for local development</p><br/>
+		<?php if ( ( function_exists( 'wsuwp_is_network_admin' ) && wsuwp_is_network_admin( wsuwp_get_current_network() ) ) || is_super_admin() ) : ?>
+		<p><span class="wsu-analytics-label">Track Global Analytics</span></p>
+		<label>Yes <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[track_global]" value="true" <?php checked( 'true', $option_object['track_global'] ); ?> /></label>
+		<label>No  <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[track_global]" value="false" <?php checked( 'false', $option_object['track_global'] ); ?> /></label>
+		<p class="description">Should global WSU analytics be tracked on this site? This should normally be on and only disabled for debugging.</p><br/>
+
+		<p><span class="wsu-analytics-label">Track App Analytics</span></p>
+		<label>Yes <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[track_app]" value="true" <?php checked( 'true', $option_object['track_app'] ); ?> /></label>
+		<label>No  <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[track_app]" value="false" <?php checked( 'false', $option_object['track_app'] ); ?> /></label>
+		<p class="description">Should WSUWP Platform analytics be tracked on this site? This should normally be on and only disabled for debugging.</p><br/>
+		<?php endif; ?>
+
+		<p><span class="wsu-analytics-label">Track Site Analytics</span></p>
+		<label>Yes <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[track_site]" value="true" <?php checked( 'true', $option_object['track_site'] ); ?> /></label>
+		<label>No  <input type="radio" class="regular-radio" name="wsuwp_analytics_option_map[track_site]" value="false" <?php checked( 'false', $option_object['track_site'] ); ?> /></label>
+		<p class="description">Should analytics be tracked on this site? A Google Analytics ID is still required if this is enabled.</p><br/>
+
 		<hr/>
-		<p class="description">Instructions on how to set up your Google analytics to best use this plugin can be <a href="#" class="ajax_info" target="_blank">found here</a>.</p>
+		<p class="description">Instructions on how to set up your Google analytics to best use this plugin can be <a href="https://web.wsu.edu/wordpress/plugins/wsu-analytics/">found here</a>.</p>
+
+		<style>
+			.wsu-analytics-label {
+				display: inline-block;
+				width: 185px;
+				font-weight: 700;
+			}
+			.form-table td p.description {
+				font-size: 13px;
+			}
+		</style>
 		<?php
 	}
 
@@ -352,7 +392,7 @@ class WSU_Analytics {
 	public function enqueue_scripts() {
 		$option_object = $this->get_analytics_options();
 
-		if ( !$option_object["is_debug"] && defined( 'WSU_LOCAL_CONFIG' ) && WSU_LOCAL_CONFIG ) {
+		if ( defined( 'WSU_LOCAL_CONFIG' ) && WSU_LOCAL_CONFIG && false === apply_filters( 'wsu_analytics_local_debug', false ) ) {
 			return;
 		}
 
@@ -370,67 +410,68 @@ class WSU_Analytics {
 
 		wp_enqueue_script( 'jquery-jtrack', '//repo.wsu.edu/jtrack/1/jtrack.js', array( 'jquery' ), $this->script_version(), true );
 
-		wp_register_script( 'wsu-analytics-events', plugins_url( 'js/default_events.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
-
-		$using_jquery_ui = wp_script_is('jquery-ui-core','registered') || wp_script_is('jquery-ui-core','enqueued') || wp_script_is('jquery-ui-core','done');
-		if( $using_jquery_ui && $option_object['use_jquery_ui'] ){
-			wp_register_script( 'wsu-analytics-ui-events', plugins_url( 'js/default_ui-events.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
-		}
-
 		wp_register_script( 'wsu-analytics-main', plugins_url( 'js/analytics.min.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
 
+		// Escaping of tracker data for output as JSON is handled via wp_localize_script().
 		$tracker_data = array(
-			"wsuglobal"=>array(
-				"ga_code"           => "UA-55791317-1", // this is hardcode for now
-				"campus"            => $option_object["campus"],
-				"college"           => $option_object["college"],
-				// note that the user may think that "parent unit" is for them or they may say i have no parent.
-				// When that happens we need to detect it by noting that the subunit is filled but the
-				// unit is not.  This accounts for the other way to look at the two drop downs
-				"unit"              => $option_object["unit"]=="none" && $option_object["subunit"]!="none" ? $option_object["subunit"] : $option_object["unit"],
-				"subunit"           => $option_object["unit"]!="none" ? $option_object["subunit"] : $option_object["unit"],
-				"events"            => array() //ns placholder
+			'wsuglobal' => array(
+				'ga_code'            => 'true' === $option_object['track_global'] ? 'UA-55791317-1' : false, // Hard coded global analytics ID for WSU.
+				'campus'             => $option_object['campus'],
+				'college'            => $option_object['college'],
+				'unit_type'          => $option_object['unit_type'],
+				// Fallback to the subunit if a unit is not selected.
+				'unit'               => 'none' === $option_object['unit'] && 'none' !== $option_object['subunit'] ? $option_object['subunit'] : $option_object['unit'],
+				// If a subunit has been used as a fallback, output "none" as the subunit.
+				'subunit'            => 'none' !== $option_object['unit'] ? $option_object['subunit'] : 'none',
+				'events'             => array(),
 			),
-			"app"=>array(
-				"ga_code"           => $this->sanitize_ga_id( $app_analytics_id ),
-				"page_view_type"    => $this->get_page_view_type(),
-				"authenticated_user"=> $this->get_authenticated_user(),
-				"is_editor"         => $this->is_editor(),
-				"events"            => array() //ns placholder
+
+			'app' => array(
+				'ga_code'            => 'true' === $option_object['track_app'] ? $this->sanitize_ga_id( $app_analytics_id ) : false,
+				'page_view_type'     => $this->get_page_view_type(),
+				'authenticated_user' => $this->get_authenticated_user(),
+				'is_editor'          => $this->is_editor(),
+				'events'             => array(),
 			),
-			"site"=>array(
-				"ga_code"           => $google_analytics_id,
-				"events"            => array() //ns placholder
-			)
+
+			'site' => array(
+				'ga_code'           => 'true' === $option_object['track_site'] ? $google_analytics_id : false,
+				'events'            => array(),
+			),
 		);
 
-		// output the inline settings for the plugin
-		wp_localize_script( 'wsu-analytics-events', 'wsu_analytics', $tracker_data );
-		
-		//figure out what set of events are to be used for the site
-		$hascustom_events = file_exists(get_stylesheet_directory() . '/wsu-analytics/events.js');
-		if($hascustom_events){
-			if($option_object['extend_defaults'] == true){
-				wp_enqueue_script( 'wsu-analytics-events' );
+		// Allow a theme to override or extend default events.
+		if ( apply_filters( 'wsu_analytics_events_override', false ) ) {
+			if ( 'true' === $option_object['extend_defaults'] ) {
+				wp_enqueue_script( 'wsu-analytics-events', plugins_url( 'js/default_events.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
+				$custom_slug = 'wsu-analytics-extended-events';
+			} else {
+				$custom_slug = 'wsu-analytics-events';
 			}
-			wp_enqueue_script( 'custom-events', get_stylesheet_directory_uri() . '/wsu-analytics/events.js', array( 'jquery-jtrack' ), false, true );
-		}else{
-			wp_enqueue_script( 'wsu-analytics-events' );
+			wp_enqueue_script( $custom_slug, get_stylesheet_directory_uri() . '/wsu-analytics/events.js', array( 'jquery-jtrack' ), $this->script_version(), true );
+		} else {
+			wp_enqueue_script( 'wsu-analytics-events', plugins_url( 'js/default_events.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
 		}
 
-		//figure out what set of jQuery UI events are to be used for the site
-		if( wp_script_is('wsu-analytics-ui-events','registered') ){
-			$hascustom_ui_events = file_exists(get_stylesheet_directory() . '/wsu-analytics/ui-events.js');
-			if($hascustom_ui_events){
-				if($option_object['extend_defaults'] == true){
-					wp_enqueue_script( 'wsu-analytics-ui-events' );
+		// Output tracker data as a JSON object in the document.
+		wp_localize_script( 'wsu-analytics-events', 'wsu_analytics', $tracker_data );
+
+		// Allow a theme to override or extend default UI events.
+		if( 'true' === $option_object['use_jquery_ui'] ) {
+			if ( apply_filters( 'wsu_analytics_ui_events_override', false ) ) {
+				if ( 'true' === $option_object['extend_defaults'] ) {
+					wp_enqueue_script( 'wsu-analytics-ui-events', plugins_url( 'js/default_ui-events.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
+					$custom_slug = 'wsu-analytics-extended-ui-events';
+				} else {
+					$custom_slug = 'wsu-analytics-ui-events';
 				}
-				wp_enqueue_script( 'custome-ui-events', get_stylesheet_directory_uri() . '/wsu-analytics/ui-events.js', array( 'jquery-jtrack' ), false, true );
-			}else{
-				wp_enqueue_script( 'wsu-analytics-ui-events' );
+				wp_enqueue_script( $custom_slug, get_stylesheet_directory_uri() . '/wsu-analytics/ui-events.js', array( 'jquery-jtrack' ), $this->script_version(), true );
+			} else {
+				wp_enqueue_script( 'wsu-analytics-ui-events', plugins_url( 'js/default_ui-events.js', __FILE__ ), array( 'jquery-jtrack', 'jquery' ), $this->script_version(), true );
 			}
 		}
-		//start up the tracking script
+
+		// Fire the primary analytics script after all tracker data and events data is available.
 		wp_enqueue_script( 'wsu-analytics-main' );
 	}
 	

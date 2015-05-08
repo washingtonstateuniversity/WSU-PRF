@@ -1,0 +1,170 @@
+body {
+	-ms-word-wrap:break-word;
+	word-wrap:break-word;
+}
+#content ul, #content ol{
+	list-style-position: inside;
+}
+.widget ul.tweets li a{
+	display: inline;
+}
+
+.widget ul{
+	list-style:none;
+}
+
+ul.page-numbers{
+	@extend .pagination;
+}
+
+/* Alignment */
+
+.alignleft {
+	display: inline;
+	float: left;
+	margin-right: 1.5em;
+}
+.alignright {
+	display: inline;
+	float: right;
+	margin-left: 1.5em;
+}
+.aligncenter {
+	clear: both;
+	display: block;
+	margin: 0 auto;
+}
+
+.sticky {
+	@extend .panel;
+}
+
+/* Base Type Styles Using Modular Scale ---------------------- */
+aside dl, aside dt, aside dd, aside ul, aside ol, aside li, aside pre, aside form, aside p, aside blockquote, aside th, aside td {
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
+	direction: ltr;
+}
+
+pre{
+	overflow-x:scroll;
+}
+
+pre, address{
+	margin-bottom: 17px;
+}
+
+/* =Media
+----------------------------------------------- */
+
+.entry-content img,
+.comment-content img,
+.widget img {
+	max-width: 100%; /* Fluid images for posts, comments, and widgets */
+}
+
+.entry-content img,
+img[class*="align"],
+img[class*="wp-image-"] {
+	height: auto; /* Make sure images with WordPress-added height and width attributes are scaled correctly */
+}
+
+.entry-content img,
+img.size-full {
+	max-width: 100%;
+	height: auto;
+}
+.entry-content img.wp-smiley,
+.comment-content img.wp-smiley {
+	border: none;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding: 0;
+}
+.wp-caption {
+	max-width: 100%;
+	@include panel;
+}
+.wp-caption.aligncenter,
+.wp-caption.alignleft,
+.wp-caption.alignright {
+	margin-bottom: 1.5em;
+}
+.wp-caption-text {
+	text-align: center;
+}
+.wp-caption .wp-caption-text {
+	margin: 0.8075em 0;
+}
+.wp-caption > a, .gallery-icon > a{ @include thumb;}
+
+#content .gallery {
+	margin-bottom: 1.5em;
+}
+.gallery-caption {
+}
+#content  .gallery a img {
+	border: none;
+	height: auto;
+
+}
+#content  .gallery dd {
+	margin: 0;
+}
+
+.entry-meta{
+	clear: both;
+}
+
+.widget {
+	word-wrap: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	hyphens: auto;
+}
+
+.loop-nav [rel="next"] { float: right;}
+
+[rel="tag"]{
+	//@extend .label;
+	display: inline-block; margin-bottom: 2px;
+}
+
+.comment-list, .comment-list .children {
+	list-style-type: none;
+}
+
+input[type="submit"]{
+	@extend .button;
+}
+
+.comment-content table, .entry-content table {
+	@include grid-column($columns:12);
+}
+td.label{
+	background: transparent;
+	line-height: inherit;
+}
+
+.spine-video { @include flex-video-container; }
+
+/* =Gravity forms
+----------------------------------------------- */
+
+.validation_error{
+	@extend .alert-box;
+	@extend .alert;
+}
+
+.gfield{
+	list-style-type:none !important;
+}
+
+.gform_validation_container{
+	display:none;
+}
+
+.comment-content iframe{
+	max-width: 100%;
+}
