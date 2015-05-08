@@ -1,47 +1,45 @@
 <!DOCTYPE html>
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if IE 8]>
-<html class="no-js lt-ie9" <?php language_attributes(); ?>> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" <?php language_attributes(); ?>> <!--<![endif]-->
+<!--[if lt IE 7]> <html class="no-js no-svg lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-js no-svg lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-js no-svg lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" <?php language_attributes(); ?>><!--<![endif]-->
 <head>
 
-<meta http-equiv="Content-Type" content="<?php bloginfo( 'html_type' ); ?>; charset=<?php bloginfo( 'charset' ); ?>" />
-<title><?php hybrid_document_title(); ?></title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="profile" href="http://gmpg.org/xfn/11" />
-<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
-	<script src="<?php echo get_template_directory_uri() . '/foundation/javascripts/vendor/custom.modernizr.js'; ?>"></script>
-<?php wp_head(); // wp_head ?>
+	<meta charset="<?php bloginfo( 'charset' ); ?>" />
+	<title><?php echo esc_html( spine_get_title() ); ?></title>
 
+	<!-- FAVICON -->
+	<link rel="shortcut icon" href="//repo.wsu.edu/spine/1/favicon.ico" />
+
+	<!-- RESPOND -->
+	<meta name="viewport" content="width=device-width, user-scalable=yes">
+
+	<!-- DOCS -->
+	<link type="text/plain" rel="author" href="//repo.wsu.edu/spine/1/authors.txt" />
+	<link type="text/html" rel="help" href="http://brand.wsu.edu/media/web" />
+
+	<!-- SCRIPTS and STYLES -->
+	<!-- Custom scripts and styles should be added with wp_enqueue_script() and wp_enqueue_style() -->
+
+	<?php wp_head(); ?>
+
+	<!-- COMPATIBILITY -->
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<noscript><style>#spine #spine-sitenav ul ul li { display: block !important; }</style></noscript>
 </head>
 
-<body class="<?php hybrid_body_class(); ?>" itemscope itemtype="http://schema.org/WebPage">
+<body <?php body_class(); ?>>
 
-	<div id="container">
+<?php
+	if ( ( spine_get_option( 'spineless' ) == 'true' ) && is_front_page() ) {
+		$spineless = " spineless";
+	} else {
+		$spineless = "";
+	}
+?>
 
-		<?php get_template_part( 'menu', 'primary' ); // Loads the menu-primary.php template. ?>
-
-		<header id="header">
-
-			<hgroup id="branding">
-				<h1 id="site-title">
-					<a href="<?php echo esc_url( home_url() ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
-					<?php $logo_url = hybrid_get_setting( 'logo_upload' ); if( empty( $logo_url ) ) : ?>
-						<?php bloginfo( 'name' ); ?>
-					<?php else: ?>
-						<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
-					<?php endif; ?>
-					</a>
-				</h1>
-				<h2 id="site-description"><?php bloginfo( 'description' ); ?></h2>
-			</hgroup><!-- #branding -->
-<hr>
-		</header><!-- #header -->
-
-		<?php if ( get_header_image() ) echo '<div id="custom-header"><img class="header-image" src="' . esc_url( get_header_image() ) . '" alt="" /></div>'; ?>
-
-		<?php get_template_part( 'menu', 'secondary' ); // Loads the menu-secondary.php template. ?>
-
-		<div id="main">
-
-			<?php if ( current_theme_supports( 'breadcrumb-trail' ) ) breadcrumb_trail( array( 'container' => 'nav', 'separator' => '>', 'before' => __( 'You are here:', 'spine2' ) ) ); ?>
+<?php get_template_part('parts/before-jacket'); ?>
+<div id="jacket" class="style-<?php echo esc_attr( spine_get_option( 'theme_style' ) ); ?> colors-<?php echo esc_attr( spine_get_option( 'secondary_colors' ) ); ?> spacing-<?php echo esc_attr( spine_get_option( 'theme_spacing' ) ); ?>">
+<?php get_template_part('parts/before-binder'); ?>
+<div id="binder" class="<?php echo esc_attr( spine_get_option( 'grid_style' ) ); echo $spineless; echo esc_attr( spine_get_option( 'large_format' ) ); echo esc_attr( spine_get_option( 'broken_binding' ) ); ?>">
+<?php get_template_part('parts/before-main'); ?>
