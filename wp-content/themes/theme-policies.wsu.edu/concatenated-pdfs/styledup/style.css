@@ -1,0 +1,40 @@
+/* CSS Document */
+@import url("//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css");
+h2.sub-title{
+	left: 0;
+	line-height: 200px;
+	margin: auto;
+	margin-top: -200px;
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	text-align: center;
+	font-size:14px;
+	font-style:italic;
+}
+
+.revised{
+	border:1px solid #9A9A9A;
+	padding:5px 10px;
+	border-radius:5px;
+	border-right:none;
+	position:relative;
+}
+
+.revised:before {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transform: translate(0, 0);
+	content: "\f071";
+	color: #EBEBEB;
+	position: absolute;
+	left: -22px;
+	top: 3px;
+	font-size: .95em;
+	z-index:1;
+	text-shadow: #3b3b3b 0px 0px 5px;
+}

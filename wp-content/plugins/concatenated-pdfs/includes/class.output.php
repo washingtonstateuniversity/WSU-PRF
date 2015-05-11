@@ -239,14 +239,14 @@ class catpdf_output {
 		$page_end=$pages;
 		$chapters[$interation-1]["page_end"]=$pages;
 	}*/
-	$bs = $GLOBALS["backside"]; // work to remove
+	//$bs = $GLOBALS["backside"]; // work to remove
 	$pdf->page_script(\'$pages++;\');
 	$count=$PAGE_COUNT;
 	//$chapters=$GLOBALS["chapters"];
 	//$repeater = $superContent;
 	
 	//page_script seems to need to be oneline?
-	$pdf->page_script(\'$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }\');
+	//$pdf->page_script(\'$indexpage=$GLOBALS["indexpage"]; if ($PAGE_NUM==$indexpage ) { $pdf->add_object($GLOBALS["backside"],"add"); $pdf->stop_object($GLOBALS["backside"]); }\');
 </script><script type="text/php">
 		'.$this->get_pdf_php_globals().'
 		if($indexable){
@@ -364,7 +364,7 @@ var inch = 92;
 
 	public function create_section_pdf($code,$html,$segment=""){
 		global $_params,$post,$shortcode,$catpdf_output,$catpdf_data,$inner_pdf,$section,$chapters,$repeater,$pages,$interation,$indexable,$rendered_sections;
-		
+		//$html="";
 		$fragment_key = $code.md5( implode(',',$_params) ).( $segment!="" ? md5( $post->post_modified ) : "" );
 		$_name=preg_replace('/[^a-z0-9]/i', '_', $segment);
 		$filename = trim($catpdf_output->buildFileName(null,null))."-".($_name!=""?"-$_name-":"").$fragment_key. ".pdf";
