@@ -1,4 +1,4 @@
-		<h1 class="page_title">[title]</h1>
+		[title container="h1" container_class="page_title" ]
 		<div class="content-wrapper">
 			<div class="post">
 				

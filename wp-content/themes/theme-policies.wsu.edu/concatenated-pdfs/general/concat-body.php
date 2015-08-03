@@ -1,4 +1,1 @@
-
-	<div>
-		[loop]
-	</div>
+[loop container="div" container_class="loop_container"]

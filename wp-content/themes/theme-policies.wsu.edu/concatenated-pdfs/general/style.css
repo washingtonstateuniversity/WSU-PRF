@@ -43,6 +43,6 @@ h2.sub-title{
 	padding-left:5px;*/
 }
 
-.page_title {postion:absolute; top:160px; left: 15px;}
+.page_title {position: fixed; top:160px; left: 15px;}
 .catpdf_content{background:#fff;}
 .content-wrapper{background:#fff;}
