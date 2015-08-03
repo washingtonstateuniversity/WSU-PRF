@@ -220,8 +220,9 @@ class catpdf_output {
 		$script="";
 
         $this->head  = $head_html
-						.$this->build_stylesheets()
+						
 						.$this->get_pdf_inline_style()
+						.$this->build_stylesheets()
 						."</head>\n"
 						."<body>\n"
 						.$indexscriptglobals

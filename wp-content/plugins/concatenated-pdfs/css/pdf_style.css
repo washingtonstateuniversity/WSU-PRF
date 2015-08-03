@@ -35,7 +35,7 @@ body{}
 
 /* DEFAULTS */
 html, body{ margin: 0; padding: 0; border: 0; font-family: sans-serif; text-align: justify;background-color:transparent;	background: #eff0f1;
-	background-color:#eff0f1;}
+	background-color:#eff0f1; }
 table { border-collapse: collapse; border-spacing: 0; border: 1px solid #535353; background-color:transparent; }
 tr,td,th { border: 1px solid #535353; padding:2px 4px;}
 strong{ font-weight:bold;}

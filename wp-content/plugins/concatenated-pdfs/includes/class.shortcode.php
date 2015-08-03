@@ -102,7 +102,9 @@ class shortcode {
 				),
 			'pageheader' => array(
 				'catpdf_skip','site_title','site_tagline','site_url','date_today','title',
-				'from_date','to_date','categories','post_count','page_numbers'
+				'from_date','to_date','categories','post_count','page_numbers','excerpt','content','permalink',
+				'date','author','status','category','tags','comments_count',
+				'version_count','revision_count','meta','revision_last_date'
 			),
 			'pagefooter' => array(
 				'catpdf_skip','site_title','site_tagline','site_url','date_today','title',
