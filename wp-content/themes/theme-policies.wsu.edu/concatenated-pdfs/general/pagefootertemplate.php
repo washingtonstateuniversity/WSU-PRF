@@ -1,2 +1,2 @@
 [page_numbers label="PAGE" separator="/"]
-<div id="generation_info">Generated: [date_today]<br/>From: [site_url link=true]</div>
+<div id="generation_info">Printed: [date_today]</div>
